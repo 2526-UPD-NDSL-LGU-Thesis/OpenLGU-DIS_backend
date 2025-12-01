@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>NDSG</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+  <nav>
+    <!-- <img src="../static/img/clid-logo.png"> -->
+    <img src="../static/img/clid-logo.png" alt="Logo" class="logo">Costumizable LGU ID
+    <a href="/profile">View Profile</a>
+    <a href="/register">Register</a>
+    <a href="/labs">Labs</a>
+    <a href="/admin">(ADMIN)</a>
+  </nav>
+
+  <div id="file-container">
+    <p>Please upload a QR image to view the ID details.</p>
+    <!-- File input to upload QR code image; selecting a file will reveal the details form -->
+    <input type="file" id="qrImage" accept="image/*" />
+  </div>
+
+  <div class="profile-container">
+
+    <!-- Profile Image -->
+    <div class="image-section">
+        <div class="profile-image">
+            <!-- Placeholder image -->
+            <span>No Image</span>
+        </div>
+
+        <!-- Verification Box -->
+        <div class="verification-box">
+            <span class="status not-verified" id="verifiedStatus">Not Verified</span>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="info-section">
+        <h2>User Profile</h2>
+
+        <div class="info-item">
+            <span class="label">Lab ID:</span>
+            <span class="value" id="student_lab_id">LAB ID</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label">Dept ID:</span>
+            <span class="value" id="student_dept_id">DEPT ID</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label">Lab:</span>
+            <span class="value" id="student_lab">LAB</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label">Date Issued:</span>
+            <span class="value" id="student_date_issued">DATE</span>
+        </div>
+
+        <div class="buttons">
+            <button class="btn download" disabled>Download ID</button>
+            <button class="btn generate" disabled>Generate QR</button>
+        </div>
+    </div>
+  </div>
+
+  <script src="../static/js/profile.js"></script>
+</body>
+</html>

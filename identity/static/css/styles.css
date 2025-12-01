@@ -1,0 +1,261 @@
+body {
+    background-color: #FFFAFA;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    text-align: center;
+}
+
+header {
+    background-color: white;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    background-color: #FFFDD0;
+}
+
+nav a {
+    color: black;
+    padding-left: 20px;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+nav a:hover {
+    color: #7F7F76;
+}
+
+nav img.logo {
+    height: 45px;
+    padding: 10px;
+    padding-left: 10px;
+    padding-right: 5px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.container {
+    padding: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.left-container {
+    flex: 70%;
+    padding: 1.5rem;
+}
+
+.right-container {
+    flex: 30%;
+    padding: 1.5rem;
+}
+
+#reader {
+    width: 300px;
+    margin: auto;
+}
+
+form {
+    margin-top: 20px;
+    display: inline-block;
+    text-align: left;
+    width: 50%;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input, button {
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Centering the file input */
+#file-container {
+    width: 350px;                 /* adjust as needed */
+    margin: 40px auto;            /* centers the box horizontally */
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: center;      /* centers file input horizontally */
+    align-items: center;          /* centers vertically */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#file-container input[type="file"] {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+
+input[type="file"] {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.result { 
+    width: 50px;
+}
+
+footer {
+    padding: 1.5rem;
+    background-color: beige;
+}
+
+.logo-container {
+    display: grid;
+    /* Auto-fit logos based on width */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    padding: 20px;
+
+    /* Center items in their grid cells */
+    justify-items: center;
+    align-items: center;
+
+    background: #fff; /* Optional */
+}
+
+.logo {
+    width: 100%;
+    max-width: 140px; /* Restrict max logo width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+/* Optional hover zoom */
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.profile-container {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 40px;
+}
+
+.image-section {
+    width: 250px;
+    text-align: center;
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    background: #ddd;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #555;
+    margin: auto;
+}
+
+.verification-box {
+    margin-top: 15px;
+}
+
+.status {
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.verified {
+    background: #d4f8d4;
+    color: #1a7f1a;
+    border: 1px solid #1a7f1a;
+}
+
+.not-verified {
+    background: #ffe5e5;
+    color: #b30000;
+    border: 1px solid #b30000;
+}
+
+.info-section {
+    flex: 1;
+    text-align: left;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    margin-bottom: 12px;
+}
+
+.label {
+    font-weight: bold;
+    display: inline-block;
+    width: 140px;
+}
+
+.value {
+    color: #333;
+}
+
+.buttons {
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn.download {
+    background: #1976d2;
+    color: #fff;
+}
+
+.btn.generate {
+    background: #388e3c;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}

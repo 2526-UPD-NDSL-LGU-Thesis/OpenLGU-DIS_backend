@@ -1,0 +1,49 @@
+<div id="file-container">
+    <p>Please upload a QR image to view the ID details.</p>
+    <!-- File input to upload QR code image; selecting a file will reveal the details form -->
+    <input type="file" id="qrImage" accept="image/*" onchange="document.getElementById('sampleForm').style.display='block';" />
+</div>
+
+<div id="result"></div>
+
+<!-- Form is hidden initially; will be shown after a QR image is selected -->
+<form id="sampleForm" style="display:none;" enctype="multipart/form-data">
+    <label for="d">Date Issued:</label>
+    <input type="date" name="d" id="d" disabled />
+
+    <label for="i">Issuer:</label>
+    <input type="text" name="i" id="i" disabled />
+
+    <label for="PCN">PCN:</label>
+    <input type="text" name="PCN" id="PCN" disabled />
+
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name" disabled />
+
+    <label for="s">Sex:</label>
+    <input type="s" name="s" id="s"  disabled />
+
+    <label for="DOB">Birthdate:</label>
+    <input type="date" name="DOB" id="DOB" disabled />
+
+    <label for="POB">Birthplace:</label>
+    <input type="text" name="POB" id="POB" disabled />
+
+    <select name="labs" id="labs"></select>
+
+    <label for="docProof">Upload Proof of Document (Required):</label>
+    <input 
+        type="file" 
+        id="docProof" 
+        accept="image/*,.pdf" 
+        required
+        name="proof"
+        onchange="document.getElementById('docProof').dataset.selected = 'true';"
+    />
+    <small>Please upload a valid ID, certificate, or supporting document.</small>
+
+    <button type="submit" id="register">Register</button>
+</form>
+
+
+<div id="labid"></div>
