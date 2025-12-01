@@ -32,10 +32,6 @@ qrInput.addEventListener("change", () => {
                     document.getElementById("student_lab").textContent          = data.cs_lab;
                     document.getElementById("student_date_issued").textContent  = data.issued_at;
 
-                    // Enable buttons
-                    downloadBtn.disabled = false;
-                    generateBtn.disabled = false;
-
                     // fetch(`http://localhost:8000/api/ids/${data.cs_lab_id}`, {
                     //     method: "GET",
                     //     headers: { "Content-Type": "application/json" },
@@ -56,4 +52,22 @@ qrInput.addEventListener("change", () => {
     };
 
     reader.readAsDataURL(file);
-})
+});
+
+
+downloadBtn.addEventListener("click", () => {
+    console.log("Hello");
+
+    const uid = document.getElementById("student_lab_id");
+
+    window.open(`http://127.0.0.1:8000/api/ids/${uid}/id`);
+});
+
+
+generateBtn.addEventListener("click", () => {
+    console.log("Hello");
+
+    const uid = document.getElementById("student_lab_id");
+
+    window.open(`http://127.0.0.1:8000/api/ids/${uid}/qr`);
+});

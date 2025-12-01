@@ -108,15 +108,19 @@ registerBtn.addEventListener("click", async (event) => {
 
         const body = await resp.json();
 
+        console.log(body);
+
         if (resp.ok) {
             resultBox.style.backgroundColor = "green";
             resultBox.style.color = "white";
-            resultBox.textContent = `Registered successfully (id: ${body[0].id ?? body[0].cs_lab_id ?? "created"})`;
+            resultBox.textContent = `Registered successfully (id: ${body.id ?? body.cs_lab_id ?? "created"})`;
             // optionally disable register after success
             registerBtn.disabled = true;
 
             // show the created id in the labid div
-            registerRes.textContent = `Assigned Lab ID: ${body[0].id ?? body[0].cs_lab_id ?? "created"}`;
+            registerRes.textContent = `Assigned Lab ID: ${body.id ?? body.cs_lab_id ?? "created"}`;
+
+            window.open(`http://127.0.0.1:8000/api/ids/${body.id}/qr`)
         } else {
             resultBox.style.backgroundColor = "red";
             resultBox.style.color = "white";

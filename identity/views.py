@@ -63,9 +63,8 @@ class CompSciLabIDViewSet(viewsets.ModelViewSet):
         qr.save(buffer, format="PNG")
         buffer.seek(0)
 
-        # return HttpResponse(buffer, content_type="image/png")
-
-        qr.show()
+        # qr.show()
+        return HttpResponse(buffer, content_type="image/png")
     
     @action(detail=True, methods=['GET'], url_path='id')
     def id(self, request, pk=None):
@@ -110,7 +109,12 @@ class CompSciLabIDViewSet(viewsets.ModelViewSet):
             y_offset += line_height  # Move to the next line
 
         # Save the updated image
-        id_image.show()
+        # id_image.show()
+        buffer = BytesIO()
+        id_image.save(buffer, format="PNG")
+        buffer.seek(0)
+        
+        return HttpResponse(buffer, content_type="image/png")
 
 
 @authentication_classes([BasicAuthentication])
