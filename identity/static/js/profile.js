@@ -22,6 +22,7 @@ qrInput.addEventListener("change", () => {
         })
         .then(res => res.json())
         .then(data => {
+            // TODO FIX THIS
             if (data[1] === "PH") {
                 console.warn("Wrong QR", e);
             } else {

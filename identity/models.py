@@ -177,7 +177,7 @@ class MOSIPCollabUser(IdentificationType):
 
 class CompSciLabs(models.Model):
     """Class for Laboratories under the CS Department."""
-    abbr    = models.CharField(primary_key=True, max_length=4)
+    abbr    = models.CharField(primary_key=True, max_length=10)
     name    = models.CharField(max_length=70)
 
 

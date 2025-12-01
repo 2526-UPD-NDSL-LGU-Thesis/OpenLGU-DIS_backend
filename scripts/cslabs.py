@@ -1,11 +1,8 @@
 """
 Create CS labs.
 """
-import django
+from identity.models import CompSciLabs
 
-django.setup()
-
-from identification import CompSciLabs
 
 reference_table = [
     { "abbr" : "NA",    "name" : "No Laboratory"                                        },

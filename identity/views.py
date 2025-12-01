@@ -12,6 +12,7 @@ from .serializers import CompSciLabIDSerializer, CompSciDeptIDSerializer, CompSc
 
 __all__ = (
     'profile',
+    'register',
     'CompSciLabIDViewSet',
     'CompSciDeptIDViewSet',
     'CompSciLabsViewSet',
@@ -20,6 +21,10 @@ __all__ = (
 def profile(request) -> HttpResponse :
     '''Render profile page.'''
     return render(request, "profile.html")
+
+def register(request) -> HttpResponse :
+    '''Render register page.'''
+    return render(request, "register.html")
 
 class CompSciLabIDViewSet(viewsets.ModelViewSet):
     '''View set for `CompSciLabID`.'''

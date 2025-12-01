@@ -1,49 +1,74 @@
-<div id="file-container">
-    <p>Please upload a QR image to view the ID details.</p>
-    <!-- File input to upload QR code image; selecting a file will reveal the details form -->
-    <input type="file" id="qrImage" accept="image/*" onchange="document.getElementById('sampleForm').style.display='block';" />
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>NDSG</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <nav>
+        <!-- <img src="../static/img/clid-logo.png"> -->
+        <img src="../static/img/clid-logo.png" alt="Logo" class="logo">Costumizable LGU ID
+        <a href="/profile">View Profile</a>
+        <a href="/register">Register</a>
+        <a href="/labs">Labs</a>
+        <a href="/admin">(ADMIN)</a>
+    </nav>
 
-<div id="result"></div>
+    <div id="file-container">
+        <p>Please upload a QR image to view the ID details.</p>
+        <!-- File input to upload QR code image; selecting a file will reveal the details form -->
+        <input type="file" id="qrImage" accept="image/*" onchange="document.getElementById('sampleForm').style.display='block';" />
+    </div>
 
-<!-- Form is hidden initially; will be shown after a QR image is selected -->
-<form id="sampleForm" style="display:none;" enctype="multipart/form-data">
-    <label for="d">Date Issued:</label>
-    <input type="date" name="d" id="d" disabled />
+    <div id="result"></div>
 
-    <label for="i">Issuer:</label>
-    <input type="text" name="i" id="i" disabled />
+    <!-- Form is hidden initially; will be shown after a QR image is selected -->
+    <form id="registrationForm" enctype="multipart/form-data">
+        <label for="d">Date Issued:</label>
+        <input type="date" name="d" id="d" />
 
-    <label for="PCN">PCN:</label>
-    <input type="text" name="PCN" id="PCN" disabled />
+        <label for="i">Issuer:</label>
+        <input type="text" name="i" id="i" />
 
-    <label for="name">Name:</label>
-    <input type="text" name="name" id="name" disabled />
+        <label for="PCN">PCN:</label>
+        <input type="text" name="PCN" id="PCN" />
 
-    <label for="s">Sex:</label>
-    <input type="s" name="s" id="s"  disabled />
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" />
 
-    <label for="DOB">Birthdate:</label>
-    <input type="date" name="DOB" id="DOB" disabled />
+        <label for="s">Sex:</label>
+        <input type="s" name="s" id="s" />
 
-    <label for="POB">Birthplace:</label>
-    <input type="text" name="POB" id="POB" disabled />
+        <label for="DOB">Birthdate:</label>
+        <input type="date" name="DOB" id="DOB" />
 
-    <select name="labs" id="labs"></select>
+        <label for="POB">Birthplace:</label>
+        <input type="text" name="POB" id="POB" />
 
-    <label for="docProof">Upload Proof of Document (Required):</label>
-    <input 
-        type="file" 
-        id="docProof" 
-        accept="image/*,.pdf" 
-        required
-        name="proof"
-        onchange="document.getElementById('docProof').dataset.selected = 'true';"
-    />
-    <small>Please upload a valid ID, certificate, or supporting document.</small>
+        <!-- TODO Verify Button (or Automatic MOSIP Verification) -->
 
-    <button type="submit" id="register">Register</button>
-</form>
+        <select name="labs" id="labs"></select>
+
+        <label for="docProof">Upload Proof of Document (Required):</label>
+        <input 
+            type="file" 
+            id="docProof" 
+            accept="image/*,.pdf" 
+            required
+            name="proof"
+            onchange="document.getElementById('docProof').dataset.selected = 'true';"
+        />
+        <small>Please upload a valid ID, certificate, or supporting document.</small>
+
+        <button type="submit" id="register">Register</button>
+    </form>
 
 
-<div id="labid"></div>
+    <div id="labid"></div>
+
+    <script src="../static/js/register.js"></script>
+
+</body>
+</html>
