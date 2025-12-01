@@ -183,14 +183,14 @@ class CompSciLabs(models.Model):
 
 class CompSciDeptID(models.Model):
     """Class for IDs in the CS Department."""
-    id          = models.BigAutoField(primary_key=True)
+    id          = models.BigIntegerField(primary_key=True, editable=True)
     name        = models.CharField(max_length=200, null=False)
     gender      = models.CharField(max_length=50, null=False)           #TODO Create choices for this
     dob         = models.DateField(null=False)
     location1   = models.CharField(max_length=200, null=False)
-    phone       = models.CharField(max_length=11)
-    email       = models.EmailField()
-    face        = models.BinaryField()
+    phone       = models.CharField(max_length=11, null=True, blank=True)
+    email       = models.EmailField(null=True, blank=True)
+    face        = models.BinaryField(null=True, blank=True)
     
 
 class CompSciLabID(models.Model):
@@ -198,7 +198,7 @@ class CompSciLabID(models.Model):
     id          = models.BigAutoField(primary_key=True)
     cslab       = models.ForeignKey(CompSciLabs, on_delete=models.CASCADE)
     csdept      = models.ForeignKey(CompSciDeptID, on_delete=models.CASCADE)
-    issued_at   = models.DateField(db_default=datetime.now())
+    issued_at   = models.DateField(auto_now_add=True)
     file        = models.FileField(upload_to="uploads/")
     verified    = models.BooleanField(default=False)
 

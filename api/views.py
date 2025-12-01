@@ -8,7 +8,9 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpRequest, JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import AllowAny
 from PIL import Image
 from pyzbar.pyzbar import decode
 
@@ -18,6 +20,8 @@ import base45
 # Create your views here.
 @csrf_exempt
 @api_view(['POST'])
+@permission_classes([AllowAny])
+@authentication_classes([BasicAuthentication])
 def read(request : HttpRequest) -> JsonResponse :
     '''Read QR image.'''
     b64image = request.data.get("qr_data")

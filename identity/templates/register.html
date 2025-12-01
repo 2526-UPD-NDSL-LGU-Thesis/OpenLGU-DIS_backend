@@ -19,7 +19,7 @@
     <div id="file-container">
         <p>Please upload a QR image to view the ID details.</p>
         <!-- File input to upload QR code image; selecting a file will reveal the details form -->
-        <input type="file" id="qrImage" accept="image/*" onchange="document.getElementById('sampleForm').style.display='block';" />
+        <input type="file" id="qrImage" accept="image/*" />
     </div>
 
     <div id="result"></div>
@@ -39,7 +39,7 @@
         <input type="text" name="name" id="name" />
 
         <label for="s">Sex:</label>
-        <input type="s" name="s" id="s" />
+        <input type="text" name="s" id="s" />
 
         <label for="DOB">Birthdate:</label>
         <input type="date" name="DOB" id="DOB" />
@@ -49,6 +49,7 @@
 
         <!-- TODO Verify Button (or Automatic MOSIP Verification) -->
 
+        <label for="labs">Labs:</label>
         <select name="labs" id="labs"></select>
 
         <label for="docProof">Upload Proof of Document (Required):</label>
@@ -58,11 +59,10 @@
             accept="image/*,.pdf" 
             required
             name="proof"
-            onchange="document.getElementById('docProof').dataset.selected = 'true';"
         />
         <small>Please upload a valid ID, certificate, or supporting document.</small>
 
-        <button type="submit" id="register">Register</button>
+        <button type="button" id="register">Register</button>
     </form>
 
 

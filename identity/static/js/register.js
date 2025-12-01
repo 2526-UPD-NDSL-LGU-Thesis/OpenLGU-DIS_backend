@@ -1,9 +1,11 @@
-const qrInput      = document.getElementById("qrImage");
-const labsSelect   = document.getElementById("labs");
+const qrInput       = document.getElementById("qrImage");
+const labsSelect    = document.getElementById("labs");
+const resultBox    = document.getElementById("result");
+const registerRes  = document.getElementById("labid");
+const registerBtn   = document.getElementById("register");
 
 // QR File Event Listener
 qrInput.addEventListener("change", () => {
-    console.log("Reading QR.")
     const file = qrInput.files[0];
     if (!file) return;
 
@@ -31,20 +33,9 @@ qrInput.addEventListener("change", () => {
                     document.getElementById("DOB").value  = data[169]['sb']['DOB'];
                     document.getElementById("PCN").value  = data[169]['sb']['PCN'];
                     document.getElementById("POB").value  = data[169]['sb']['POB'];
-
-                    document.getElementById("d").disabled    = true;
-                    document.getElementById("i").disabled    = true;
-                    document.getElementById("s").disabled    = true;
-                    document.getElementById("name").disabled = true;
-                    document.getElementById("DOB").disabled  = true;
-                    document.getElementById("PCN").disabled  = true;
-                    document.getElementById("POB").disabled  = true;
                 } catch (e) {
                     console.warn("Unexpected QR data format", e);
                 }
-
-                // show form now that data is available
-                form.style.display = "block";
             } else {
                 console.warn("Wrong QR", e);
             }
@@ -53,7 +44,7 @@ qrInput.addEventListener("change", () => {
     };
 
     reader.readAsDataURL(file);
-})
+});
 
 
 // Add selection for labs
@@ -65,7 +56,7 @@ if (labsSelect) {
         if (Array.isArray(data)) {
             data.forEach(lab => {
                 const opt = document.createElement("option");
-                opt.value = lab.id ?? lab.name ?? lab;
+                opt.value = lab.abbr ?? lab.name ?? lab;
                 opt.textContent = lab.name ?? lab;
                 labsSelect.appendChild(opt);
             });
@@ -76,6 +67,72 @@ if (labsSelect) {
         labsSelect.disabled = true;
     });
 }
+
+
+// Submit form
+registerBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const regForm = document.getElementById("registrationForm");
+    if (!regForm) {
+        console.error("registrationForm not found");
+        registerBtn.disabled = false;
+        registerBtn.textContent = "Register";
+        return;
+    }
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = "Registering...";
+
+    try {
+        const regData = new FormData(regForm);
+        console.log([...regData.entries()]);
+
+        const csID = new FormData();
+        csID.append("cslab", regData.get("labs"));
+        csID.append("csdept", Number(regData.get("PCN")));
+        csID.append("file", regData.get("proof"));
+
+        // Check if CSDeptID is already registered:
+        const check = await fetch(`http://127.0.0.1:8000/api/deptids/${regData.get("PCN")}`)
+        
+        if (!check.ok) {
+            console.log("Panic!");
+            return;
+        }
+
+        const resp = await fetch("http://127.0.0.1:8000/api/ids/", {
+            method: "POST",
+            body: csID,
+        });
+
+        const body = await resp.json();
+
+        if (resp.ok) {
+            resultBox.style.backgroundColor = "green";
+            resultBox.style.color = "white";
+            resultBox.textContent = `Registered successfully (id: ${body[0].id ?? body[0].cs_lab_id ?? "created"})`;
+            // optionally disable register after success
+            registerBtn.disabled = true;
+
+            // show the created id in the labid div
+            registerRes.textContent = `Assigned Lab ID: ${body[0].id ?? body[0].cs_lab_id ?? "created"}`;
+        } else {
+            resultBox.style.backgroundColor = "red";
+            resultBox.style.color = "white";
+            resultBox.textContent = body[0].message ?? JSON.stringify(body[0]);
+            registerBtn.disabled = false;
+        }
+    } catch (err) {
+        console.error("Registration error:", err);
+        resultBox.style.backgroundColor = "red";
+        resultBox.style.color = "white";
+        resultBox.textContent = "Registration failed.";
+        registerBtn.disabled = false;
+    } finally {
+        registerBtn.textContent = "Register";
+    }
+});
 
 // export function initRegisterPage() {
 //     console.log("Profile page initialized.");

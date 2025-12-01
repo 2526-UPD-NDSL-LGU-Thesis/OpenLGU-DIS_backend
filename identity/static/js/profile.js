@@ -36,16 +36,16 @@ qrInput.addEventListener("change", () => {
                     downloadBtn.disabled = false;
                     generateBtn.disabled = false;
 
-                    fetch(`http://localhost:8000/api/ids/${data.cs_lab_id}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                    }).then(data => {
-                        if (data.verified) {
-                            statusElement.classList.remove("not-verified");
-                            statusElement.classList.add("verified");
-                            statusElement.textContent = "Verified";
-                        }
-                    })
+                    // fetch(`http://localhost:8000/api/ids/${data.cs_lab_id}`, {
+                    //     method: "GET",
+                    //     headers: { "Content-Type": "application/json" },
+                    // }).then(data => {
+                    //     if (data.verified) {
+                    //         statusElement.classList.remove("not-verified");
+                    //         statusElement.classList.add("verified");
+                    //         statusElement.textContent = "Verified";
+                    //     }
+                    // })
 
                 } catch (e) {
                     console.warn("Unexpected QR data format", e);
