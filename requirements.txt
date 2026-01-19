@@ -4,3 +4,7 @@ djangorestframework
 dynaconf
 mosip-auth-sdk @ git+https://github.com/mosip/ida-auth-sdk.git@f322c59868123c2ef9410b5a3fecfd5dcdfd56af
 qrcode
+PILLOW
+pyzbar
+cbor2
+base45
