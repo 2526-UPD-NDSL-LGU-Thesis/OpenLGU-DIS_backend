@@ -15,7 +15,7 @@ qrInput.addEventListener("change", () => {
     reader.onloadend = () => {
         const base64Image = reader.result;
 
-        fetch("http://LOCALHOST:8000/api/read/", {
+        fetch("/api/read/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ qr_data: base64Image })
@@ -32,7 +32,7 @@ qrInput.addEventListener("change", () => {
                     document.getElementById("student_lab").textContent          = data.cs_lab;
                     document.getElementById("student_date_issued").textContent  = data.issued_at;
 
-                    // fetch(`http://localhost:8000/api/ids/${data.cs_lab_id}`, {
+                    // fetch(`/api/ids/${data.cs_lab_id}`, {
                     //     method: "GET",
                     //     headers: { "Content-Type": "application/json" },
                     // }).then(data => {
@@ -60,7 +60,7 @@ downloadBtn.addEventListener("click", () => {
 
     const uid = document.getElementById("student_lab_id");
 
-    window.open(`http://LOCALHOST:8000/api/ids/${uid}/id`);
+    window.open(`/api/ids/${uid}/id`);
 });
 
 
@@ -69,5 +69,5 @@ generateBtn.addEventListener("click", () => {
 
     const uid = document.getElementById("student_lab_id");
 
-    window.open(`http://LOCALHOST:8000/api/ids/${uid}/qr`);
+    window.open(`/api/ids/${uid}/qr`);
 });
