@@ -14,7 +14,7 @@ qrInput.addEventListener("change", () => {
     reader.onloadend = () => {
         const base64Image = reader.result;
 
-        fetch("http://127.0.0.1:8000/api/read/", {
+        fetch("http://LOCALHOST:8000/api/read/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ qr_data: base64Image })
@@ -49,7 +49,7 @@ qrInput.addEventListener("change", () => {
 
 // Add selection for labs
 if (labsSelect) {
-    fetch("http://127.0.0.1:8000/api/labs"
+    fetch("http://LOCALHOST:8000/api/labs"
     ).then(res => res.json()
     ).then(data => {
         labsSelect.innerHTML = "";
@@ -94,14 +94,14 @@ registerBtn.addEventListener("click", async (event) => {
         csID.append("file", regData.get("proof"));
 
         // Check if CSDeptID is already registered:
-        const check = await fetch(`http://127.0.0.1:8000/api/deptids/${regData.get("PCN")}`)
+        const check = await fetch(`http://LOCALHOST:8000/api/deptids/${regData.get("PCN")}`)
         
         if (!check.ok) {
             console.log("Panic!");
             return;
         }
 
-        const resp = await fetch("http://127.0.0.1:8000/api/ids/", {
+        const resp = await fetch("http://LOCALHOST:8000/api/ids/", {
             method: "POST",
             body: csID,
         });
@@ -120,7 +120,7 @@ registerBtn.addEventListener("click", async (event) => {
             // show the created id in the labid div
             registerRes.textContent = `Assigned Lab ID: ${body.id ?? body.cs_lab_id ?? "created"}`;
 
-            window.open(`http://127.0.0.1:8000/api/ids/${body.id}/qr`)
+            window.open(`http://LOCALHOST:8000/api/ids/${body.id}/qr`)
         } else {
             resultBox.style.backgroundColor = "red";
             resultBox.style.color = "white";
@@ -162,7 +162,7 @@ registerBtn.addEventListener("click", async (event) => {
 
 //     // Populate labs on init
 //     if (labsSelect) {
-//         fetch("http://127.0.0.1:5000/api/labs", { method: "GET" })
+//         fetch("http://LOCALHOST:5000/api/labs", { method: "GET" })
 //             .then(res => res.json())
 //             .then(data => {
 //                 labsSelect.innerHTML = "";
@@ -195,7 +195,7 @@ registerBtn.addEventListener("click", async (event) => {
 //         reader.onloadend = () => {
 //             const base64Image = reader.result;
 
-//             fetch("http://127.0.0.1:5000/api/read", {
+//             fetch("http://LOCALHOST:5000/api/read", {
 //                 method: "POST",
 //                 headers: { "Content-Type": "application/json" },
 //                 body: JSON.stringify({ qr_data: base64Image })
@@ -266,8 +266,8 @@ registerBtn.addEventListener("click", async (event) => {
 //     //         DOB:  document.getElementById("DOB").value
 //     //     };
 
-//     //     // fetch("http://127.0.0.1:5000/api/verify", {
-//     //     fetch("http://127.0.0.1:5000/api/verify", {
+//     //     // fetch("http://LOCALHOST:5000/api/verify", {
+//     //     fetch("http://LOCALHOST:5000/api/verify", {
 //     //         method: "POST",
 //     //         headers: { "Content-Type": "application/json" },
 //     //         body: JSON.stringify(payload)

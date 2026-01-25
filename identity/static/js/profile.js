@@ -15,7 +15,7 @@ qrInput.addEventListener("change", () => {
     reader.onloadend = () => {
         const base64Image = reader.result;
 
-        fetch("http://127.0.0.1:8000/api/read/", {
+        fetch("http://LOCALHOST:8000/api/read/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ qr_data: base64Image })
@@ -60,7 +60,7 @@ downloadBtn.addEventListener("click", () => {
 
     const uid = document.getElementById("student_lab_id");
 
-    window.open(`http://127.0.0.1:8000/api/ids/${uid}/id`);
+    window.open(`http://LOCALHOST:8000/api/ids/${uid}/id`);
 });
 
 
@@ -69,5 +69,5 @@ generateBtn.addEventListener("click", () => {
 
     const uid = document.getElementById("student_lab_id");
 
-    window.open(`http://127.0.0.1:8000/api/ids/${uid}/qr`);
+    window.open(`http://LOCALHOST:8000/api/ids/${uid}/qr`);
 });
