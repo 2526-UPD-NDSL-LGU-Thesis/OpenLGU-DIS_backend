@@ -47,28 +47,6 @@ qrInput.addEventListener("change", () => {
 });
 
 
-// // Add selection for labs
-// if (labsSelect) {
-//     fetch("/api/labs"
-//     ).then(res => res.json()
-//     ).then(data => {
-//         labsSelect.innerHTML = "";
-//         if (Array.isArray(data)) {
-//             data.forEach(lab => {
-//                 const opt = document.createElement("option");
-//                 opt.value = lab.abbr ?? lab.name ?? lab;
-//                 opt.textContent = lab.name ?? lab;
-//                 labsSelect.appendChild(opt);
-//             });
-//         }
-//     })
-//     .catch(err => {
-//         console.warn("Failed to load labs:", err);
-//         labsSelect.disabled = true;
-//     });
-// }
-
-
 // Submit form
 registerBtn.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -94,12 +72,12 @@ registerBtn.addEventListener("click", async (event) => {
         csID.append("file", regData.get("proof"));
 
         // Check if CSDeptID is already registered:
-        const check = await fetch(`/api/ids/${regData.get("PCN")}`)
+        // const check = await fetch(`/api/ids/${regData.get("PCN")}`)
         
-        if (!check.ok) {
-            console.log("Panic!");
-            return;
-        }
+        // if (!check.ok) {
+            // console.log("Panic!");
+            // return;
+        // }
 
         const resp = await fetch("/api/ids/", {
             method: "POST",

@@ -6,7 +6,7 @@ const generateBtn   = document.querySelector('.btn.generate');
 
 // QR File Event Listener
 qrInput.addEventListener("change", () => {
-    console.log("Reading QR.")
+    console.log("Reading QR.");
     const file = qrInput.files[0];
     if (!file) return;
 
@@ -26,22 +26,24 @@ qrInput.addEventListener("change", () => {
             if (data[1] === "PH") {
                 console.warn("Wrong QR", e);
             } else {
+                print(data);
+
                 try {
-                    document.getElementById("student_lab_id").textContent       = data.cs_lab_id;
-                    document.getElementById("student_dept_id").textContent      = data.cs_dept_id;
-                    document.getElementById("student_lab").textContent          = data.cs_lab;
+                    document.getElementById("student_lab_id").textContent       = data.user_id;
+                    // document.getElementById("student_dept_id").textContent      = data.cs_dept_id;
+                    document.getElementById("student_lab").textContent          = "Manila"
                     document.getElementById("student_date_issued").textContent  = data.issued_at;
 
-                    // fetch(`/api/ids/${data.cs_lab_id}`, {
-                    //     method: "GET",
-                    //     headers: { "Content-Type": "application/json" },
-                    // }).then(data => {
-                    //     if (data.verified) {
-                    //         statusElement.classList.remove("not-verified");
-                    //         statusElement.classList.add("verified");
-                    //         statusElement.textContent = "Verified";
-                    //     }
-                    // })
+                    fetch(`/api/ids/${data.cs_lab_id}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    }).then(data => {
+                        if (data.verified) {
+                            statusElement.classList.remove("not-verified");
+                            statusElement.classList.add("verified");
+                            statusElement.textContent = "Verified";
+                        }
+                    })
 
                 } catch (e) {
                     console.warn("Unexpected QR data format", e);

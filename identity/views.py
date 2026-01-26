@@ -44,13 +44,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET'], url_path='qr')
     def qr(self, request, pk=None):
-        lab_id = self.get_object()
+        user_id = self.get_object()
 
         qr_data = {
-            "cs_dept_id" : lab_id.csdept.id,
-            "cs_lab"     : lab_id.cslab.abbr,
-            "cs_lab_id"  : lab_id.id,
-            "issued_at"  : lab_id.issued_at.strftime("%Y-%m-%d")
+            "user_id" : user_id.id,
+            "issued_at"  : user_id.issued_at.strftime("%Y-%m-%d")
         }
 
         print(qr_data)
@@ -68,8 +66,7 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['GET'], url_path='id')
     def id(self, request, pk=None):
-        lab_id = self.get_object()
-        dept_id = lab_id.csdept
+        _id = self.get_object()
 
         # Load the ID template image
         id_image = Image.open(
@@ -93,14 +90,14 @@ class UserViewSet(viewsets.ModelViewSet):
         x_offset = 40  # Horizontal offset for text
         y_offset = photo_y  # Starting position for the fields below the photo
 
-        fields = {
-            "Name": dept_id.name,
-            "Gender": dept_id.gender,
-            "DOB": dept_id.dob,
-            "Address": dept_id.location1,
-            "Email": dept_id.email,
-            "ID No": dept_id.id
-        }
+        # fields = {
+        #     "Name": dept_id.name,
+        #     "Gender": dept_id.gender,
+        #     "DOB": dept_id.dob,
+        #     "Address": dept_id.location1,
+        #     "Email": dept_id.email,
+        #     "ID No": dept_id.id
+        # }
         
         # Add each field text dynamically
         for label, value in fields.items():
