@@ -15,8 +15,8 @@ from io import BytesIO
 import qrcode
 import json
 
-from .models import CompSciLabID, CompSciDeptID, CompSciLabs
-from .serializers import CompSciLabIDSerializer, CompSciDeptIDSerializer, CompSciLabsSerializer
+from .models import User
+from .serializers import UserSerializer
 
 __all__ = (
     'profile',
@@ -35,12 +35,12 @@ def register(request) -> HttpResponse :
     return render(request, "register.html")
 
 @authentication_classes([BasicAuthentication])
-class CompSciLabIDViewSet(viewsets.ModelViewSet):
-    '''View set for `CompSciLabID`.'''
+class UserViewSet(viewsets.ModelViewSet):
+    '''View set for `User`.'''
     http_method_names = ['get', 'post']
     permission_classes = [AllowAny]
-    queryset = CompSciLabID.objects.all()
-    serializer_class = CompSciLabIDSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     @action(detail=True, methods=['GET'], url_path='qr')
     def qr(self, request, pk=None):
@@ -115,21 +115,3 @@ class CompSciLabIDViewSet(viewsets.ModelViewSet):
         buffer.seek(0)
         
         return HttpResponse(buffer, content_type="image/png")
-
-
-@authentication_classes([BasicAuthentication])
-class CompSciDeptIDViewSet(viewsets.ModelViewSet):
-    '''View set for `CompSciDeptID`.'''
-    http_method_names = ['get', 'post']
-    permission_classes = [AllowAny]
-    queryset = CompSciDeptID.objects.all()
-    serializer_class = CompSciDeptIDSerializer
-
-
-@authentication_classes([BasicAuthentication])
-class CompSciLabsViewSet(viewsets.ModelViewSet):
-    '''View set for `CompSciLabs`.'''
-    http_method_names = ['get']
-    permission_classes = [AllowAny]
-    queryset = CompSciLabs.objects.all()
-    serializer_class = CompSciLabsSerializer

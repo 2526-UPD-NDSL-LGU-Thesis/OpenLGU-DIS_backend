@@ -3,35 +3,17 @@ Serializers for REST Framework.
 '''
 
 __all__ = (
-    'CompSciLabs',
-    'CompSciDeptIDSerializer',
-    'CompSciLabIDSerializer',
+    'UserSerializer',
 )
 
 from rest_framework import serializers
 
-from .models import CompSciLabID, CompSciDeptID, CompSciLabs
+from .models import User
 
 
-class CompSciLabsSerializer(serializers.ModelSerializer):
-    '''Serializer for CompSciLabs.'''
+class UserSerializer(serializers.ModelSerializer):
+    '''Serializer for User.'''
     class Meta:
-        '''Meta class for CompSciLabs Serializer.'''
-        model = CompSciLabs
-        fields = '__all__'
-
-
-class CompSciDeptIDSerializer(serializers.ModelSerializer):
-    '''Serializer for CompSciDeptID.'''
-    class Meta:
-        '''Meta class for CompSciDeptID Serializer.'''
-        model = CompSciDeptID
-        fields = '__all__'
-
-
-class CompSciLabIDSerializer(serializers.ModelSerializer):
-    '''Serializer for CompSciLabID.'''
-    class Meta:
-        '''Meta class for CompSciLabID Serializer.'''
-        model = CompSciLabID
+        '''Meta class for User Serializer.'''
+        model = User
         fields = '__all__'

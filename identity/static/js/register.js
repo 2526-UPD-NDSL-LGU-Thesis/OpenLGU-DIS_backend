@@ -47,26 +47,26 @@ qrInput.addEventListener("change", () => {
 });
 
 
-// Add selection for labs
-if (labsSelect) {
-    fetch("/api/labs"
-    ).then(res => res.json()
-    ).then(data => {
-        labsSelect.innerHTML = "";
-        if (Array.isArray(data)) {
-            data.forEach(lab => {
-                const opt = document.createElement("option");
-                opt.value = lab.abbr ?? lab.name ?? lab;
-                opt.textContent = lab.name ?? lab;
-                labsSelect.appendChild(opt);
-            });
-        }
-    })
-    .catch(err => {
-        console.warn("Failed to load labs:", err);
-        labsSelect.disabled = true;
-    });
-}
+// // Add selection for labs
+// if (labsSelect) {
+//     fetch("/api/labs"
+//     ).then(res => res.json()
+//     ).then(data => {
+//         labsSelect.innerHTML = "";
+//         if (Array.isArray(data)) {
+//             data.forEach(lab => {
+//                 const opt = document.createElement("option");
+//                 opt.value = lab.abbr ?? lab.name ?? lab;
+//                 opt.textContent = lab.name ?? lab;
+//                 labsSelect.appendChild(opt);
+//             });
+//         }
+//     })
+//     .catch(err => {
+//         console.warn("Failed to load labs:", err);
+//         labsSelect.disabled = true;
+//     });
+// }
 
 
 // Submit form
@@ -89,8 +89,8 @@ registerBtn.addEventListener("click", async (event) => {
         console.log([...regData.entries()]);
 
         const csID = new FormData();
-        csID.append("cslab", regData.get("labs"));
-        csID.append("csdept", Number(regData.get("PCN")));
+        // csID.append("cslab", regData.get("labs"));
+        csID.append("pcn", Number(regData.get("PCN")));
         csID.append("file", regData.get("proof"));
 
         // Check if CSDeptID is already registered:
