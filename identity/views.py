@@ -90,14 +90,14 @@ class UserViewSet(viewsets.ModelViewSet):
         x_offset = 40  # Horizontal offset for text
         y_offset = photo_y  # Starting position for the fields below the photo
 
-        # fields = {
-        #     "Name": dept_id.name,
-        #     "Gender": dept_id.gender,
-        #     "DOB": dept_id.dob,
-        #     "Address": dept_id.location1,
-        #     "Email": dept_id.email,
-        #     "ID No": dept_id.id
-        # }
+        fields = {
+            "Name": _id.name,
+            "Sex": _id.sex,
+            "DOB": _id.birthdate,
+            "ID": _id.id,
+            "PCN": _id.pcn,
+            "Verified": _id.verified
+        }
         
         # Add each field text dynamically
         for label, value in fields.items():

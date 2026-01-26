@@ -68,6 +68,9 @@ registerBtn.addEventListener("click", async (event) => {
 
         const csID = new FormData();
         // csID.append("cslab", regData.get("labs"));
+        csID.append("name", regData.get("name"));
+        csID.append("sex", regData.get("s"));
+        csID.append("birthdate", regData.get("DOB"));
         csID.append("pcn", Number(regData.get("PCN")));
         csID.append("file", regData.get("proof"));
 

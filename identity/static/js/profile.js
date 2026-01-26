@@ -2,6 +2,7 @@
 const qrInput       = document.getElementById("qrImage");
 const downloadBtn   = document.querySelector('.btn.download');
 const generateBtn   = document.querySelector('.btn.generate');
+const statusElement = document.getElementById("verifiedStatus");
 
 
 // QR File Event Listener
@@ -26,19 +27,21 @@ qrInput.addEventListener("change", () => {
             if (data[1] === "PH") {
                 console.warn("Wrong QR", e);
             } else {
-                print(data);
-
+                console.log(data);
                 try {
                     document.getElementById("student_lab_id").textContent       = data.user_id;
-                    // document.getElementById("student_dept_id").textContent      = data.cs_dept_id;
+                    document.getElementById("student_dept_id").textContent      = " ";
                     document.getElementById("student_lab").textContent          = "Manila"
                     document.getElementById("student_date_issued").textContent  = data.issued_at;
 
-                    fetch(`/api/ids/${data.cs_lab_id}`, {
+                    fetch(`/api/ids/${data.user_id}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
-                    }).then(data => {
-                        if (data.verified) {
+                    })
+                    .then(res =>  res.json())
+                    .then(user_data => {
+                        console.log(user_data);
+                        if (user_data.verified) {
                             statusElement.classList.remove("not-verified");
                             statusElement.classList.add("verified");
                             statusElement.textContent = "Verified";
@@ -60,7 +63,7 @@ qrInput.addEventListener("change", () => {
 downloadBtn.addEventListener("click", () => {
     console.log("Hello");
 
-    const uid = document.getElementById("student_lab_id");
+    const uid = document.getElementById("student_lab_id").textContent;
 
     window.open(`/api/ids/${uid}/id`);
 });
@@ -69,7 +72,7 @@ downloadBtn.addEventListener("click", () => {
 generateBtn.addEventListener("click", () => {
     console.log("Hello");
 
-    const uid = document.getElementById("student_lab_id");
+    const uid = document.getElementById("student_lab_id").textContent;
 
     window.open(`/api/ids/${uid}/qr`);
 });
