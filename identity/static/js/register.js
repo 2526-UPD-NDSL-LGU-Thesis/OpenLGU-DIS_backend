@@ -94,7 +94,7 @@ registerBtn.addEventListener("click", async (event) => {
         csID.append("file", regData.get("proof"));
 
         // Check if CSDeptID is already registered:
-        const check = await fetch(`/api/deptids/${regData.get("PCN")}`)
+        const check = await fetch(`/api/ids/${regData.get("PCN")}`)
         
         if (!check.ok) {
             console.log("Panic!");

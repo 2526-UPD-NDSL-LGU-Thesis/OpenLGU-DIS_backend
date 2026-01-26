@@ -4,9 +4,7 @@ from . import views as api_views
 from identity import views as identity_views
 
 router = routers.DefaultRouter()
-router.register(r'labs', identity_views.CompSciLabsViewSet)
-router.register(r'ids', identity_views.CompSciLabIDViewSet)
-router.register(r'deptids', identity_views.CompSciDeptIDViewSet)
+router.register(r'ids', identity_views.UserViewSet)
 
 urlpatterns = [  
     path('', include(router.urls)),

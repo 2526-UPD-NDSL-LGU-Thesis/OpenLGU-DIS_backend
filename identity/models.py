@@ -8,7 +8,7 @@ from django.db import models
 # pyright: ignore trailing-whitespace
 
 
-class User:
+class User(models.Model):
     """Class for IDs."""
     id          = models.BigAutoField(primary_key=True)
     pcn         = models.IntegerField(unique=True)
