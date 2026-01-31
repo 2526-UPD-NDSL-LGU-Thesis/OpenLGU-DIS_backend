@@ -2,6 +2,7 @@
 Models for MOSIP Collab user
 """
 
+from datetime import datetime
 from typing import Self, Dict
 
 from mosip_auth_sdk import MOSIPAuthenticator
@@ -9,18 +10,29 @@ from mosip_auth_sdk.models import DemographicsModel
 from app.settings import CONFIG
 
 
+# pylint: disable=trailing-whitespace
+
+
 # Initialize Authenticator.
 authenticator = MOSIPAuthenticator(config=CONFIG)
 
 
+class MOSIPException(Exception):
+    '''MOSIP-related errors.'''
+
+
+class MOSIPParserError(MOSIPException):
+    '''`to_demographic_data` parsing errors during authentication.'''
+
+
 # TODO Support other Demographic Parameters
-def to_demographic_data(**kwargs : Dict[str, str | int]) -> DemographicsModel:
+def to_demographic_data(**kwargs : Dict[str, str | int | datetime]) -> DemographicsModel :
     '''
-    Helper function that converts demographics to type `DemographicsModel` \\
-    for `MOSIPCollabUser` Authentication.
+    A helper function that converts demographic data to `DemographicsModel` \
+    for MOSIP Authentication.
     '''
     if not kwargs:
-        raise ValueError("A demographpic field is required to ")
+        raise ValueError("A demographpic field is required for authentication")
 
     data = {}
 
@@ -29,12 +41,26 @@ def to_demographic_data(**kwargs : Dict[str, str | int]) -> DemographicsModel:
             case "name" | "name_eng" :
                 data["name"] = [{ "language": "eng", "value": value }]
             case "dob" :
-                # TODO Check format for date
-                data["dob"] = value
-            case _:
-                raise ValueError(f"Uncaptured parameter: {key}: {value}")
-                
+                # Check if value is a valid date.
+                if isinstance(value, str):
+                    try:
+                        datetime.strptime(value, r"%Y-%m-%d")
+                        data["dob"] = value
+                        continue
+                    except ValueError as exc:
+                        raise MOSIPParserError(
+                            f"Unsupported date format: {value} must be in YYYY-MM-DD format."
+                        ) from exc
 
+                if isinstance(value, datetime):
+                    data["dob"] = value.strftime(r"%Y-%m-%d")
+                    
+                raise MOSIPParserError(
+                    f"Unsupported date value: {value} must be in YYYY-MM-DD format."
+                )
+            case _:
+                raise MOSIPParserError(f"Unsupported parameter: {key}: {value}")
+            
     return DemographicsModel(**data)
 
 
