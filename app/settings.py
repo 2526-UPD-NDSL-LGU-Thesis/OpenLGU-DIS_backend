@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'identity',
+    'residents',
     'template_builder'
 ]
 
@@ -139,13 +139,13 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'uploads')
 
 # HERE STARTS DYNACONF EXTENSION LOAD (Keep at the very bottom of settings.py)
 # Read more at https://www.dynaconf.com/django/
-from dynaconf import Validator # pylint: disable=wrong-import-position
-import dynaconf # pylint: disable=wrong-import-position
+# from dynaconf import Validator # pylint: disable=wrong-import-position
+# import dynaconf # pylint: disable=wrong-import-position
 
-CONFIG = dynaconf.DjangoDynaconf(
-    settings_files=["config.toml"],
-    environments=False,
-)
+# CONFIG = dynaconf.DjangoDynaconf(
+#     settings_files=["config.toml"],
+#     environments=False,
+# )
 
 # _validators = [
 #     # MOSIP Auth Validators

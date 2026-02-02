@@ -1,7 +1,0 @@
-from django.apps import AppConfig
-
-
-class IdentityConfig(AppConfig):
-    '''App Config for `identity` app.'''
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'identity'

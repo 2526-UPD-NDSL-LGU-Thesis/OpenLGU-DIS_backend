@@ -5,16 +5,18 @@ Models for MOSIP Collab user
 from datetime import datetime
 from typing import Self, Dict
 
+from dynaconf import Dynaconf
 from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
-from app.settings import CONFIG
+# from app.settings import CONFIG
 
 
 # pylint: disable=trailing-whitespace
 
 
 # Initialize Authenticator.
-authenticator = MOSIPAuthenticator(config=CONFIG)
+config = Dynaconf(settings_files=["./config.toml"], environments=False)
+authenticator = MOSIPAuthenticator(config=config)
 
 
 class MOSIPException(Exception):
