@@ -259,3 +259,11 @@ h2 {
 .btn:hover {
     opacity: 0.85;
 }
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}

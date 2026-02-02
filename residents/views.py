@@ -89,8 +89,8 @@ class UserViewSet(viewsets.ModelViewSet):
         y_offset = photo_y  # Starting position for the fields below the photo
 
         fields = {
-            "Name": _id.name,
-            "Sex": _id.sex,
+            # "Name": _id.name,
+            # "Sex": _id.sex,
             "DOB": _id.birthdate,
             "ID": _id.id,
             "PCN": _id.pcn,

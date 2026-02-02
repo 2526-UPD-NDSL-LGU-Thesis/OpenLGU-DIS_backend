@@ -1,343 +1,118 @@
-const qrInput       = document.getElementById("qrImage");
-const labsSelect    = document.getElementById("labs");
-const resultBox    = document.getElementById("result");
-const registerRes  = document.getElementById("labid");
-const registerBtn   = document.getElementById("register");
+const steps = document.querySelectorAll(".step");
+const qrInput = document.getElementById("qrImage");
 
-// QR File Event Listener
 qrInput.addEventListener("change", () => {
     const file = qrInput.files[0];
     if (!file) return;
 
     const reader = new FileReader();
 
-    reader.onloadend = () => {
-        const base64Image = reader.result;
+    reader.onloadend = async () => {
+        try {
+            const base64Image = reader.result;
 
-        fetch("/api/read/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ qr_data: base64Image })
-        })
-        .then(res => res.json())
-        .then(data => {
-            // TODO FIX THIS
-            if (data[1] === "PH") {
-                // Fill in form fields (guard accesses)
-                try {
-                    document.getElementById("d").value    = data[169]['d'];
-                    document.getElementById("i").value    = data[169]['i'];
-                    document.getElementById("s").value    = data[169]['sb']['s'];
-                    document.getElementById("name").value = 
-                        `${data[169]['sb']['fn']} ${data[169]['sb']['mn']} ${data[169]['sb']['ln']}`;
-                    document.getElementById("DOB").value  = data[169]['sb']['DOB'];
-                    document.getElementById("PCN").value  = data[169]['sb']['PCN'];
-                    document.getElementById("POB").value  = data[169]['sb']['POB'];
-                } catch (e) {
-                    console.warn("Unexpected QR data format", e);
-                }
-            } else {
-                console.warn("Wrong QR", e);
+            const res = await fetch("/api/read/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ qr_data: base64Image })
+            });
+
+            if (!res.ok) {
+                throw new Error("QR read failed");
             }
-        })
-        .catch(err => console.error("Error:", err));
+
+            const data = await res.json();
+
+            // ✅ Fill Step 1 fields
+            document.getElementById("PCN").value    = data.pcn;
+            document.getElementById("name").value   = data.name;
+            document.getElementById("DOB").value    = data.dob;
+
+        } catch (err) {
+            console.error("QR processing error:", err);
+            alert("Failed to process QR code");
+        }
     };
 
     reader.readAsDataURL(file);
 });
 
 
-// Submit form
-registerBtn.addEventListener("click", async (event) => {
-    event.preventDefault();
+function showStep(stepNumber) {
+    steps.forEach((step, index) => {
+        step.classList.toggle("active", index === stepNumber - 1);
+    });
+}
 
-    const regForm = document.getElementById("registrationForm");
-    if (!regForm) {
-        console.error("registrationForm not found");
-        registerBtn.disabled = false;
-        registerBtn.textContent = "Register";
+document.getElementById("verifyStep1").addEventListener("click", async () => {
+    const btn = document.getElementById("verifyStep1");
+
+    const PCN  = document.getElementById("PCN").value;
+    const name = document.getElementById("name").value;
+    const DOB  = document.getElementById("DOB").value;
+
+    if (!PCN || !name || !DOB) {
+        alert("Please complete all fields");
         return;
     }
 
-    registerBtn.disabled = true;
-    registerBtn.textContent = "Registering...";
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = "Verifying...";
 
     try {
-        const regData = new FormData(regForm);
-        console.log([...regData.entries()]);
-
-        const csID = new FormData();
-        // csID.append("cslab", regData.get("labs"));
-        csID.append("name", regData.get("name"));
-        csID.append("sex", regData.get("s"));
-        csID.append("birthdate", regData.get("DOB"));
-        csID.append("pcn", Number(regData.get("PCN")));
-        csID.append("file", regData.get("proof"));
-
-        // Check if CSDeptID is already registered:
-        // const check = await fetch(`/api/ids/${regData.get("PCN")}`)
-        
-        // if (!check.ok) {
-            // console.log("Panic!");
-            // return;
-        // }
-
-        const resp = await fetch("/api/ids/", {
+        const res = await fetch("/api/verify/", {
             method: "POST",
-            body: csID,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ PCN, name, DOB })
         });
 
-        const body = await resp.json();
-
-        console.log(body);
-
-        if (resp.ok) {
-            resultBox.style.backgroundColor = "green";
-            resultBox.style.color = "white";
-            resultBox.textContent = `Registered successfully (id: ${body.id ?? body.cs_lab_id ?? "created"})`;
-            // optionally disable register after success
-            registerBtn.disabled = true;
-
-            // show the created id in the labid div
-            registerRes.textContent = `Assigned Lab ID: ${body.id ?? body.cs_lab_id ?? "created"}`;
-
-            window.open(`/api/ids/${body.id}/qr`)
-        } else {
-            resultBox.style.backgroundColor = "red";
-            resultBox.style.color = "white";
-            resultBox.textContent = body[0].message ?? JSON.stringify(body[0]);
-            registerBtn.disabled = false;
+        if (!res.ok) {
+            throw new Error("Authentication failed");
         }
+
+        const data = await res.json();
+        console.log("Verify response:", data);
+
+        showStep(2); // ✅ THIS WILL NOW WORK
+        
+        const img = document.getElementById("facePreview");
+        img.src = "data:image/png;base64," + data.face;
+        img.style.display = "block";
+        console.log(img.src);
+
     } catch (err) {
-        console.error("Registration error:", err);
-        resultBox.style.backgroundColor = "red";
-        resultBox.style.color = "white";
-        resultBox.textContent = "Registration failed.";
-        registerBtn.disabled = false;
-    } finally {
-        registerBtn.textContent = "Register";
+        console.error(err);
+        alert("Failed to verify PCN.");
+
+        btn.disabled = false;
+        btn.textContent = originalText;
     }
 });
 
-// export function initRegisterPage() {
-//     console.log("Profile page initialized.");
+// document.getElementById("confirmFace").disabled = true;
 
-//     const qrInput      = document.getElementById("qrImage");
-//     const form         = document.getElementById("sampleForm");
-//     const labForm      = document.getElementById("labForm")
-//     const verifyButton = document.getElementById("verify");
-//     const resultBox    = document.getElementById("result");
-//     const labsSelect   = document.getElementById("labs");
-//     const registerBtn  = document.getElementById("register");
-//     const registerRes  = document.getElementById("labid");
+// const img = document.getElementById("facePreview");
+// img.onload = () => {
+//     document.getElementById("confirmFace").disabled = false;
+// };
 
-//     if (!qrInput || !form) {
-//         console.warn("Scan page elements not found.");
-//         return;
-//     }
+document.getElementById("confirmFace").addEventListener("click", () => {
 
-//     // Hide resultBox on load
-//     if (resultBox) {
-//         resultBox.style.display = "none";
-//     }
+    showStep(3);
+});
 
-//     // Populate labs on init
-//     if (labsSelect) {
-//         fetch("http://LOCALHOST:5000/api/labs", { method: "GET" })
-//             .then(res => res.json())
-//             .then(data => {
-//                 labsSelect.innerHTML = "";
-//                 if (Array.isArray(data)) {
-//                     data.forEach(lab => {
-//                         const opt = document.createElement("option");
-//                         opt.value = lab.id ?? lab.name ?? lab;
-//                         opt.textContent = lab.name ?? lab;
-//                         labsSelect.appendChild(opt);
-//                     });
-//                 }
-//                 // keep select disabled until verification/step-two
-//                 // labsSelect.disabled = true;
-//             })
-//             .catch(err => {
-//                 console.warn("Failed to load labs:", err);
-//                 labsSelect.disabled = true;
-//             });
-//     }
+document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-//     // -----------------------------------------------
-//     // Handle Image Upload
-//     // -----------------------------------------------
-//     function handleImageUpload(event) {
-//         const file = event.target.files[0];
-//         if (!file) return;
+    const formData = new FormData(e.target);
 
-//         const reader = new FileReader();
+    const response = await fetch("/api/ids/", {
+        method: "POST",
+        body: formData
+    });
 
-//         reader.onloadend = () => {
-//             const base64Image = reader.result;
+    const data = await response.json();
 
-//             fetch("http://LOCALHOST:5000/api/read", {
-//                 method: "POST",
-//                 headers: { "Content-Type": "application/json" },
-//                 body: JSON.stringify({ qr_data: base64Image })
-//             })
-//             .then(res => res.json())
-//             .then(data => {
-//                 if (data[1] === "PH") {
-//                     // Fill in form fields (guard accesses)
-//                     try {
-//                         document.getElementById("d").value    = data[169]['d'];
-//                         document.getElementById("i").value    = data[169]['i'];
-//                         document.getElementById("s").value    = data[169]['sb']['s'];
-//                         document.getElementById("name").value = 
-//                             `${data[169]['sb']['fn']} ${data[169]['sb']['mn']} ${data[169]['sb']['ln']}`;
-//                         document.getElementById("DOB").value  = data[169]['sb']['DOB'];
-//                         document.getElementById("PCN").value  = data[169]['sb']['PCN'];
-//                         document.getElementById("POB").value  = data[169]['sb']['POB'];
-//                     } catch (e) {
-//                         console.warn("Unexpected QR data format", e);
-//                     }
-
-//                     // show form now that data is available
-//                     form.style.display = "block";
-
-//                     // // Immediately submit the form (invokes the submit handler below)
-//                     // if (typeof form.requestSubmit === "function") {
-//                     //     form.requestSubmit();
-//                     // } else {
-//                     //     form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
-//                     // }
-//                 } else {
-//                     console.log(data)
-//                     try {
-//                         document.getElementById("student_lab_id").value       = data.cs_lab_id;
-//                         document.getElementById("student_dept_id").value      = data.cs_dept_id;
-//                         document.getElementById("student_lab").value          = data.cs_lab;
-//                         document.getElementById("student_date_issued").value  = data.issued_at;
-
-//                     } catch (e) {
-//                         console.warn("Unexpected QR data format", e);
-//                     }
-                    
-//                     labForm.style.display = "block";
-//                 }
-//             })
-//             .catch(err => console.error("Error:", err));
-//         };
-
-//         reader.readAsDataURL(file);
-//     }
-
-//     qrInput.addEventListener("change", handleImageUpload);
-
-//     // -----------------------------------------------
-//     // Handle Verification Submission
-//     // -----------------------------------------------
-//     // form.addEventListener("submit", (event) => {
-//     //     event.preventDefault();
-
-//     //     if (verifyButton) {
-//     //         verifyButton.disabled = true;
-//     //         verifyButton.textContent = "Submitting...";
-//     //     }
-
-//     //     const payload = {
-//     //         PCN:  document.getElementById("PCN").value,
-//     //         name: document.getElementById("name").value,
-//     //         DOB:  document.getElementById("DOB").value
-//     //     };
-
-//     //     // fetch("http://LOCALHOST:5000/api/verify", {
-//     //     fetch("http://LOCALHOST:5000/api/verify", {
-//     //         method: "POST",
-//     //         headers: { "Content-Type": "application/json" },
-//     //         body: JSON.stringify(payload)
-//     //     })
-//     //     .then(res => res.json())
-//     //     .then(data => {
-//     //         if (data.status === true) {
-//     //             resultBox.style.backgroundColor = "green";
-//     //             resultBox.style.color = "white";
-//     //             resultBox.textContent = "PCN Verified Successfully!";
-
-//     //             // Show document proof upload step
-//     //             document.getElementById("doc-proof-section").style.display = "block";
-                
-//     //         } else {
-//     //             resultBox.style.backgroundColor = "red";
-//     //             resultBox.style.color = "white";
-//     //             resultBox.textContent = "Invalid Information! Please try again.";
-//     //         }
-
-//     //         if (labsSelect) labsSelect.disabled = false;
-//     //         if (registerBtn) registerBtn.disabled = false;
-
-//     //         if (verifyButton) {
-//     //             verifyButton.disabled = false;
-//     //             verifyButton.textContent = "Verify";
-//     //         }
-//     //     })
-//     //     .catch(err => {
-//     //         console.error("Error:", err);
-//     //         if (verifyButton) {
-//     //             verifyButton.disabled = false;
-//     //             verifyButton.textContent = "Verify";
-//     //         }
-//     //     });
-//     // });
-
-//     // -----------------------------------------------
-//     // Handle Register button: POST to /api/ids
-//     // -----------------------------------------------
-//     if (registerBtn) {
-//         // ensure register button stays disabled until step-two is shown
-//         // registerBtn.disabled = true;
-
-//         registerBtn.addEventListener("click", async (e) => {
-//             e.preventDefault();
-
-//             const selectedLab = labsSelect ? labsSelect.selectedIndex : -1;
-//             const pcn = document.getElementById("PCN").value;
-
-//             const form = document.getElementById("sampleForm")
-
-//             registerBtn.disabled = true;
-//             registerBtn.textContent = "Registering...";
-
-//             try {
-//                 const formData = new FormData(form);
-                
-//                 const resp = await fetch("/api/ids", {
-//                     method: "POST",
-//                     body: formData,
-//                 });
-
-//                 const body = await resp.json();   
-
-//                 if (resp.ok) {
-//                     resultBox.style.backgroundColor = "green";
-//                     resultBox.style.color = "white";
-//                     resultBox.textContent = `Registered successfully (id: ${body[0].id ?? body[0].cs_lab_id ?? "created"})`;
-//                     // optionally disable register after success
-//                     registerBtn.disabled = true;
-
-//                     // show the created id in the labid div
-//                     registerRes.textContent = `Assigned Lab ID: ${body[0].id ?? body[0].cs_lab_id ?? "created"}`;
-//                 } else {
-//                     resultBox.style.backgroundColor = "red";
-//                     resultBox.style.color = "white";
-//                     resultBox.textContent = body[0].message ?? JSON.stringify(body[0]);
-//                     registerBtn.disabled = false;
-//                 }
-//             } catch (err) {
-//                 console.error("Registration error:", err);
-//                 resultBox.style.backgroundColor = "red";
-//                 resultBox.style.color = "white";
-//                 resultBox.textContent = "Registration failed.";
-//                 registerBtn.disabled = false;
-//             } finally {
-//                 registerBtn.textContent = "Register";
-//             }
-//         });
-//     }
-// }
+    alert("Registration successful!");
+});

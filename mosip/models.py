@@ -10,6 +10,8 @@ from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
 # from app.settings import CONFIG
 
+import base64
+
 
 # pylint: disable=trailing-whitespace
 
@@ -47,7 +49,7 @@ def to_demographic_data(**kwargs : Dict[str, str | int | datetime]) -> Demograph
                 if isinstance(value, str):
                     try:
                         datetime.strptime(value, r"%Y-%m-%d")
-                        data["dob"] = value
+                        # data["dob"] = value
                         continue
                     except ValueError as exc:
                         raise MOSIPParserError(
@@ -55,13 +57,15 @@ def to_demographic_data(**kwargs : Dict[str, str | int | datetime]) -> Demograph
                         ) from exc
 
                 if isinstance(value, datetime):
-                    data["dob"] = value.strftime(r"%Y-%m-%d")
-                    
+                    # data["dob"] = value.strftime(r"%Y-%m-%d")
+                    pass
                 raise MOSIPParserError(
-                    f"Unsupported date value: {value} must be in YYYY-MM-DD format."
+                    f"Unsupported date value: {value} must be in %Y-%m-%d format."
                 )
             case _:
                 raise MOSIPParserError(f"Unsupported parameter: {key}: {value}")
+            
+    print(data)
             
     return DemographicsModel(**data)
 
@@ -91,7 +95,7 @@ class MOSIPCollabUser:
     email       : str
         User's email address.
     face        : bytes
-        User's face image in bytes form.
+        User's face image in base64 bytes form.
     
     
     For more information regarding the SDK, read the \
@@ -121,7 +125,8 @@ class MOSIPCollabUser:
 
         if response_body["errors"]:
             exceptions = [
-                Exception(f"{error['errorMessage']}: {error['actionMessage']}")
+                # Exception(f"{error['errorMessage']}: {error['actionMessage']}")
+                Exception(f"{error['errorMessage']}")
                 for error in response_body["errors"]
             ]
 
@@ -148,5 +153,10 @@ class MOSIPCollabUser:
                     case _:
                         raise Warning(f"Unsupported parameter: {key_var}.")
             except ValueError:
-                setattr(mosip_user, key, value)
+                if key == "face":
+                    b64image = base64.b64decode(value)[73:]
+                    b64string = base64.b64encode(b64image).decode('utf-8')
+                    setattr(mosip_user, key, b64string)
+                else:
+                    setattr(mosip_user, key, value)
         return mosip_user

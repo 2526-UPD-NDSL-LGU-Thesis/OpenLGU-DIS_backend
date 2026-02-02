@@ -8,13 +8,20 @@ from django.db import models
 # pyright: ignore trailing-whitespace
 
 
+class Service(models.Model):
+    """Class for Services offered by LGU."""
+    id                  = models.BigAutoField(primary_key=True)
+    NameError           = models.CharField(max_length=60)
+
+
 class User(models.Model):
     """Class for IDs."""
-    id          = models.BigAutoField(primary_key=True)
-    pcn         = models.IntegerField(unique=True)
-    issued_at   = models.DateField(auto_now_add=True)
-    file        = models.FileField(upload_to="uploads/")
-    verified    = models.BooleanField(default=False)
+    id                  = models.BigAutoField(primary_key=True)
+    pcn                 = models.IntegerField(unique=True)
+    issued_at           = models.DateField(auto_now_add=True)
+    proof_of_residence  = models.FileField(upload_to="uploads/")
+    verified            = models.BooleanField(default=False)
+    services            = models.ManyToManyField(Service)
 
 from PIL import Image, ImageDraw, ImageFont
 

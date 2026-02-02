@@ -8,11 +8,12 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpRequest, JsonResponse
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from PIL import Image
 from pyzbar.pyzbar import decode
+from mosip.models import MOSIPCollabUser
 
 import cbor2
 import base45
@@ -20,7 +21,7 @@ import base45
 # Create your views here.
 @csrf_exempt
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def read(request : HttpRequest) -> JsonResponse :
     '''Read QR image.'''
@@ -55,3 +56,18 @@ def read(request : HttpRequest) -> JsonResponse :
             return JsonResponse(json.loads(decoded_text))
         
     return JsonResponse({ "error": "Upload the QR image using POST." }, status=400)
+
+@api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def verify(request : HttpRequest) -> JsonResponse :
+    '''Verify User PCN.'''
+    name = request.data.get("name")
+    dob  = request.data.get("DOB")
+    pcn  = request.data.get("PCN")
+
+    try:
+        user = MOSIPCollabUser.verify(id_=pcn, name_eng=name, dob=dob)
+        return JsonResponse(user.__dict__, status=200)
+    except:
+        return JsonResponse({ "Authentication failed." }, status=400)

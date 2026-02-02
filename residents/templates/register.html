@@ -16,51 +16,55 @@
         <a href="/admin">(ADMIN)</a>
     </nav>
 
-    <div id="file-container">
-        <p>Please upload a QR image to view the ID details.</p>
-        <!-- File input to upload QR code image; selecting a file will reveal the details form -->
-        <input type="file" id="qrImage" accept="image/*" />
-    </div>
-
-    <div id="result"></div>
-
     <!-- Form is hidden initially; will be shown after a QR image is selected -->
     <form id="registrationForm" enctype="multipart/form-data">
-        <label for="d">Date Issued:</label>
-        <input type="date" name="d" id="d" />
 
-        <label for="i">Issuer:</label>
-        <input type="text" name="i" id="i" />
+        <!-- STEP 1 -->
+        <section class="step active" id="step-1">
+            <h2>Step 1: Identity Details</h2>
 
-        <label for="PCN">PCN:</label>
-        <input type="text" name="PCN" id="PCN" />
+            <label>Upload QR (optional)</label>
+            <input type="file" id="qrImage" accept="image/*">
 
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" />
+            <label>PCN</label>
+            <input type="text" name="PCN" id="PCN" required>
 
-        <label for="s">Sex:</label>
-        <input type="text" name="s" id="s" />
+            <label>Name</label>
+            <input type="text" name="name" id="name" required>
 
-        <label for="DOB">Birthdate:</label>
-        <input type="date" name="DOB" id="DOB" />
+            <label>Date of Birth</label>
+            <input type="text" name="DOB" id="DOB" required>
+            <!-- <input type="date" name="DOB" id="DOB" required> -->
 
-        <label for="POB">Birthplace:</label>
-        <input type="text" name="POB" id="POB" />
+            <button type="button" id="verifyStep1">Verify</button>
+        </section>
 
-        <!-- TODO Verify Button (or Automatic MOSIP Verification) -->
+        <!-- STEP 2 -->
+        <section class="step" id="step-2">
+            <h2>Step 2: Review Face Image</h2>
 
-        <label for="docProof">Upload Proof of Document (Required):</label>
-        <input 
-            type="file" 
-            id="docProof" 
-            accept="image/*,.pdf" 
-            required
-            name="proof"
-        />
-        <small>Please upload a valid ID, certificate, or supporting document.</small>
+            <p>Please confirm that the image below matches the person.</p>
 
-        <button type="button" id="register">Register</button>
+            <img
+                id="facePreview"
+                alt="Face Image"
+                style="max-width:220px; border:1px solid #ccc; display:none"
+            >
+
+            <button type="button" id="confirmFace">Looks Correct</button>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="step" id="step-3">
+            <h2>Step 3: Upload Proof</h2>
+
+            <input type="file" name="proof" required accept="image/*,.pdf">
+
+            <button type="submit" id="register">Register</button>
+        </section>
+
     </form>
+
 
 
     <div id="labid"></div>
