@@ -8,9 +8,10 @@ from typing import Self, Dict
 from dynaconf import Dynaconf
 from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
-# from app.settings import CONFIG
 
 import base64
+import numpy as np
+import cv2
 
 
 # pylint: disable=trailing-whitespace
@@ -42,30 +43,41 @@ def to_demographic_data(**kwargs : Dict[str, str | int | datetime]) -> Demograph
 
     for key, value in kwargs.items():
         match key:
+            # Automatically set name language to English.
+            # TODO create config file for default language code (?)
             case "name" | "name_eng" :
                 data["name"] = [{ "language": "eng", "value": value }]
+
+            # Check if value is a valid date and follows the correct format %Y/%m/%d.
+            # If it does not follow the same format, (e.g. using "-" instead of "/"),
+            # correct it so that authentication does not fail.
+            # `DemographicsModel` will accept this but would raise an error during
+            # authentication.
             case "dob" :
-                # Check if value is a valid date.
                 if isinstance(value, str):
                     try:
+                        datetime.strptime(value, r"%Y/%m/%d")
+                        data["dob"] = value
+                        continue
+                    except ValueError:
                         datetime.strptime(value, r"%Y-%m-%d")
-                        # data["dob"] = value
+                        data["dob"] = value.replace("-", "/")
                         continue
                     except ValueError as exc:
                         raise MOSIPParserError(
-                            f"Unsupported date format: {value} must be in YYYY-MM-DD format."
+                            f"Unsupported date format: {value} must be in %Y/%m/%d format."
                         ) from exc
 
                 if isinstance(value, datetime):
-                    # data["dob"] = value.strftime(r"%Y-%m-%d")
-                    pass
+                    data["dob"] = value.strftime(r"%Y/%m/%d")
+                    continue
+                
                 raise MOSIPParserError(
-                    f"Unsupported date value: {value} must be in %Y-%m-%d format."
+                    f"Unsupported date value: {value} must be in %Y/%m/%d format."
                 )
+            
             case _:
                 raise MOSIPParserError(f"Unsupported parameter: {key}: {value}")
-            
-    print(data)
             
     return DemographicsModel(**data)
 
@@ -111,17 +123,17 @@ class MOSIPCollabUser:
         self.email      : str
         self.face       : bytes
 
-        self.response_body : dict
-
     @classmethod
-    def verify(cls, id_ : int, **data) -> Self :
+    def verify_kyc(cls, id_ : int, **data) -> Self :
         """Verifies if given details is a MOSIP Collab user."""
-        response_body = authenticator.kyc(
+        # TODO Investigate different types of `individual_id_type`
+        response = authenticator.kyc(
             individual_id=id_,
-            individual_id_type="UIN",                       # Fixed id_type for now
+            individual_id_type="UIN",
             demographic_data=to_demographic_data(**data),
             consent=True
-        ).json()
+        )
+        response_body = response.json()
 
         if response_body["errors"]:
             exceptions = [
@@ -130,16 +142,22 @@ class MOSIPCollabUser:
                 for error in response_body["errors"]
             ]
 
-            raise ExceptionGroup("Error encountered during MOSIP ID Verification.",
+            raise ExceptionGroup("Error encountered during MOSIP Authentication.",
                 exceptions
             )
         mosip_user = cls()
         mosip_user.uid = id_
 
-        _decrypted_response = authenticator.decrypt_response(response_body=response_body)
-        mosip_user.response_body = _decrypted_response
+        decrypted_response = authenticator.decrypt_response(response_body)
 
-        for key, value in _decrypted_response.items():
+        face_bytes = base64.b64decode(decrypted_response["face"])
+
+        face_as_np = np.frombuffer(face_bytes[73:], dtype=np.uint8)
+        img = cv2.imdecode(face_as_np, cv2.IMREAD_COLOR)
+
+        cv2.imshow("test", img)
+
+        for key, value in decrypted_response.items():
             try:
                 key_var, key_lang = key.split("_")
 
@@ -153,10 +171,5 @@ class MOSIPCollabUser:
                     case _:
                         raise Warning(f"Unsupported parameter: {key_var}.")
             except ValueError:
-                if key == "face":
-                    b64image = base64.b64decode(value)[73:]
-                    b64string = base64.b64encode(b64image).decode('utf-8')
-                    setattr(mosip_user, key, b64string)
-                else:
-                    setattr(mosip_user, key, value)
+                setattr(mosip_user, key, value)
         return mosip_user
