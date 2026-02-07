@@ -77,7 +77,7 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
         showStep(2); // ✅ THIS WILL NOW WORK
         
         const img = document.getElementById("facePreview");
-        img.src = "data:image/png;base64," + data.face;
+        img.src = "data:image/jpg;base64," + data.face;
         img.style.display = "block";
         console.log(img.src);
 

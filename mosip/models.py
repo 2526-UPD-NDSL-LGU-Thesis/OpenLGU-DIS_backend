@@ -3,7 +3,7 @@ Models for MOSIP Collab user
 """
 
 from datetime import datetime
-from typing import Self, Dict
+from typing import Self, Dict, List
 
 from dynaconf import Dynaconf
 from mosip_auth_sdk import MOSIPAuthenticator
@@ -31,11 +31,15 @@ class MOSIPParserError(MOSIPException):
 
 
 # TODO Support other Demographic Parameters
-def to_demographic_data(**kwargs : Dict[str, str | int | datetime]) -> DemographicsModel :
+def to_demographic_data(**kwargs) -> DemographicsModel :
     '''
     A helper function that converts demographic data to `DemographicsModel` \
     for MOSIP Authentication.
     '''
+    def to_identity_info(value : str, language : str = "eng") -> List[Dict[str, str]] :
+        '''A helper function that converts value to `IdentityInfo`.'''
+        return [{ "language": language, "value": value}]
+    
     if not kwargs:
         raise ValueError("A demographpic field is required for authentication")
 
@@ -46,27 +50,27 @@ def to_demographic_data(**kwargs : Dict[str, str | int | datetime]) -> Demograph
             # Automatically set name language to English.
             # TODO create config file for default language code (?)
             case "name" | "name_eng" :
-                data["name"] = [{ "language": "eng", "value": value }]
+                data["name"] = to_identity_info(value)
 
             # Check if value is a valid date and follows the correct format %Y/%m/%d.
             # If it does not follow the same format, (e.g. using "-" instead of "/"),
             # correct it so that authentication does not fail.
-            # `DemographicsModel` will accept this but would raise an error during
+            # `DemographicsModel` will accept this but this will raise an error during
             # authentication.
             case "dob" :
                 if isinstance(value, str):
                     try:
                         datetime.strptime(value, r"%Y/%m/%d")
                         data["dob"] = value
-                        continue
                     except ValueError:
                         datetime.strptime(value, r"%Y-%m-%d")
                         data["dob"] = value.replace("-", "/")
-                        continue
-                    except ValueError as exc:
+                    except Exception as exc:
                         raise MOSIPParserError(
                             f"Unsupported date format: {value} must be in %Y/%m/%d format."
                         ) from exc
+                    finally:
+                        continue
 
                 if isinstance(value, datetime):
                     data["dob"] = value.strftime(r"%Y/%m/%d")
@@ -150,13 +154,6 @@ class MOSIPCollabUser:
 
         decrypted_response = authenticator.decrypt_response(response_body)
 
-        face_bytes = base64.b64decode(decrypted_response["face"])
-
-        face_as_np = np.frombuffer(face_bytes[73:], dtype=np.uint8)
-        img = cv2.imdecode(face_as_np, cv2.IMREAD_COLOR)
-
-        cv2.imshow("test", img)
-
         for key, value in decrypted_response.items():
             try:
                 key_var, key_lang = key.split("_")
@@ -171,5 +168,25 @@ class MOSIPCollabUser:
                     case _:
                         raise Warning(f"Unsupported parameter: {key_var}.")
             except ValueError:
-                setattr(mosip_user, key, value)
+                if key == "face":
+                    face_bytes = base64.b64decode(decrypted_response["face"])
+                    face_as_np = np.frombuffer(face_bytes[73:], dtype=np.uint8)
+                    img = cv2.imdecode(face_as_np, cv2.IMREAD_COLOR)
+                    _, buffer = cv2.imencode(".jpg", img)
+                    image_b64 = base64.b64encode(buffer).decode("utf-8")
+
+                    setattr(mosip_user, key, image_b64)
+                else:
+                    setattr(mosip_user, key, value)
         return mosip_user
+
+    @property
+    def info(self) -> Dict[str, str | int] :
+        '''
+        User's demographic information without the face data.
+        '''
+
+        return {
+            key: value for key, value in self.__dict__.items()
+            if key != "face"
+        }
