@@ -31,6 +31,8 @@ class MOSIPParserError(MOSIPException):
 
 
 # TODO Support other Demographic Parameters
+# TODO Support other languages
+# Do we support other languages?
 def to_demographic_data(**kwargs) -> DemographicsModel :
     '''
     A helper function that converts demographic data to `DemographicsModel` \
@@ -47,12 +49,16 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
 
     for key, value in kwargs.items():
         match key:
-            # Automatically set name language to English.
-            # TODO create config file for default language code (?)
-            case "name" | "name_eng" :
-                data["name"] = to_identity_info(value)
-
-            # Check if value is a valid date and follows the correct format %Y/%m/%d.
+            # Check if age is a valid integer.
+            case "age" :
+                try:
+                    data["age"] = str(int(value))
+                except ValueError as exc:
+                    raise MOSIPParserError(
+                        f"Invalid data type: Age should be an integer, not {type(value)}."
+                    ) from exc
+            
+            # Check if dob is a valid date and follows the correct format %Y/%m/%d.
             # If it does not follow the same format, (e.g. using "-" instead of "/"),
             # correct it so that authentication does not fail.
             # `DemographicsModel` will accept this but this will raise an error during
@@ -80,7 +86,55 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
                     f"Unsupported date value: {value} must be in %Y/%m/%d format."
                 )
             
-            case _:
+            # If no language is set, name is accepted as English.
+            # TODO create config file for default language code (?)
+            case "name" :
+                data["name"] = to_identity_info(value)
+
+            # case "dobType" :
+
+            case "gender" :
+                data["gender"] = to_identity_info(value)
+            
+            # TODO Data validation for phone number
+            case "phoneNumber" :
+                # Check if number is type 09XX XXX XXXX
+                if value.isdigit() and len(value) == 11:
+                    # Check if valid SIM Carrier
+                    pass
+                
+                # Check if number is type +63 9xx xxx xxxx
+                elif value.startswith("+63") and len(value) == 13:
+                    # Check if valid SIM Carrier
+                    pass
+                
+                else:
+                    raise MOSIPParserError(
+                        f"Invalid Phone Number: {value} is invalid or not supported."
+                    )
+            
+                data["phoneNumber"] = value
+
+
+            # case "emailID" :
+
+            # case "addressLine1" :
+            
+            # case "addressLine2" :
+
+            # case "addressLine3" :
+
+            # case "location1" :
+
+            # case "location2" :
+
+            # case "location3" :
+
+            # case "postalCode" :
+
+            # case "fullAddress" :
+
+            case _ :
                 raise MOSIPParserError(f"Unsupported parameter: {key}: {value}")
             
     return DemographicsModel(**data)
