@@ -90,16 +90,21 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
     }
 });
 
-// document.getElementById("confirmFace").disabled = true;
+document.getElementById("confirmFace").disabled = true;
 
-// const img = document.getElementById("facePreview");
-// img.onload = () => {
-//     document.getElementById("confirmFace").disabled = false;
-// };
+const img = document.getElementById("facePreview");
+img.onload = () => {
+    document.getElementById("confirmFace").disabled = false;
+};
 
 document.getElementById("confirmFace").addEventListener("click", () => {
-
     showStep(3);
+});
+
+document.getElementById("wrongFace").addEventListener("click", () => {
+    alert("Please re-upload the QR code or verify your details.");
+
+    showStep(1);
 });
 
 document.getElementById("registrationForm").addEventListener("submit", async (e) => {

@@ -267,3 +267,25 @@ h2 {
 .step.active {
     display: block;
 }
+
+.center-image {
+    display: block;        /* image becomes a block element */
+    margin: 16px auto;     /* auto left/right centers it */
+    max-width: 800px;
+    border: 1px solid #ccc;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+button.danger {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+button.danger:hover {
+    background-color: #c9302c;
+}
