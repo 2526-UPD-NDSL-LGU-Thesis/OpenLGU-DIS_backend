@@ -29,7 +29,7 @@ class ToDemographicTestCase(TestCase):      # pylint: disable=missing-class-docs
         )
 
         self.assertEqual(
-            to_demographic_data(name_eng=sample_data["name"][0]["value"]),
+            to_demographic_data(name=sample_data["name"][0]["value"]),
             DemographicsModel(name=sample_data["name"]),
             "DemographicsModel Test Name (English)"
         )
