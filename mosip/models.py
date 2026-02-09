@@ -2,16 +2,16 @@
 Models for MOSIP Collab user
 """
 
+import base64
 from datetime import datetime
 from typing import Self, Dict, List
 
 from dynaconf import Dynaconf
 from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
-
-import base64
 import numpy as np
 import cv2
+import re
 
 
 # pylint: disable=trailing-whitespace
@@ -88,16 +88,33 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
             
             # If no language is set, name is accepted as English.
             # TODO create config file for default language code (?)
-            case "name" :
-                data["name"] = to_identity_info(value)
+            # TODO catch error of invalid language code
+            case _ if key.startswith("name") :
+                try:
+                    _, language = key.strip("_")
+                    data["name"] = to_identity_info(value, language=language)
+                # except
+                except ValueError:
+                    data["name"] = to_identity_info(value)
 
-            # case "dobType" :
+            case _ if key.startswith("dob_type") :
+                try:
+                    _, _, language = key.strip("_")
+                    data["dob_type"] = to_identity_info(value, language=language)
+                # except
+                except ValueError:
+                    data["dob_type"] = to_identity_info(value)
 
-            case "gender" :
-                data["gender"] = to_identity_info(value)
+            case _ if key.startswith("gender") :
+                try:
+                    _, language = key.strip("_")
+                    data["gender"] = to_identity_info(value, language=language)
+                # except
+                except ValueError:
+                    data["gender"] = to_identity_info(value)
             
             # TODO Data validation for phone number
-            case "phoneNumber" :
+            case "phone_number" :
                 # Check if number is type 09XX XXX XXXX
                 if value.isdigit() and len(value) == 11:
                     # Check if valid SIM Carrier
@@ -113,26 +130,76 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
                         f"Invalid Phone Number: {value} is invalid or not supported."
                     )
             
-                data["phoneNumber"] = value
+                data["phone_number"] = value
 
 
-            # case "emailID" :
+            # TODO Email verification
+            case "email_id" :
+                data["email_id"] = value.lower()
 
-            # case "addressLine1" :
+            case _ if key.startswith("addressLine1") :
+                try:
+                    _, _, language = key.strip("_")
+                    data["address_line1"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["address_line1"] = to_identity_info(value)
             
-            # case "addressLine2" :
+            case _ if key.startswith("addressLine2") :
+                try:
+                    _, _, language = key.strip("_")
+                    data["address_line2"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["address_line2"] = to_identity_info(value)
 
-            # case "addressLine3" :
+            case _ if key.startswith("addressLine3") :
+                try:
+                    _, _, language = key.strip("_")
+                    data["address_line3"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["address_line3"] = to_identity_info(value)
 
-            # case "location1" :
+            case _ if key.startswith("location1") :
+                try:
+                    _, language = key.strip("_")
+                    data["location1"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["location1"] = to_identity_info(value)
 
-            # case "location2" :
+            case _ if key.startswith("location2") :
+                try:
+                    _, language = key.strip("_")
+                    data["location2"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["location2"] = to_identity_info(value)
 
-            # case "location3" :
+            case _ if key.startswith("location3") :
+                try:
+                    _, language = key.strip("_")
+                    data["location3"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["location3"] = to_identity_info(value)
 
-            # case "postalCode" :
+            case "postal_code" :
+                if value.isdigit() and len(value) == 4:
+                    data["postal_code"] = value
+                else:
+                    raise MOSIPParserError(
+                        f"Invalid Postal Code: {value} must be a 4-digit code."
+                    )
 
-            # case "fullAddress" :
+            case _ if key.startswith("full_address") :
+                try:
+                    _, _, language = key.strip("_")
+                    data["full_address"] = to_identity_info(value, language=language)
+                # except
+                except ValueError :
+                    data["full_address"] = to_identity_info(value)
 
             case _ :
                 raise MOSIPParserError(f"Unsupported parameter: {key}: {value}")
