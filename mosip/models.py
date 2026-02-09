@@ -40,7 +40,7 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
     '''
     def to_identity_info(value : str, language : str = "eng") -> List[Dict[str, str]] :
         '''A helper function that converts value to `IdentityInfo`.'''
-        return [{ "language": language, "value": value}]
+        return [{ "language": language, "value": value }]
     
     # How many KYC points are we going to implement?
     if not kwargs:
