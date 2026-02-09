@@ -42,6 +42,7 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
         '''A helper function that converts value to `IdentityInfo`.'''
         return [{ "language": language, "value": value}]
     
+    # How many KYC points are we going to implement?
     if not kwargs:
         raise ValueError("A demographpic field is required for authentication")
 
