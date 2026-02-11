@@ -217,6 +217,7 @@ def decode_face(face_b64 : str) -> str :
     _, buffer = cv2.imencode(".jpg", img)
     return base64.b64encode(buffer).decode("utf-8")
 
+
 class MOSIPCollabUser:
     """
     User class that handles the response body of MOSIP Authentication SDK's KYC Auth. \
@@ -316,6 +317,7 @@ class MOSIPCollabUser:
     @classmethod
     def verify_otp(cls, pcn : int, txn_id : str, otp : str) -> Self :
         """Verifies if given details is a MOSIP Collab user using the OTP Authentication."""
+        # OTP is 111111
         response = authenticator.auth(
             individual_id=pcn,
             individual_id_type="UIN",
