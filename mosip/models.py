@@ -9,9 +9,10 @@ from typing import Self, Dict, List
 from dynaconf import Dynaconf
 from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
+from requests.models import Response
 import numpy as np
 import cv2
-import re
+
 
 
 # pylint: disable=trailing-whitespace
@@ -208,6 +209,14 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
     return DemographicsModel(**data)
 
 
+def decode_face(face_b64 : str) -> str :
+    """Decode face data from MOSIP response body to base64 string."""
+    face_bytes = base64.b64decode(face_b64)
+    face_as_np = np.frombuffer(face_bytes[73:], dtype=np.uint8)
+    img = cv2.imdecode(face_as_np, cv2.IMREAD_COLOR)
+    _, buffer = cv2.imencode(".jpg", img)
+    return base64.b64encode(buffer).decode("utf-8")
+
 class MOSIPCollabUser:
     """
     User class that handles the response body of MOSIP Authentication SDK's KYC Auth. \
@@ -250,15 +259,8 @@ class MOSIPCollabUser:
         self.face       : bytes
 
     @classmethod
-    def verify_kyc(cls, id_ : int, **data) -> Self :
-        """Verifies if given details is a MOSIP Collab user."""
-        # TODO Investigate different types of `individual_id_type`
-        response = authenticator.kyc(
-            individual_id=id_,
-            individual_id_type="UIN",
-            demographic_data=to_demographic_data(**data),
-            consent=True
-        )
+    def _decode(cls, response : Response) -> Self :
+        """Decodes the MOSIP response body."""
         response_body = response.json()
 
         if response_body["errors"]:
@@ -271,8 +273,8 @@ class MOSIPCollabUser:
             raise ExceptionGroup("Error encountered during MOSIP Authentication.",
                 exceptions
             )
+        
         mosip_user = cls()
-        mosip_user.uid = id_
 
         decrypted_response = authenticator.decrypt_response(response_body)
 
@@ -291,16 +293,50 @@ class MOSIPCollabUser:
                         raise Warning(f"Unsupported parameter: {key_var}.")
             except ValueError:
                 if key == "face":
-                    face_bytes = base64.b64decode(decrypted_response["face"])
-                    face_as_np = np.frombuffer(face_bytes[73:], dtype=np.uint8)
-                    img = cv2.imdecode(face_as_np, cv2.IMREAD_COLOR)
-                    _, buffer = cv2.imencode(".jpg", img)
-                    image_b64 = base64.b64encode(buffer).decode("utf-8")
+                    image_b64 = decode_face(decrypted_response["face"])
 
                     setattr(mosip_user, key, image_b64)
                 else:
                     setattr(mosip_user, key, value)
         return mosip_user
+
+    @classmethod
+    def verify_kyc(cls, pcn : int, **data) -> Self :
+        """Verifies if given details is a MOSIP Collab user using the KYC Authentication."""
+        # TODO Investigate different types of `individual_id_type`
+        response = authenticator.kyc(
+            individual_id=pcn,
+            individual_id_type="UIN",
+            demographic_data=to_demographic_data(**data),
+            consent=True
+        )
+        
+        return cls._decode(response)
+    
+    @classmethod
+    def verify_otp(cls, pcn : int, txn_id : str, otp : str) -> Self :
+        """Verifies if given details is a MOSIP Collab user using the OTP Authentication."""
+        response = authenticator.auth(
+            individual_id=pcn,
+            individual_id_type="UIN",
+            txn_id=txn_id,
+            otp_value=otp,
+            consent=True
+        )
+
+        return cls._decode(response)
+
+    def start_otp(self, pcn : int, email_otp : bool = False, phone_otp : bool = False) -> str :
+        """Starts the OTP Authentication process for `verify_otp`."""
+        response = authenticator.genotp(
+            individual_id=pcn,
+            individual_id_type="UIN",
+            email=email_otp,
+            phone=phone_otp
+        )
+        response_body = response.json()
+
+        return response_body["transactionID"]
 
     @property
     def info(self) -> Dict[str, str | int] :

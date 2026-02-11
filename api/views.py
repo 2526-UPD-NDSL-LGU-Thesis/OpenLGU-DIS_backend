@@ -67,7 +67,7 @@ def verify(request : HttpRequest) -> JsonResponse :
     pcn  = request.data.get("PCN")
 
     try:
-        user = MOSIPCollabUser.verify_kyc(id_=pcn, name_eng=name, dob=dob)
+        user = MOSIPCollabUser.verify_kyc(pcn=pcn, name_eng=name, dob=dob)
         return JsonResponse(user.__dict__, status=200)
     except:
         return JsonResponse({ "Authentication failed." }, status=400)
