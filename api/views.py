@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from PIL import Image
 from pyzbar.pyzbar import decode
-from mosip.models import MOSIPCollabUser
+from mosip.models import MOSIPCollabUser, MOSIPException
 
 import cbor2
 import base45
@@ -69,5 +69,5 @@ def verify(request : HttpRequest) -> JsonResponse :
     try:
         user = MOSIPCollabUser.verify_kyc(pcn=pcn, name_eng=name, dob=dob)
         return JsonResponse(user.__dict__, status=200)
-    except:
+    except MOSIPException:
         return JsonResponse({ "Authentication failed." }, status=400)

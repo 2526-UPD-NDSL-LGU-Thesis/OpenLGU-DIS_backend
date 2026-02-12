@@ -120,4 +120,6 @@ document.getElementById("registrationForm").addEventListener("submit", async (e)
     const data = await response.json();
 
     alert("Registration successful!");
+
+    showStep(4);
 });

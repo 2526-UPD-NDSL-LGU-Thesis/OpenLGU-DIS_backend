@@ -275,6 +275,13 @@ h2 {
     border: 1px solid #ccc;
 }
 
+.center-id {
+    display: block;        /* image becomes a block element */
+    margin: 16px auto;     /* auto left/right centers it */
+    max-width: 800px;
+    border: 1px solid #ccc;
+}
+
 .button-group {
     display: flex;
     gap: 12px;
