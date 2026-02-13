@@ -63,16 +63,36 @@
 
             <input type="file" name="proof" required accept="image/*,.pdf">
 
-            <button type="submit" id="register">Register</button>
+            <button type="submit" id="register">Upload</button>
         </section>
-
+        
         <!-- STEP 4 -->
         <section class="step" id="step-4">
-            <h2>Step 4: ID Printing</h2>
+            <h2>Step 4: Picture Retake</h2>
+            <h3>Do you wish to change your image?</h3>
+
+            <!-- Live camera -->
+            <video id="video" autoplay playsinline class="center-image" style="display:none;"></video>
+
+            <!-- Hidden canvas -->
+            <canvas id="canvas" style="display:none;"></canvas>
+
+            <!-- Captured preview -->
+            <img id="capturePreview" alt="Face Image" class="center-image">
+
+            <div class="button-group">
+                <button type="button" id="rejectCapture" class="danger">No</button>
+                <button type="button" id="acceptCapture">Yes</button>
+            </div>
+        </section>
+
+        <!-- STEP 5 -->
+        <section class="step" id="step-5">
+            <h2>Step 5: ID Printing</h2>
             <h3>Resident successfully registered!</h3>
 
             <img
-                id="facePreview"
+                id="idImage"
                 alt="Digital ID Image"
                 class="center-id"
             >

@@ -79,7 +79,10 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
         const img = document.getElementById("facePreview");
         img.src = "data:image/jpg;base64," + data.face;
         img.style.display = "block";
-        console.log(img.src);
+
+        const cap = document.getElementById("capturePreview");
+        cap.src = "data:image/jpg;base64," + data.face;
+        cap.style.display = "block";
 
     } catch (err) {
         console.error(err);
@@ -119,7 +122,76 @@ document.getElementById("registrationForm").addEventListener("submit", async (e)
 
     const data = await response.json();
 
-    alert("Registration successful!");
-
     showStep(4);
+});
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const capturePreview = document.getElementById("capturePreview");
+
+const acceptBtn = document.getElementById("acceptCapture");
+const rejectBtn = document.getElementById("rejectCapture");
+
+let stream = null;
+let cameraRunning = false;
+let capturedImageBlob = null;
+
+// Toggle behavior for accept button
+acceptBtn.addEventListener("click", async () => {
+
+    // 🔹 If camera NOT running → start camera
+    if (!cameraRunning) {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "user" }
+            });
+
+            video.srcObject = stream;
+            video.style.display = "block";
+            capturePreview.style.display = "none";
+
+            acceptBtn.textContent = "Capture";
+            cameraRunning = true;
+
+        } catch (err) {
+            alert("Camera access denied or unavailable.");
+            console.error(err);
+        }
+    }
+
+    // 🔹 If camera running → capture photo
+    else {
+        const context = canvas.getContext("2d");
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        context.drawImage(video, 0, 0);
+
+        canvas.toBlob(blob => {
+            capturedImageBlob = blob;
+        }, "image/jpeg");
+
+        capturePreview.src = canvas.toDataURL("image/jpeg");
+
+        // Stop camera after capture
+        stream.getTracks().forEach(track => track.stop());
+
+        video.style.display = "none";
+        capturePreview.style.display = "block";
+
+        acceptBtn.textContent = "Start Camera";
+        cameraRunning = false;
+    }
+});
+
+// Reject button → stop camera if running
+rejectBtn.addEventListener("click", () => {
+    if (cameraRunning && stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+
+    video.style.display = "none";
+    cameraRunning = false;
+    acceptBtn.textContent = "Start Camera";
 });
