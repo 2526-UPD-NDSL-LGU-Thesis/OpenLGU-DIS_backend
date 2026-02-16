@@ -7,13 +7,14 @@ import io
 import json
 
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponse
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pyzbar.pyzbar import decode
 from mosip.models import MOSIPCollabUser, MOSIPException
+from io import BytesIO
 
 import cbor2
 import base45
@@ -71,3 +72,70 @@ def verify(request : HttpRequest) -> JsonResponse :
         return JsonResponse(user.__dict__, status=200)
     except MOSIPException:
         return JsonResponse({ "Authentication failed." }, status=400)
+    
+
+TEMPLATE_PATH = '/home/ndsg2/Desktop/LGU/customizeable-lgu-id/api/front.png'
+
+@api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def digitalid(request : HttpRequest) -> JsonResponse :
+    '''Generate Digital ID.'''
+
+    NAME = request.data.get("userName")
+    CARD_NUMBER_1  = request.data.get("philsysCardNumber")
+    # CARD_NUMBER_2
+    face_bytes = base64.b64decode(request.data.get("faceData").split(",")[1])
+    FACE = Image.open(BytesIO(face_bytes)).convert("RGBA")
+
+    card = Image.open(TEMPLATE_PATH).convert("RGBA")
+    
+    WIDTH, HEIGHT = card.size
+    draw = ImageDraw.Draw(card)
+
+    # Define face box size
+    face_width = int(WIDTH * 0.35)
+    face_height = int(HEIGHT * 0.35)
+
+    face = ImageOps.fit(FACE, (face_width, face_height), Image.Resampling.LANCZOS)
+
+    # Optional: add rounded corners
+    mask = Image.new("L", (face_width, face_height), 0)
+    mask_draw = ImageDraw.Draw(mask)
+    mask_draw.rounded_rectangle(
+        [(0, 0), (face_width, face_height)],
+        radius=30,
+        fill=255
+    )
+
+    face.putalpha(mask)
+
+    # Position face on left
+    face_x = 40
+    face_y = 300
+
+    card.paste(face, (face_x, face_y), face)
+
+    try:
+        font_name = ImageFont.truetype("arialbd.ttf", 30)
+        font_text = ImageFont.truetype("arial.ttf", 30)
+    except:
+        font_name = ImageFont.load_default(30)
+        font_text = ImageFont.load_default(30)
+
+    # -----------------------------
+    # DRAW TEXT (RIGHT SIDE)
+    # -----------------------------
+    text_x = face_x + face_width + 25
+
+    draw.text((text_x, 300), NAME, fill="black", font=font_name)
+    draw.text((text_x, 380), "Card Number 1:", fill="black", font=font_text)
+    draw.text((text_x, 420), CARD_NUMBER_1, fill="black", font=font_text)
+    # draw.text((text_x, 530), f"Card Number 2:", fill="black", font=font_text)
+    # draw.text((text_x, 570), CARD_NUMBER_2, fill="black", font=font_text)
+
+    buffer = BytesIO()
+    card.convert("RGB").save(buffer, format="PNG")
+    buffer.seek(0)
+
+    return HttpResponse(buffer, content_type="image/png", status=200)

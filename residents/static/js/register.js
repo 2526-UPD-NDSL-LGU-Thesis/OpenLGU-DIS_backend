@@ -1,6 +1,10 @@
 const steps = document.querySelectorAll(".step");
 const qrInput = document.getElementById("qrImage");
 
+let userName;
+let philsysCardNumber;
+let faceData;
+
 qrInput.addEventListener("change", () => {
     const file = qrInput.files[0];
     if (!file) return;
@@ -51,6 +55,9 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
     const name = document.getElementById("name").value;
     const DOB  = document.getElementById("DOB").value;
 
+    philsysCardNumber = PCN;
+    userName = name;
+
     if (!PCN || !name || !DOB) {
         alert("Please complete all fields");
         return;
@@ -72,7 +79,6 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
         }
 
         const data = await res.json();
-        console.log("Verify response:", data);
 
         showStep(2); // ✅ THIS WILL NOW WORK
         
@@ -83,6 +89,8 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
         const cap = document.getElementById("capturePreview");
         cap.src = "data:image/jpg;base64," + data.face;
         cap.style.display = "block";
+
+        faceData = data.face;
 
     } catch (err) {
         console.error(err);
@@ -108,19 +116,23 @@ document.getElementById("wrongFace").addEventListener("click", () => {
     alert("Please re-upload the QR code or verify your details.");
 
     showStep(1);
+
+    const btn = document.getElementById("verifyStep1");
+    btn.disabled = false;
+    btn.textContent = "Verify";
 });
 
 document.getElementById("registrationForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
+    // const formData = new FormData(e.target);
 
-    const response = await fetch("/api/ids/", {
-        method: "POST",
-        body: formData
-    });
+    // const response = await fetch("/api/ids/", {
+    //     method: "POST",
+    //     body: formData
+    // });
 
-    const data = await response.json();
+    // const data = await response.json();
 
     showStep(4);
 });
@@ -173,6 +185,7 @@ acceptBtn.addEventListener("click", async () => {
         }, "image/jpeg");
 
         capturePreview.src = canvas.toDataURL("image/jpeg");
+        faceData = capturePreview.src;
 
         // Stop camera after capture
         stream.getTracks().forEach(track => track.stop());
@@ -186,7 +199,7 @@ acceptBtn.addEventListener("click", async () => {
 });
 
 // Reject button → stop camera if running
-rejectBtn.addEventListener("click", () => {
+rejectBtn.addEventListener("click", async () => {
     if (cameraRunning && stream) {
         stream.getTracks().forEach(track => track.stop());
     }
@@ -194,4 +207,32 @@ rejectBtn.addEventListener("click", () => {
     video.style.display = "none";
     cameraRunning = false;
     acceptBtn.textContent = "Start Camera";
+    
+    showStep(5);
+
+    try {
+        const res = await fetch("/api/digitalid/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userName, philsysCardNumber, faceData })
+        });
+
+        if (!res.ok) {
+            throw new Error("Generation failed");
+        }
+
+        // Get the image as a blob
+        const blob = await res.blob();
+
+        // Convert blob to a URL that <img> can use
+        const imageUrl = URL.createObjectURL(blob);
+
+        const img = document.getElementById("idImage");
+        img.src = imageUrl;
+        img.style.display = "block";
+
+    } catch (err) {
+        console.error(err);
+        alert("Failed to generate ID.");
+    }
 });

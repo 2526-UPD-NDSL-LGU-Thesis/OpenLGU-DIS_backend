@@ -9,5 +9,6 @@ router.register(r'ids', resident_views.UserViewSet)
 urlpatterns = [  
     path('', include(router.urls)),
     path('read/', api_views.read, name='read'),
-    path('verify/', api_views.verify, name='verify')
+    path('verify/', api_views.verify, name='verify'),
+    path('digitalid/', api_views.digitalid, name='digitalid')
 ]
