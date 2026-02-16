@@ -74,7 +74,7 @@ def verify(request : HttpRequest) -> JsonResponse :
         return JsonResponse({ "Authentication failed." }, status=400)
     
 
-TEMPLATE_PATH = '/home/ndsg2/Desktop/LGU/customizeable-lgu-id/api/front.png'
+TEMPLATE_PATH = r'./residents/static/img/front.png'
 
 @api_view(['POST'])
 @authentication_classes([BasicAuthentication])
@@ -85,7 +85,10 @@ def digitalid(request : HttpRequest) -> JsonResponse :
     NAME = request.data.get("userName")
     CARD_NUMBER_1  = request.data.get("philsysCardNumber")
     # CARD_NUMBER_2
-    face_bytes = base64.b64decode(request.data.get("faceData").split(",")[1])
+    try:
+        face_bytes = base64.b64decode(request.data.get("faceData").split(",")[1])
+    except IndexError:
+        face_bytes = base64.b64decode(request.data.get("faceData"))
     FACE = Image.open(BytesIO(face_bytes)).convert("RGBA")
 
     card = Image.open(TEMPLATE_PATH).convert("RGBA")
