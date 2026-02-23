@@ -125,14 +125,19 @@ document.getElementById("wrongFace").addEventListener("click", () => {
 document.getElementById("registrationForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // const formData = new FormData(e.target);
+    const formData = new FormData(e.target);
 
-    // const response = await fetch("/api/ids/", {
-    //     method: "POST",
-    //     body: formData
-    // });
+    const requestBody = new FormData();
+    requestBody.append("pcn", formData.get("PCN"));
+    requestBody.append("proof_of_residence", formData.get("proof"));
+    requestBody.append("verified", true);
 
-    // const data = await response.json();
+    const response = await fetch("/api/ids/", {
+        method: "POST",
+        body: requestBody
+    });
+
+    const data = await response.json();
 
     showStep(4);
 });

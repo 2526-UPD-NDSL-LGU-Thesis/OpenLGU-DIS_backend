@@ -21,7 +21,7 @@ class User(models.Model):
     issued_at           = models.DateField(auto_now_add=True)
     proof_of_residence  = models.FileField(upload_to="uploads/")
     verified            = models.BooleanField(default=False)
-    services            = models.ManyToManyField(Service)
+    # services            = models.ManyToManyField(Service)
 
 from PIL import Image, ImageDraw, ImageFont
 
