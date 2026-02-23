@@ -218,6 +218,19 @@ def decode_face(face_b64 : str) -> str :
     return base64.b64encode(buffer).decode("utf-8")
 
 
+def start_otp(pcn : int, email_otp : bool = False, phone_otp : bool = False) -> str :
+    """Starts the OTP Authentication process for `verify_otp`."""
+    response = authenticator.genotp(
+        individual_id=pcn,
+        individual_id_type="UIN",
+        email=email_otp,
+        phone=phone_otp
+    )
+    response_body = response.json()
+
+    return response_body["transactionID"]
+
+
 class MOSIPCollabUser:
     """
     User class that handles the response body of MOSIP Authentication SDK's KYC Auth. \
@@ -318,7 +331,7 @@ class MOSIPCollabUser:
     def verify_otp(cls, pcn : int, txn_id : str, otp : str) -> Self :
         """Verifies if given details is a MOSIP Collab user using the OTP Authentication."""
         # OTP is 111111
-        response = authenticator.auth(
+        response = authenticator.kyc(
             individual_id=pcn,
             individual_id_type="UIN",
             txn_id=txn_id,
@@ -327,18 +340,6 @@ class MOSIPCollabUser:
         )
 
         return cls._decode(response)
-
-    def start_otp(self, pcn : int, email_otp : bool = False, phone_otp : bool = False) -> str :
-        """Starts the OTP Authentication process for `verify_otp`."""
-        response = authenticator.genotp(
-            individual_id=pcn,
-            individual_id_type="UIN",
-            email=email_otp,
-            phone=phone_otp
-        )
-        response_body = response.json()
-
-        return response_body["transactionID"]
 
     @property
     def info(self) -> Dict[str, str | int] :

@@ -1,78 +1,94 @@
-// Document elements
-const qrInput       = document.getElementById("qrImage");
-const downloadBtn   = document.querySelector('.btn.download');
-const generateBtn   = document.querySelector('.btn.generate');
 const statusElement = document.getElementById("verifiedStatus");
 
+function searchProfile() {
+    const id = document.getElementById("searchID").value;
 
-// QR File Event Listener
-qrInput.addEventListener("change", () => {
-    console.log("Reading QR.");
-    const file = qrInput.files[0];
-    if (!file) return;
+    if (!id) {
+        alert("Please enter an LGU ID.");
+        return;
+    }
 
-    const reader = new FileReader();
+    console.log("Searching for:", id);
 
-    reader.onloadend = () => {
-        const base64Image = reader.result;
+    fetch(`/api/ids/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(res =>  res.json())
+    .then(user_data => {
+        document.getElementById("lgu_id").textContent    = user_data.id;
+        document.getElementById("pcn").textContent       = user_data.pcn;
+        document.getElementById("issued_at").textContent = user_data.issued_at
+        if (user_data.verified) {
+            statusElement.classList.remove("not-verified");
+            statusElement.classList.add("verified");
+            statusElement.textContent = "Verified";
+        }
+    })
+}
 
-        fetch("/api/read/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ qr_data: base64Image })
-        })
-        .then(res => res.json())
-        .then(data => {
-            // TODO FIX THIS
-            if (data[1] === "PH") {
-                console.warn("Wrong QR", e);
-            } else {
-                console.log(data);
-                try {
-                    document.getElementById("student_lab_id").textContent       = data.user_id;
-                    document.getElementById("student_dept_id").textContent      = " ";
-                    document.getElementById("student_lab").textContent          = "Manila"
-                    document.getElementById("student_date_issued").textContent  = data.issued_at;
+let txn;
 
-                    fetch(`/api/ids/${data.user_id}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                    })
-                    .then(res =>  res.json())
-                    .then(user_data => {
-                        console.log(user_data);
-                        if (user_data.verified) {
-                            statusElement.classList.remove("not-verified");
-                            statusElement.classList.add("verified");
-                            statusElement.textContent = "Verified";
-                        }
-                    })
+async function openOTPModal() {
+    const pcn = document.getElementById("pcn").textContent;
 
-                } catch (e) {
-                    console.warn("Unexpected QR data format", e);
-                }
-            }
-        })
-        .catch(err => console.error("Error:", err));
-    };
+    const res = await fetch("/api/startotp/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pcn })
+    });
 
-    reader.readAsDataURL(file);
-});
+    if (!res.ok) {
+        throw new Error("OTP Authentication failed!");
+    }
 
+    const data = await res.json();
 
-downloadBtn.addEventListener("click", () => {
-    console.log("Hello");
+    txn = data.txn;
 
-    const uid = document.getElementById("student_lab_id").textContent;
+    document.getElementById("otpModal").style.display = "flex";
+}
 
-    window.open(`/api/ids/${uid}/id`);
-});
+function closeOTPModal() {
+    document.getElementById("otpModal").style.display = "none";
+}
 
+async function verifyOTP() {
+    const pcn = document.getElementById("pcn").textContent;
+    const otp = document.getElementById("otpInput").value;
 
-generateBtn.addEventListener("click", () => {
-    console.log("Hello");
+    if (!otp) {
+        alert("Please enter OTP.");
+        return;
+    }
 
-    const uid = document.getElementById("student_lab_id").textContent;
+    console.log("Verifying OTP:", otp);
 
-    window.open(`/api/ids/${uid}/qr`);
+    await fetch("/api/otp/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pcn, txn, otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+        closeOTPModal();
+
+        console.log(data);
+        addInfoItem("Name:", data.name.eng, "name");
+        addInfoItem("Gender:", data.gender.eng, "gender");
+        addInfoItem("Date of Birth:", data.dob, "dob");
+        addInfoItem("Email:", data.email, "email");
+        addInfoItem("Address:", data.location1.eng, "loc1");
+        addInfoItem("Phone:", data.phone, "phone");
+
+        // const img = document.getElementById("")
+    });
+}
+
+// Auto-fill search input from URL like /profile/1
+document.addEventListener("DOMContentLoaded", () => {
+    const idInput = document.getElementById("searchID");
+    if (idInput.value) {
+        searchProfile();
+    }
 });

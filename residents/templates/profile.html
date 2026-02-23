@@ -4,22 +4,27 @@
   <title>NDSG</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Your main styles -->
   <link rel="stylesheet" href="../static/css/styles.css">
+  <!-- New modal/search styles -->
+  <link rel="stylesheet" href="../static/css/profile.css">
 </head>
+
 <body>
   <nav>
-    <!-- <img src="../static/img/clid-logo.png"> -->
-    <img src="../static/img/clid-logo.png" alt="Logo" class="logo">Customizable LGU ID
+    <img src="../static/img/clid-logo.png" alt="Logo" class="logo">
+    Customizable LGU ID
     <a href="/profile">View Profile</a>
     <a href="/register">Register</a>
-    <!-- <a href="/labs">Labs</a> -->
     <a href="/admin">(ADMIN)</a>
   </nav>
 
-  <div id="file-container">
-    <p>Please upload a QR image to view the ID details.</p>
-    <!-- File input to upload QR code image; selecting a file will reveal the details form -->
-    <input type="file" id="qrImage" accept="image/*" />
+  <!-- Search Section -->
+  <div id="search-container">
+    <p>Enter LGU ID to search for user details.</p>
+    <input type="text" id="searchID" placeholder="Enter LGU ID" value="{{ lgu_id|default:'' }}" />
+    <button onclick="searchProfile()">Search</button>
   </div>
 
   <div class="profile-container">
@@ -27,11 +32,9 @@
     <!-- Profile Image -->
     <div class="image-section">
         <div class="profile-image">
-            <!-- Placeholder image -->
-            <span>No Image</span>
+            <img id="profileImg" alt="Profile Image">
         </div>
 
-        <!-- Verification Box -->
         <div class="verification-box">
             <span class="status not-verified" id="verifiedStatus">Not Verified</span>
         </div>
@@ -43,31 +46,37 @@
 
         <div class="info-item">
             <span class="label">LGU ID:</span>
-            <span class="value" id="student_lab_id">LGU ID</span>
+            <span class="value" id="lgu_id">LGU ID</span>
         </div>
 
         <div class="info-item">
             <span class="label">PhilSys ID:</span>
-            <span class="value" id="student_dept_id">PhilSys ID</span>
-        </div>
-
-        <div class="info-item">
-            <span class="label">LGU Name:</span>
-            <span class="value" id="student_lab">LGU</span>
+            <span class="value" id="pcn">PhilSys ID</span>
         </div>
 
         <div class="info-item">
             <span class="label">Date Issued:</span>
-            <span class="value" id="student_date_issued">DATE</span>
+            <span class="value" id="issued_at">DATE</span>
         </div>
 
         <div class="buttons">
-            <button class="btn download">Download ID</button>
-            <button class="btn generate">Generate QR</button>
+            <button class="btn view-more" onclick="openOTPModal()">View More</button>
         </div>
     </div>
   </div>
 
+  <!-- OTP Modal -->
+  <div class="modal" id="otpModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeOTPModal()">&times;</span>
+      <h3>OTP Verification</h3>
+      <p>Enter the OTP sent to the registered contact.</p>
+      <input type="text" id="otpInput" placeholder="Enter OTP">
+      <button onclick="verifyOTP()">Verify</button>
+    </div>
+  </div>
+
+  <!-- JS -->
   <script src="../static/js/profile.js"></script>
 </body>
 </html>

@@ -24,9 +24,12 @@ __all__ = (
     'UserViewSet',
 )
 
-def profile(request) -> HttpResponse :
+def profile(request, lgu_id=None) -> HttpResponse :
     '''Render profile page.'''
-    return render(request, "profile.html")
+    context = {}
+    if lgu_id:
+        context['lgu_id'] = lgu_id
+    return render(request, "profile.html", context=context)
 
 def register(request) -> HttpResponse :
     '''Render register page.'''
