@@ -1,5 +1,6 @@
 base45
 cbor2
+cryptography
 django
 # django-cors-headers
 djangorestframework
@@ -10,3 +11,4 @@ qrcode
 pyzbar
 numpy
 opencv-python-headless
+pycose
