@@ -17,6 +17,7 @@ from pycose.keys.keytype import KtyOKP
 from pycose.keys.keyops import SignOp, VerifyOp
 import base45
 import cbor2
+import qrcode
 
 # TODO: use .env
 PRIVATE_KEY_PATH = Path(r"./qr_manager/private_key.pem")
@@ -63,20 +64,22 @@ def _load_cose_key() -> CoseKey:            # pylint: disable=missing-function-d
     return CoseKey.from_dict(cose_key)
 
 
-def generate(user_data : Dict[str, Any]) -> str:
+def generate(message : Dict[str, Any]) -> :
     cose_key = _load_cose_key()
     
-    payload = cbor2.dumps(user_data)
+    payload = cbor2.dumps(message)
 
-    msg = Sign1Message(
+    sign1_message = Sign1Message(
         phdr={Algorithm: EdDSA},
         payload=payload
     )
-    msg.key = cose_key
+    sign1_message.key = cose_key
 
-    signed_msg = msg.encode()
+    signed_msg = sign1_message.encode()
 
-    return base45.b45encode(signed_msg).decode()
+    b45_msg = base45.b45encode(signed_msg).decode()
+
+    return qrcode.make(b45_msg)
 
 
 def authenticate(message: Any) -> Tuple[bool, Dict[str, Any]] :
