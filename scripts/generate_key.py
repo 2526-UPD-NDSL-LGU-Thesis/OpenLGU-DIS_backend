@@ -2,14 +2,20 @@
 Generate a private key for signing QR data.
 '''
 
+from pathlib import Path
+import os
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives import serialization
 
+PRIVATE_KEY_PATH = Path(r"./qr_manager/private_key.pem")
+PRIVATE_KEY_PASSWORD = b"password"
+
+
 def main():         # pylint: disable=missing-function-docstring
     private_key = Ed25519PrivateKey.generate()
 
-    password = b"password"      # TODO: Use .env
+    password = PRIVATE_KEY_PASSWORD     # TODO: Use .env
 
     pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
@@ -17,8 +23,10 @@ def main():         # pylint: disable=missing-function-docstring
         encryption_algorithm=serialization.BestAvailableEncryption(password)
     )
 
-    with open(r"./qr_manager/private_key.pem", "wb") as key:
+    with open(PRIVATE_KEY_PATH, "wb") as key:
         key.write(pem)
+
+    os.chmod(PRIVATE_KEY_PATH, 0o600)
 
 if __name__ == "__main__":
     main()
