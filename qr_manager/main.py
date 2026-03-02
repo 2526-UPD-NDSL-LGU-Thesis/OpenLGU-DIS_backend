@@ -81,14 +81,19 @@ def authenticate(message : str | bytes) -> Tuple[bool, Dict[str, Any]] :
     """Verify signed message"""
     cose_key = _load_cose_key()
     
-    decoded = Sign1Message.decode(message)    
-    decoded.key = cose_key
+    try:
+        decoded = Sign1Message.decode(message)    
+        decoded.key = cose_key
 
-    algorithm = decoded.phdr.get(Algorithm)
+        algorithm = decoded.phdr.get(Algorithm)
 
-    if algorithm != EdDSA:
-        return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
+        if algorithm != EdDSA:
+            return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
 
-    payload = cbor2.loads(decoded.payload)
+        # Add payload checking
 
-    return decoded.verify_signature(), payload or None
+        payload = cbor2.loads(decoded.payload)
+
+        return decoded.verify_signature(), payload or None
+    except:
+        return False, None

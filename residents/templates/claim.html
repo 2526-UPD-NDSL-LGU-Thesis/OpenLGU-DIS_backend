@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>NDSG</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../static/css/styles.css">
+
+  <!-- QR Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+
+<header>
+    <h2>Service Claim Portal</h2>
+</header>
+
+<div class="container">
+    <div class="left-container">
+
+        <!-- STEP 1: SELECT SERVICE -->
+        <div id="step-service" class="step active">
+            <h3>Select Service</h3>
+            <select id="service-dropdown"></select>
+            <button id="start-scan-btn">Start QR Scan</button>
+        </div>
+
+        <!-- STEP 2: QR SCAN -->
+        <div id="step-scan" class="step">
+            <h3>Scan QR</h3>
+            <div id="qr-reader"></div>
+        </div>
+
+        <!-- STEP 3: VERIFY FACE -->
+        <div id="step-verify" class="step">
+            <h3>Verify Face</h3>
+            <img id="user-image" class="center-image">
+            <div class="button-group">
+                <button id="confirm-yes" class="success">Yes</button>
+                <button id="confirm-no" class="danger">No</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: RESULT -->
+        <div id="step-result" class="step">
+            <h3>Result</h3>
+            <div id="result-message"></div>
+            <button id="new-claim-btn">New Claim</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="../static/js/claim.js"></script>
+</body>
+</html>

@@ -74,12 +74,12 @@ async function verifyOTP() {
         closeOTPModal();
 
         console.log(data);
-        addInfoItem("Name:", data.name.eng, "name");
-        addInfoItem("Gender:", data.gender.eng, "gender");
-        addInfoItem("Date of Birth:", data.dob, "dob");
-        addInfoItem("Email:", data.email, "email");
-        addInfoItem("Address:", data.location1.eng, "loc1");
-        addInfoItem("Phone:", data.phone, "phone");
+        // addInfoItem("Name:", data.name.eng, "name");
+        // addInfoItem("Gender:", data.gender.eng, "gender");
+        // addInfoItem("Date of Birth:", data.dob, "dob");
+        // addInfoItem("Email:", data.email, "email");
+        // addInfoItem("Address:", data.location1.eng, "loc1");
+        // addInfoItem("Phone:", data.phone, "phone");
 
         // const img = document.getElementById("")
     });

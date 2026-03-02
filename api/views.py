@@ -2,6 +2,10 @@
 Django views for API.
 '''
 
+from qr_manager import generate, authenticate
+from service.models import Service
+from service.utils import claim_service
+from residents.models import User
 import base64
 import io
 import json
@@ -15,7 +19,6 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pyzbar.pyzbar import decode
 from mosip.models import MOSIPCollabUser, MOSIPException, start_otp
 from io import BytesIO
-
 import cbor2
 import base45
 
@@ -148,6 +151,13 @@ def digitalid(request : HttpRequest) -> JsonResponse :
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def start_verify_otp(request : HttpRequest) -> JsonResponse :
+    """Starts the OTP Authentication process for a User.
+
+    :param request: A request including the User's PCN from an authenticated account.
+    :type request: HttpRequest
+    :return: Returns the MOSIP OTP authentication transaction ID.
+    :rtype: JsonResponse
+    """
     pcn = request.data.get("pcn")
 
     try:
@@ -160,6 +170,13 @@ def start_verify_otp(request : HttpRequest) -> JsonResponse :
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def verify_otp(request : HttpRequest) -> JsonResponse :
+    """Verify OTP Authentication.
+
+    :param request: A request from an authenticated account.
+    :type request: HttpRequest
+    :return: Returns the requested User's information, or a fail otherwise.
+    :rtype: JsonResponse
+    """
     pcn = request.data.get("pcn")
     txn = request.data.get("txn")
     otp = request.data.get("otp")
@@ -169,3 +186,64 @@ def verify_otp(request : HttpRequest) -> JsonResponse :
         return JsonResponse(user.__dict__, status=200)
     except MOSIPException:
         return JsonResponse({ "Authentication failed." }, status=400)
+
+@api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def authenticate_message(request : HttpRequest) -> JsonResponse :
+    qr = request.data.get("qr")
+    b45_decode = base45.b45decode(qr)
+
+    result, payload = authenticate(b45_decode)
+
+    print(result)
+
+    if result:
+        return JsonResponse(payload, status=201)
+    else:
+        return JsonResponse(payload, status=400)
+
+
+@api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def claim(request : HttpRequest) -> JsonResponse :
+    """Partnered Merchant claims a service for a User.
+
+    :param request: A request from an authenticated account.
+    :type request: HttpRequest
+    :return: Returns a JsonResponse indicating a fail or success with the transaction.
+    :rtype: JsonResponse
+    """
+    user_id = request.data.get("user_id")
+    service_id = request.data.get("service_id")
+
+    print(user_id)
+
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return JsonResponse(
+            { "error": "Resident not found" },
+            status=404
+        )
+    
+    if not user.verified:
+        return JsonResponse(
+            { "error": "Resident not verified" },
+            status=403
+        )
+    
+    try:
+        service = Service.objects.get(id=service_id, active=True)
+    except Service.DoesNotExist:
+        return JsonResponse(
+            { "error": "Service not found" },
+            status=404
+        )
+
+    try:
+        claim_service(user, service)
+        return JsonResponse({ "Success" }, status=201)
+    except:
+        return JsonResponse({ "Failed to claim"}, status=400)

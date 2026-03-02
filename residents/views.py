@@ -14,7 +14,9 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import qrcode
 import json
+import base45
 
+from qr_manager import generate
 from .models import User
 from .serializers import UserSerializer
 
@@ -35,6 +37,10 @@ def register(request) -> HttpResponse :
     '''Render register page.'''
     return render(request, "register.html")
 
+def claim(request) -> HttpResponse :
+    '''Render claim page.'''
+    return render(request, "claim.html")
+
 @authentication_classes([BasicAuthentication])
 class UserViewSet(viewsets.ModelViewSet):
     '''View set for `User`.'''
@@ -45,18 +51,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET'], url_path='qr')
     def qr(self, request, pk=None):
-        user_id = self.get_object()
+        user = self.get_object()
 
-        qr_data = {
-            "user_id" : user_id.id,
-            "issued_at"  : user_id.issued_at.strftime("%Y-%m-%d")
-        }
+        signed_message = generate(user.info)
 
-        print(qr_data)
-
-        json_string = json.dumps(qr_data)
-
-        qr = qrcode.make(json_string)
+        qr = qrcode.make(base45.b45encode(signed_message))
 
         buffer = BytesIO()
         qr.save(buffer, format="PNG")

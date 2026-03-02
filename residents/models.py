@@ -2,6 +2,7 @@
 https://medium.com/@ramanbazhanau/mastering-sqlalchemy-a-comprehensive-guide-for-python-developers-ddb3d9f2e829
 """
 
+from typing import Dict
 from django.db import models
 
 
@@ -15,13 +16,32 @@ class Service(models.Model):
 
 
 class User(models.Model):
-    """Class for IDs."""
-    id                  = models.BigAutoField(primary_key=True)
-    pcn                 = models.IntegerField(unique=True)
-    issued_at           = models.DateField(auto_now_add=True)
-    proof_of_residence  = models.FileField(upload_to="uploads/")
-    verified            = models.BooleanField(default=False)
-    # services            = models.ManyToManyField(Service)
+    id = models.BigAutoField(primary_key=True)
+    pcn = models.IntegerField(unique=True)
+
+    issued_at = models.DateField(auto_now_add=True)
+    proof_of_residence = models.FileField(upload_to="uploads/")
+
+    verified = models.BooleanField(default=False)
+
+    email = models.EmailField(blank=True, null=True)
+
+    # Phone numbers should be CharField, not IntegerField
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return f"LGU ID {self.id}"
+    
+    @property
+    def info(self) -> Dict :
+        return {
+            "id"        : self.id,
+            "pcn"       : self.pcn,
+            "issued_at" : self.issued_at,
+            "verified"  : self.verified,
+            "email"     : self.email,
+            "phone_number" : self.phone_number
+        }
 
 from PIL import Image, ImageDraw, ImageFont
 

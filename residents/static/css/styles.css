@@ -371,3 +371,51 @@ button.danger:hover {
   display: inline-block;
   margin-left: 8px;
 }
+
+/* ================= CLAIM FLOW ================= */
+
+#login-section,
+#service-section,
+#qr-section,
+#verify-section {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
+
+#service-dropdown {
+    margin-top: 10px;
+}
+
+#qr-reader {
+    width: 100%;
+    max-width: 350px;
+    margin: 20px auto;
+}
+
+#user-image {
+    display: block;
+    margin: 20px auto;
+    max-width: 250px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.result {
+    margin: 25px auto;
+    font-weight: bold;
+    font-size: 16px;
+    max-width: 500px;
+}
+
+button.success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+button.success:hover {
+    background-color: #218838;
+}

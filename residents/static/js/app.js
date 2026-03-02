@@ -28,6 +28,11 @@ async function runPageInit(page) {
             labsModule.initLabsPage();
             break;
 
+        case "claim":
+            const claimModule = await import("./claim.js");
+            claimModule.initClaimPage();
+            break;
+
         default:
             break;
     }
