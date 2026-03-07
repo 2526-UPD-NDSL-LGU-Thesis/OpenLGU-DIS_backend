@@ -29,6 +29,8 @@ class User(models.Model):
     # Phone numbers should be CharField, not IntegerField
     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
+    face_data = models.BinaryField(default=b"")
+
     def __str__(self):
         return f"LGU ID {self.id}"
     
@@ -40,7 +42,8 @@ class User(models.Model):
             "issued_at" : self.issued_at,
             "verified"  : self.verified,
             "email"     : self.email,
-            "phone_number" : self.phone_number
+            "phone_number" : self.phone_number,
+            "face_data" : self.face_data
         }
 
 from PIL import Image, ImageDraw, ImageFont

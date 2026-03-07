@@ -2,7 +2,7 @@
 Django views for API.
 '''
 
-from qr_manager import generate, authenticate
+from qr_manager import sign_eddsa, verify_eddsa
 from service.models import Service
 from service.utils import claim_service
 from residents.models import User
@@ -64,7 +64,7 @@ def read(request : HttpRequest) -> JsonResponse :
 @api_view(['POST'])
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def verify(request : HttpRequest) -> JsonResponse :
+def verify_eddsa(request : HttpRequest) -> JsonResponse :
     '''Verify User PCN.'''
     name = request.data.get("name")
     dob  = request.data.get("DOB")
@@ -194,7 +194,7 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
     qr = request.data.get("qr")
     b45_decode = base45.b45decode(qr)
 
-    result, payload = authenticate(b45_decode)
+    result, payload = verify_eddsa(b45_decode)
 
     print(result)
 

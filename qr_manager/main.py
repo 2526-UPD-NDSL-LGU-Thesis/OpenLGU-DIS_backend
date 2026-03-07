@@ -1,9 +1,10 @@
-'''
-
-'''
+# pylint: disable=missing-module-docstring
+# pylint: disable=trailing-whitespace
 
 from pathlib import Path
 from typing import Optional, Dict, Tuple, Any
+from dataclasses import dataclass
+from datetime import datetime
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
@@ -22,7 +23,20 @@ PRIVATE_KEY_PATH = Path(r"./qr_manager/private_key.pem")
 PRIVATE_KEY_PASSWORD = b"password"
 
 
-def _load_private_key(                      # pylint: disable=missing-function-docstring
+@dataclass
+class QRInfo:
+    """Class for checking proper headers with payload.
+    """
+    id : str
+    pcn  : int
+    issued_at : datetime
+    verified : bool
+    email : str
+    phone_number : str
+    face_data : bytes
+
+
+def _load_pem_private_key(                  # pylint: disable=missing-function-docstring
     key_path : Path,
     password : Optional[bytes] = None
 ) -> PrivateKeyTypes :
@@ -36,8 +50,8 @@ def _load_private_key(                      # pylint: disable=missing-function-d
         )
 
 
-def _load_cose_key() -> CoseKey:            # pylint: disable=missing-function-docstring
-    private_key = _load_private_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
+def _load_eddsa_key() -> CoseKey :          # pylint: disable=missing-function-docstring
+    private_key = _load_pem_private_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
     private_bytes = private_key.private_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PrivateFormat.Raw,
@@ -62,27 +76,39 @@ def _load_cose_key() -> CoseKey:            # pylint: disable=missing-function-d
     return CoseKey.from_dict(cose_key)
 
 
-def generate(message : Dict[str, Any]) -> bytes :
-    """Generate a signed COSE_Sign1 from given message."""
-    cose_key = _load_cose_key()
+def sign_eddsa(message : Dict[str, Any]) -> bytes :
+    """Generate a COSE_Sign1 signed message with EdDSA Algorithm.
+
+    :param message: Message to be encrypted and signed.
+    :type message: Dict[str, Any]
+    :return: COSE_Sign1 signed message.
+    :rtype: bytes
+    """
+    cose_key = _load_eddsa_key()
     
     payload = cbor2.dumps(message)
 
     sign1_message = Sign1Message(
-        phdr={Algorithm: EdDSA},
+        phdr={ Algorithm: EdDSA },
         payload=payload
     )
     sign1_message.key = cose_key
 
-    return sign1_message.encode()
+    return sign1_message.encode()           #type: ignore
 
 
-def authenticate(message : str | bytes) -> Tuple[bool, Dict[str, Any]] :
-    """Verify signed message"""
-    cose_key = _load_cose_key()
+def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
+    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm.
+
+    :param message: Encrypted message to be verified.
+    :type message: bytes
+    :return: Returns authentication status and the encrypted message's payload.
+    :rtype: Tuple[bool, Dict[str, Any]]
+    """
+    cose_key = _load_eddsa_key()
     
     try:
-        decoded = Sign1Message.decode(message)    
+        decoded = Sign1Message.decode(message)
         decoded.key = cose_key
 
         algorithm = decoded.phdr.get(Algorithm)
@@ -90,10 +116,15 @@ def authenticate(message : str | bytes) -> Tuple[bool, Dict[str, Any]] :
         if algorithm != EdDSA:
             return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
 
-        # Add payload checking
-
+        if decoded.payload is None:
+            return False, { "error" : "Payload is empty" }
         payload = cbor2.loads(decoded.payload)
 
-        return decoded.verify_signature(), payload or None
-    except:
-        return False, None
+        try:
+            QRInfo(**payload)
+        except TypeError:
+            return False, { "error" : "Payload is missing information/s" }
+
+        return decoded.verify_signature(), payload or {} #type: ignore
+    except:                                 # pylint: disable=bare-except
+        return False, { "error" : "" }

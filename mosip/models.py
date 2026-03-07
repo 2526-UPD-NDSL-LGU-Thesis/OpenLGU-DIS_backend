@@ -260,7 +260,7 @@ class MOSIPCollabUser:
     
     
     For more information regarding the SDK, read the \
-    [documentation](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/mosip-authentication-sdk).
+    [documentation](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/mosip-authentication-sdk).     # pylint: disable=line-too-long
     """
     def __init__(self) -> None :
         self.uid        : int

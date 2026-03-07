@@ -16,7 +16,7 @@ import qrcode
 import json
 import base45
 
-from qr_manager import generate
+from qr_manager import sign_eddsa
 from .models import User
 from .serializers import UserSerializer
 
@@ -53,7 +53,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def qr(self, request, pk=None):
         user = self.get_object()
 
-        signed_message = generate(user.info)
+        signed_message = sign_eddsa(user.info)
 
         qr = qrcode.make(base45.b45encode(signed_message))
 

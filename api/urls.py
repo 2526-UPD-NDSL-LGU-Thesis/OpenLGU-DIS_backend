@@ -11,7 +11,7 @@ router.register(r'services', service_views.ServiceViewSet)
 urlpatterns = [  
     path('', include(router.urls)),
     path('read/', api_views.read, name='read'),
-    path('verify/', api_views.verify, name='verify'),
+    path('verify/', api_views.verify_eddsa, name='verify'),
     path('startotp/', api_views.start_verify_otp, name='startotp'),
     path('otp/', api_views.verify_otp, name='otp'),
     path('digitalid/', api_views.digitalid, name='digitalid'),

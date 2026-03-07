@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'residents',
-    'service'
+    'service',
+    'qr_manager'
 ]
 
 MIDDLEWARE = [
