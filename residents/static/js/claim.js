@@ -52,6 +52,39 @@ document.getElementById("start-scan-btn").addEventListener("click", () => {
 async function onScanSuccess(decodedText) {
     await qrScanner.stop();
 
+    await processQr(decodedText);
+}
+
+/* =================== QR UPLOAD ================== */
+
+const uploadQrInput = document.getElementById("upload-qr");
+
+uploadQrInput.addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const qrDataUrl = e.target.result;
+
+        try {
+            const decodedText = await Html5Qrcode.getCameras().then(() => {
+                // Use decodeFromImage method of Html5Qrcode
+                const tempScanner = new Html5Qrcode("qr-reader");
+                return tempScanner.decodeFromImage(qrDataUrl);
+            });
+
+            console.log("QR Code detected:", decodedText);
+            await processQr(decodedText);
+        } catch (err) {
+            console.error("QR decode error:", err);
+            alert("Failed to decode QR from uploaded image.");
+        }
+    };
+    reader.readAsDataURL(file);
+});
+
+async function processQr(decodedText) {
     const res = await fetch("/api/authenticate/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

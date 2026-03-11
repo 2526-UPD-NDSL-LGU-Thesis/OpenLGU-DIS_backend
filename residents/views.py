@@ -41,6 +41,9 @@ def claim(request) -> HttpResponse :
     '''Render claim page.'''
     return render(request, "claim.html")
 
+def auth(request) -> HttpResponse :
+    return render(request, "auth.html")
+
 @authentication_classes([BasicAuthentication])
 class UserViewSet(viewsets.ModelViewSet):
     '''View set for `User`.'''

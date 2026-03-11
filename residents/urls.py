@@ -22,5 +22,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/<int:lgu_id>/', views.profile, name='profile_with_id'),
     path('register/', views.register, name='register'),
-    path('claim/', views.claim, name='claim')
+    path('claim/', views.claim, name='claim'),
+    path('auth/', views.auth, name='auth')
 ]

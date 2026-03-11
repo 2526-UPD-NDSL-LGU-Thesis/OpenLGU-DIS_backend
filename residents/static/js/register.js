@@ -80,8 +80,6 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
 
         const data = await res.json();
 
-        showStep(2); // ✅ THIS WILL NOW WORK
-        
         const img = document.getElementById("facePreview");
         img.src = "data:image/jpg;base64," + data.face;
         img.style.display = "block";
@@ -91,6 +89,8 @@ document.getElementById("verifyStep1").addEventListener("click", async () => {
         cap.style.display = "block";
 
         faceData = data.face;
+
+        showStep(2); // ✅ THIS WILL NOW WORK
 
     } catch (err) {
         console.error(err);
@@ -131,6 +131,9 @@ document.getElementById("registrationForm").addEventListener("submit", async (e)
     requestBody.append("pcn", formData.get("PCN"));
     requestBody.append("proof_of_residence", formData.get("proof"));
     requestBody.append("verified", true);
+    requestBody.append("face_data", faceData);
+
+    console.log(requestBody)
 
     const response = await fetch("/api/ids/", {
         method: "POST",

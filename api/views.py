@@ -64,7 +64,7 @@ def read(request : HttpRequest) -> JsonResponse :
 @api_view(['POST'])
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def verify_eddsa(request : HttpRequest) -> JsonResponse :
+def verify(request : HttpRequest) -> JsonResponse :
     '''Verify User PCN.'''
     name = request.data.get("name")
     dob  = request.data.get("DOB")
@@ -247,3 +247,34 @@ def claim(request : HttpRequest) -> JsonResponse :
         return JsonResponse({ "Success" }, status=201)
     except:
         return JsonResponse({ "Failed to claim"}, status=400)
+
+from pyzbar.pyzbar import decode
+from PIL import Image
+import zlib
+
+@api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def upload_qr(request) -> JsonResponse :
+    qr_image = request.data.get("qr_image")
+
+    img = Image.open(qr_image)
+    decoded_objects = decode(img)
+
+    try:
+        b45_ = base45.b45decode(decoded_objects[0].data)
+    except:
+        return JsonResponse({ "Failed to decode QR" }, status=400)
+
+    decompressed = zlib.decompress(b45_)
+
+    result, payload = verify_eddsa(decompressed)
+
+    print(result)
+    print(payload)
+
+    if result:
+        payload["face_data"] = base64.b64encode(payload["face_data"]).decode('utf-8')
+        return JsonResponse(payload, status=201)
+    else:
+        return JsonResponse(payload, status=400)

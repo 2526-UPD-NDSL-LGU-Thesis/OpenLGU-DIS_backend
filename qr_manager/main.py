@@ -50,8 +50,10 @@ def _load_pem_private_key(                  # pylint: disable=missing-function-d
         )
 
 
-def _load_eddsa_key() -> CoseKey :          # pylint: disable=missing-function-docstring
-    private_key = _load_pem_private_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
+def _load_eddsa_key(
+        path_to_key : Path, password : bytes
+    ) -> CoseKey :          # pylint: disable=missing-function-docstring
+    private_key = _load_pem_private_key(path_to_key, password)
     private_bytes = private_key.private_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PrivateFormat.Raw,
@@ -84,7 +86,7 @@ def sign_eddsa(message : Dict[str, Any]) -> bytes :
     :return: COSE_Sign1 signed message.
     :rtype: bytes
     """
-    cose_key = _load_eddsa_key()
+    cose_key = _load_eddsa_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
     
     payload = cbor2.dumps(message)
 
@@ -105,7 +107,7 @@ def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
     :return: Returns authentication status and the encrypted message's payload.
     :rtype: Tuple[bool, Dict[str, Any]]
     """
-    cose_key = _load_eddsa_key()
+    cose_key = _load_eddsa_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
     
     try:
         decoded = Sign1Message.decode(message)
@@ -127,4 +129,4 @@ def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
 
         return decoded.verify_signature(), payload or {} #type: ignore
     except:                                 # pylint: disable=bare-except
-        return False, { "error" : "" }
+        return False, { "error" : "Failed to decode message" }
