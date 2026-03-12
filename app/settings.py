@@ -202,3 +202,6 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'uploads')
 #     raise MOSIPAuthSetup("Invalid signature cert path or file does not exist.")
 
 # HERE ENDS DYNACONF EXTENSION LOAD (No more code below this line)
+
+# Default Configurations
+DEFAULT_LANGUAGE_ISO = 'eng'
