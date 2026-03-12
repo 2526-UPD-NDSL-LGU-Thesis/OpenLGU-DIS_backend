@@ -12,4 +12,4 @@ pyzbar
 numpy
 opencv-python-headless
 pycose
-zlib
+# zlib
