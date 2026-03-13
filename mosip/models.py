@@ -4,6 +4,7 @@ Models for MOSIP Collab user
 
 import base64
 from datetime import datetime
+from io import BytesIO
 from typing import Self, Dict, List
 
 from django.conf import settings
@@ -12,9 +13,8 @@ from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
 from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
+from PIL import Image
 from requests.models import Response
-import numpy as np
-import cv2
 
 
 
@@ -265,11 +265,14 @@ def to_demographic_data(**kwargs) -> DemographicsModel :
 
 def decode_face(face_b64 : str) -> str :
     """Decode face data from MOSIP response body to base64 string."""
-    face_bytes = base64.b64decode(face_b64)
-    face_as_np = np.frombuffer(face_bytes[73:], dtype=np.uint8)
-    img = cv2.imdecode(face_as_np, cv2.IMREAD_COLOR)
-    _, buffer = cv2.imencode(".jpg", img)
-    return base64.b64encode(buffer).decode("utf-8")
+    face_bytes = base64.b64decode(face_b64)[73:]
+    face_img = Image.open(BytesIO(face_bytes[:73]))
+    try:
+        face_img.load()
+    except Exception as err:
+        raise MOSIPException("Failed to decode image") from err
+
+    return base64.b64encode(face_bytes).decode("utf-8")
 
 
 def start_otp(pcn : int, email_otp : bool = False, phone_otp : bool = False) -> str :
