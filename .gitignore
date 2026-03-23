@@ -215,7 +215,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-*.pem
+# *.pem
 *.p12
 uploads/
 residents/static/img/id-template.psd
+ida_partner.pem
