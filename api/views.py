@@ -2,7 +2,7 @@
 Django views for API.
 '''
 
-from qr_manager import sign_eddsa, verify_eddsa
+from qr_manager import sign_message, verify_message
 from service.models import Service
 from service.utils import claim_service
 from residents.models import User
@@ -194,7 +194,7 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
     qr = request.data.get("qr")
     b45_decode = base45.b45decode(qr)
 
-    result, payload = verify_eddsa(b45_decode)
+    result, payload = verify_message(b45_decode)
 
     print(result)
 
@@ -268,7 +268,7 @@ def upload_qr(request) -> JsonResponse :
 
     decompressed = zlib.decompress(b45_)
 
-    result, payload = verify_eddsa(decompressed)
+    result, payload = verify_message(decompressed)
 
     print(result)
     print(payload)
@@ -278,3 +278,8 @@ def upload_qr(request) -> JsonResponse :
         return JsonResponse(payload, status=201)
     else:
         return JsonResponse(payload, status=400)
+
+
+@api_view(['GET'])
+def ping(_) -> JsonResponse :
+    return JsonResponse("pong", status=201)
