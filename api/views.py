@@ -2,7 +2,7 @@
 Django views for API.
 '''
 
-from qr_manager import sign_message, verify_message
+from qr_manager import verify_message, decrypt_message
 from service.models import Service
 from service.utils import claim_service
 from residents.models import User
@@ -188,20 +188,47 @@ def verify_otp(request : HttpRequest) -> JsonResponse :
         return JsonResponse({ "Authentication failed." }, status=400)
 
 @api_view(['POST'])
-@authentication_classes([BasicAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([BasicAuthentication])
+# @permission_classes([IsAuthenticated])
 def authenticate_message(request : HttpRequest) -> JsonResponse :
     qr = request.data.get("qr")
-    b45_decode = base45.b45decode(qr)
+    
+    try:
+        uncompressed_msg = zlib.decompress(qr)
+        
+        try:
+            decrypted_msg = decrypt_message(uncompressed_msg)
 
-    result, payload = verify_message(b45_decode)
+                try:
+                    verified_msg = verify_message(decrypted_msg)
 
-    print(result)
+                    cwt_msg = cbor2.loads(verified_msg)
+                    claim_169 = cbor2.loads(cwt_msg[169])
 
-    if result:
-        return JsonResponse(payload, status=201)
-    else:
-        return JsonResponse(payload, status=400)
+                    payload = {
+                        "iss" : cwt_msg[1],
+                        "iat" : cwt_msg[6],
+                        "pcn" : claim_169[1],
+                        "img" : base64.b64encode(claim_169[16]).decode("utf-8"),
+                        "imt" : claim_169[17],
+                        "lid" : claim_169[99]
+                    }
+                    
+                    return JsonResponse(
+                        payload, status=200
+                    )
+                except:
+                    return JsonResponse(
+                        { "message" : "QR could not be verified" }, status=401
+                    )
+        except:
+            return JsonResponse(
+                { "message" : "QR could not be decrypted" }, status=401
+            )
+    except:
+        return JsonResponse(
+            { "message" : "QR could not be decompressed" }, status=401
+        )
 
 
 @api_view(['POST'])

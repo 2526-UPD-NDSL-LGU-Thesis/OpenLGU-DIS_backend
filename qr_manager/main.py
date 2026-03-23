@@ -91,13 +91,21 @@ def _load_decrypting_key(
     return PublicKey(verify_key.public_bytes_raw())
 
 
-def _load_cipher_box():
-    private_key = _load_encrypting_key()
-    public_key = _load_decrypting_key()
+def _load_cipher_box(
+        path_to_private_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
+        path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
+        password : bytes = PRIVATE_KEY_PASSWORD
+    ):
+    private_key = _load_encrypting_key(path_to_private_key, password)
+    public_key = _load_decrypting_key(path_to_public_key)
 
     return Box(private_key, public_key)
 
-def sign_message(message : bytes) -> SignedMessage :
+def sign_message(
+        message : bytes,
+        path_to_key : Path = PRIVATE_SIGNING_KEY_PATH,
+        password : bytes = PRIVATE_KEY_PASSWORD
+    ) -> SignedMessage :
     """Generate a COSE_Sign1 signed message with EdDSA Algorithm.
 
     :param message: Message in bytes to be verified.
@@ -105,7 +113,7 @@ def sign_message(message : bytes) -> SignedMessage :
     :return: Returns a `nacl.signing.SignedMessage`.
     :rtype: SignedMessage
     """
-    signing_key = _load_signing_key()
+    signing_key = _load_signing_key(path_to_key, password)
 
     return signing_key.sign(message)
 
@@ -131,7 +139,10 @@ def sign_message(message : bytes) -> SignedMessage :
 #     return sign1_message.encode()           #type: ignore
 
 
-def verify_message(signed_message : bytes) -> bytes :
+def verify_message(
+        signed_message : bytes,
+        path_to_key : Path = PUBLIC_SIGNING_KEY_PATH,
+    ) -> bytes :
     """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm.
 
     :param message: Encrypted message to be verified.
@@ -139,7 +150,7 @@ def verify_message(signed_message : bytes) -> bytes :
     :return: Returns authentication status and the encrypted message's payload.
     :rtype: Tuple[bool, Dict[str, Any]]
     """
-    verify_key = _load_verify_key()
+    verify_key = _load_verify_key(path_to_key)
     
     return verify_key.verify(signed_message)
 
@@ -177,13 +188,23 @@ def verify_message(signed_message : bytes) -> bytes :
 #         return False, { "error" : "Failed to decode message" }
 
 
-def encrypt_message(message):
-    box = _load_cipher_box()
+def encrypt_message(
+        message,
+        path_to_private_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
+        path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
+        password : bytes = PRIVATE_KEY_PASSWORD
+    ):
+    box = _load_cipher_box(path_to_private_key, path_to_public_key, password)
 
     return box.encrypt(message)
 
 
-def decrypt_message(message):
-    box = _load_cipher_box()
+def decrypt_message(
+        message,
+        path_to_private_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
+        path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
+        password : bytes = PRIVATE_KEY_PASSWORD
+    ):
+    box = _load_cipher_box(path_to_private_key, path_to_public_key, password)
 
     return box.decrypt(message)
