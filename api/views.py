@@ -192,9 +192,10 @@ def verify_otp(request : HttpRequest) -> JsonResponse :
 # @permission_classes([IsAuthenticated])
 def authenticate_message(request : HttpRequest) -> JsonResponse :
     qr = request.data.get("qr")
+    b45_qr = base45.b45encode(qr)
     
     try:
-        uncompressed_msg = zlib.decompress(qr)
+        uncompressed_msg = zlib.decompress(b45_qr)
         
         try:
             decrypted_msg = decrypt_message(uncompressed_msg)
