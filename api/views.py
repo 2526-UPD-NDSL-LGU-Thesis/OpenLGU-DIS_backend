@@ -200,28 +200,28 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
         try:
             decrypted_msg = decrypt_message(uncompressed_msg)
 
-                try:
-                    verified_msg = verify_message(decrypted_msg)
+            try:
+                verified_msg = verify_message(decrypted_msg)
 
-                    cwt_msg = cbor2.loads(verified_msg)
-                    claim_169 = cbor2.loads(cwt_msg[169])
+                cwt_msg = cbor2.loads(verified_msg)
+                claim_169 = cbor2.loads(cwt_msg[169])
 
-                    payload = {
-                        "iss" : cwt_msg[1],
-                        "iat" : cwt_msg[6],
-                        "pcn" : claim_169[1],
-                        "img" : base64.b64encode(claim_169[16]).decode("utf-8"),
-                        "imt" : claim_169[17],
-                        "lid" : claim_169[99]
-                    }
-                    
-                    return JsonResponse(
-                        payload, status=200
-                    )
-                except:
-                    return JsonResponse(
-                        { "message" : "QR could not be verified" }, status=401
-                    )
+                payload = {
+                    "iss" : cwt_msg[1],
+                    "iat" : cwt_msg[6],
+                    "pcn" : claim_169[1],
+                    "img" : base64.b64encode(claim_169[16]).decode("utf-8"),
+                    "imt" : claim_169[17],
+                    "lid" : claim_169[99]
+                }
+                
+                return JsonResponse(
+                    payload, status=200
+                )
+            except:
+                return JsonResponse(
+                    { "message" : "QR could not be verified" }, status=401
+                )
         except:
             return JsonResponse(
                 { "message" : "QR could not be decrypted" }, status=401
