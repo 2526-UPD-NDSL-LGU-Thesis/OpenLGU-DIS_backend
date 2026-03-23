@@ -281,5 +281,5 @@ def upload_qr(request) -> JsonResponse :
 
 
 @api_view(['GET'])
-def ping(_) -> JsonResponse :
-    return JsonResponse("pong", status=201)
+def ping(request) -> JsonResponse :
+    return JsonResponse({ "message": "pong" }, status=201)
