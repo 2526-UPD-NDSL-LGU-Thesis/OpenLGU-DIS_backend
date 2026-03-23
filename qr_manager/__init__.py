@@ -10,5 +10,5 @@ Generate messages with `sign_eddsa` and verify messages with `verify_eddsa`.
 '''
 
 from .main import (
-    sign_eddsa, verify_eddsa
+    sign_message, verify_message, encrypt_message, decrypt_message
 )

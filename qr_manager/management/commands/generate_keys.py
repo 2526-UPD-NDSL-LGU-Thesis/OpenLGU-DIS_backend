@@ -11,10 +11,10 @@ from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
 from cryptography.hazmat.primitives import serialization
 
 
-PRIVATE_SIGNING_PRIVATE_KEY_PATH = Path(r"./qr_manager/private_signing_key.pem")
-PRIVATE_ENCRYPTING_PRIVATE_KEY_PATH = Path(r"./qr_manager/private_encrypting_key.pem")
-PUBLIC_SIGNING_PRIVATE_KEY_PATH = Path(r"./qr_manager/public_signing_key.pem")
-PUBLIC_ENCRYPTING_PRIVATE_KEY_PATH = Path(r"./qr_manager/public_encrypting_key.pem")
+PRIVATE_SIGNING_KEY_PATH = Path(r"./qr_manager/private_signing_key.pem")
+PRIVATE_ENCRYPTING_KEY_PATH = Path(r"./qr_manager/private_encrypting_key.pem")
+PUBLIC_SIGNING_KEY_PATH = Path(r"./qr_manager/public_signing_key.pem")
+PUBLIC_ENCRYPTING_KEY_PATH = Path(r"./qr_manager/public_encrypting_key.pem")
 PRIVATE_KEY_PASSWORD = b"password"
 
 
@@ -25,10 +25,10 @@ class Command(BaseCommand):             # pylint: disable=missing-class-docstrin
     def handle(
             self,
             *args,
-            private_signing_key_path : Path = PRIVATE_SIGNING_PRIVATE_KEY_PATH,
-            private_encrypting_key_path : Path = PRIVATE_ENCRYPTING_PRIVATE_KEY_PATH,
-            public_signing_key_path : Path = PUBLIC_SIGNING_PRIVATE_KEY_PATH,
-            public_encrypting_key_path : Path = PUBLIC_ENCRYPTING_PRIVATE_KEY_PATH,
+            private_signing_key_path : Path = PRIVATE_SIGNING_KEY_PATH,
+            private_encrypting_key_path : Path = PRIVATE_ENCRYPTING_KEY_PATH,
+            public_signing_key_path : Path = PUBLIC_SIGNING_KEY_PATH,
+            public_encrypting_key_path : Path = PUBLIC_ENCRYPTING_KEY_PATH,
             private_signing_key_password : bytes = PRIVATE_KEY_PASSWORD,
             private_encrypting_key_password : bytes = PRIVATE_KEY_PASSWORD,
             **options

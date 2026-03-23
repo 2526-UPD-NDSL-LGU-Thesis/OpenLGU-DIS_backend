@@ -16,7 +16,7 @@ import qrcode
 import json
 import base45
 
-from qr_manager import sign_eddsa
+from qr_manager import sign_message
 from .models import User
 from .serializers import UserSerializer
 
