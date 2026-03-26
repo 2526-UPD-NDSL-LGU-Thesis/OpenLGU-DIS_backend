@@ -6,7 +6,13 @@ Tests for MOSIP app.
 from mosip_auth_sdk.models import DemographicsModel
 
 from django.test import TestCase
-from .models import MOSIPCollabUser, to_demographic_data
+from .classes import (
+    MOSIPUser, _to_demographic_data
+)
+
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+# pylint: disable=trailing-whitespace
 
 
 sample_data = {
@@ -20,31 +26,35 @@ sample_data = {
 }
 
 
-class ToDemographicTestCase(TestCase):      # pylint: disable=missing-class-docstring
-    def test_name_to_demographic(self):     # pylint: disable=missing-function-docstring
+class ToDemographicTestCase(TestCase):
+    def test_name_to_demographic(self):
         self.assertEqual(
-            to_demographic_data(name=sample_data["name"][0]["value"]),
+            _to_demographic_data(name=sample_data["name"][0]["value"]),
             DemographicsModel(name=sample_data["name"]),
             "DemographicsModel Test Name (English)"
         )
 
         self.assertEqual(
-            to_demographic_data(name=sample_data["name"][0]["value"]),
+            _to_demographic_data(name=sample_data["name"][0]["value"]),
             DemographicsModel(name=sample_data["name"]),
             "DemographicsModel Test Name (English)"
         )
     
-    def test_dob_to_demographic(self):      # pylint: disable=missing-function-docstring
+    def test_dob_to_demographic(self):
         self.assertEqual(
-            to_demographic_data(dob=sample_data["dob"]),
+            _to_demographic_data(dob=sample_data["dob"]),
             DemographicsModel(dob=sample_data["dob"]),
             "DemographicsModel Test DOB"
         )
 
         self.assertNotEqual(
-            to_demographic_data(dob=sample_data["dob"].replace("/", "-")),
+            _to_demographic_data(dob=sample_data["dob"].replace("/", "-")),
             DemographicsModel(dob=sample_data["dob"].replace("/", "-")),
             "DemographicsModel Test Incorrect format DOB"
         )
 
-
+class MOSIPUserTestCase(TestCase):
+    def test_mosip_kyc(self):
+        self.assertEqual(
+            MOSIPUser
+        )
