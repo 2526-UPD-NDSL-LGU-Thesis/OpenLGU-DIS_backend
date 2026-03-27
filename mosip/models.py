@@ -82,6 +82,7 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
     data = {}
 
     for key, value in kwargs.items():
+        language = None
         key = key.lower()
         
         match key:
