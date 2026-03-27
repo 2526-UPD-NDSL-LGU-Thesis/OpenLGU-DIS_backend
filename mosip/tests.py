@@ -6,7 +6,7 @@ Tests for MOSIP app.
 from mosip_auth_sdk.models import DemographicsModel
 
 from django.test import TestCase
-from .classes import (
+from .models import (
     MOSIPUser, _to_demographic_data
 )
 
@@ -18,7 +18,7 @@ from .classes import (
 sample_data = {
     "name": [{
         "language": "eng",
-        "value":    "James Rodrigious"  
+        "value": "James Rodrigious"  
     }],
     "dob": "1992/04/29",
     "individual_id": "2047631038",
@@ -34,8 +34,9 @@ class ToDemographicTestCase(TestCase):
             "DemographicsModel Test Name (English)"
         )
 
+    def test_name_lang_to_demographic(self):
         self.assertEqual(
-            _to_demographic_data(name=sample_data["name"][0]["value"]),
+            _to_demographic_data(name_eng=sample_data["name"][0]["value"]),
             DemographicsModel(name=sample_data["name"]),
             "DemographicsModel Test Name (English)"
         )
@@ -47,14 +48,15 @@ class ToDemographicTestCase(TestCase):
             "DemographicsModel Test DOB"
         )
 
+    def test_dob_wrong_format_to_demographic(self):
         self.assertNotEqual(
             _to_demographic_data(dob=sample_data["dob"].replace("/", "-")),
             DemographicsModel(dob=sample_data["dob"].replace("/", "-")),
             "DemographicsModel Test Incorrect format DOB"
         )
 
-class MOSIPUserTestCase(TestCase):
-    def test_mosip_kyc(self):
-        self.assertEqual(
-            MOSIPUser
-        )
+# class MOSIPUserTestCase(TestCase):
+#     def test_mosip_kyc(self):
+#         self.assertEqual(
+#             MOSIPUser
+#         )

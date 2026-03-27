@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring
 
-from .classes import (
+from .models import (
     MOSIPUser,
 )

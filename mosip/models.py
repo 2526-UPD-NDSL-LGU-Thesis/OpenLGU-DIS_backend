@@ -4,9 +4,8 @@ Pydantic Models for MOSIP Collab user
 
 import base64
 from datetime import datetime
-from dataclasses import dataclass
 from io import BytesIO
-from typing import Self, Dict, List, Any, Optional, Union
+from typing import Self, Dict, List, Optional, Union
 
 from django.conf import settings
 from dynaconf import Dynaconf
@@ -21,10 +20,9 @@ from requests.models import Response
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
-# pylint: disable=invalid-name
 
 # Initialize Authenticator.
-config = Dynaconf(settings_files=["./mosip/mosip_config.toml"], environments=False)
+config = Dynaconf(settings_files=[settings.CONFIG_MOSIP_SETTINGS], environments=False)
 authenticator = MOSIPAuthenticator(config=config)
 
 
@@ -37,35 +35,67 @@ class MOSIPParserError(MOSIPException):
 
 
 class MOSIPResponseError(BaseModel):
-    """Errors encounted during MOSIP authentication process."""
-    errorCode       : str
-    errorMessage    : str
-    actionMessage   : str
+    """Errors encounted during MOSIP authentication process.
+
+    Args:
+        error_code (str): Type of error
+        error_message (str): Description of error
+        action_message (str): Suggested action to resolve error
+    """
+    error_code : str     = Field(alias="errorCode")
+    error_message : str  = Field(alias="errorMessage")
+    action_message : str = Field(alias="actionMessage")
 
     @classmethod
     def from_dict(cls, error : Dict[str, str]) -> Self :
         return cls(**error)
 
     def __str__(self) -> str :
-        return f"{self.errorCode}: {self.errorMessage} ({self.actionMessage})"
+        return f"{self.error_code}: {self.error_message} ({self.action_message})"
 
 
 class MOSIPAuthStatus(BaseModel):
-    authStatus  : bool
-    authToken   : str
+    """Authentication status of MOSIP Authentication.
+
+    Args:
+        auth_status (bool): Authentication status
+        auth_token (str): Authentication token
+    """
+    auth_status : bool  = Field(alias="authStatus")
+    auth_token : str    = Field(alias="authToken")
 
     @classmethod
     def from_response(cls, response : Response) -> Self :
         response = response.json()
-        return cls(**response)
+        return cls(**response)                  # type: ignore
 
 
 def _to_demographic_data(**kwargs) -> DemographicsModel :
     """A helper function that converts demographic data to a `DemographicsModel` \
     for MOSIP Authentication.
 
-    :param kwargs: Demographic keyword arguments:\n
-        - Name
+    Args:
+        **kwargs: Arbitrary keyword arguments representing demographic data. 
+            Expected keys include:
+            - age (str): Age of the individual.
+            - dob (str): Date of birth in ISO format (YYYY-MM-DD).
+            - name / name_<lang> (list[dict[str, str]]): Names in various languages.
+            - dob_type / dob_type_<lang> (str): Type of date of birth.
+            - gender / gender_<lang> (str): Gender information.
+            - phone_number (str): Contact phone number.
+            - email_id (str): Email address.
+            - address_line1 / address_line1_<lang> (str)
+            - address_line2 / address_line2_<lang> (str)
+            - address_line3 / address_line3_<lang> (str)
+            - location1 / location1_<lang> (str)
+            - location2 / location2_<lang> (str)
+            - location3 / location3_<lang> (str)
+            - postal_code (str)
+            - full_address / full_address_<lang> (str)
+            - metadata (dict): Additional metadata for the individual.
+    
+    Returns:
+        DemographicsModel: A populated `DemographicsModel` instance ready for MOSIP Authentication.
     """
 
     def _to_identity_info(
@@ -75,7 +105,6 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
         """A helper function that converts value to `IdentityInfo`."""
         return [{ "language": language, "value": value }]
     
-    # TODO: How many KYC points are we going to implement?
     if not kwargs:
         raise ValueError("A demographpic field is required for authentication")
 
@@ -122,7 +151,6 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
                 raise MOSIPParserError(
                     f"Unsupported date value: {value} must be in %Y/%m/%d format"
                 )
-            
 
             case _ if key.startswith("name") :
                 try:
@@ -289,7 +317,7 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
 
 
 def decode_face(face_b64 : str) -> str :
-    """Decode face image bytes from MOSIP response body to base64 string."""
+    """Decode face image bytes from MOSIP response body to Base64 string."""
     face_bytes = base64.b64decode(face_b64)[73:]
     face_img = Image.open(BytesIO(face_bytes[:73]))
     try:
@@ -313,37 +341,29 @@ def start_otp(uid : int, email_otp : bool = False, phone_otp : bool = False) -> 
     return response_body["transactionID"]
 
 
-@dataclass
 class MOSIPUser(BaseModel):
-    """
-    User class that handles the response body of MOSIP Authentication SDK's KYC Auth. \
+    """User class from MOSIP Authentication SDK's response body.
 
-    
     Interfaces the decrypted response body of a successful authentication transaction. \
     Otherwise, raise an `ExceptionGroup` of all errors from response body when authentication \
     fails.
 
+    For more information regarding the SDK, see the documentation:
+    https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/mosip-authentication-sdk
     
-    Attributes
-    ----------
-    name        : dict[str, str]
-        A dictionary of the user's name in different locales.
-    gender      : dict[str, str]
-        A dictionary of the user's gender in different locales.
-    dob         : str
-        User's date of birth.
-    location1   : dict[str, str]
-        A dictionary of the user's location in different locales.
-    phone       : str
-        User's phone number.
-    email       : str
-        User's email address.
-    face        : bytes
-        User's face image in base64 bytes form.
-    
-    
-    For more information regarding the SDK, read the \
-    [documentation](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/mosip-authentication-sdk).     # pylint: disable=line-too-long
+    Attributes:
+        uid (int): User's unique identifier
+        name (dict[str, str]): User's name in different locales (e.g., 'eng', 'fil')
+        gender (dict[str, str]): User's gender in different locales
+        dob (str): User's date of birth
+        location1 (dict[str, str]): User's location fields in different locales
+        phone (str): Phone number
+        email (str): Email address
+        face (bytes): Base64-encoded face image
+
+    Raises:
+        MOSIPParserError: Errors encountered during demographic data cleaning
+        MOSIPResponseError: Errors encountered during authentication
     """
     uid        : int
     name       : Dict[str, str] = Field(default_factory=dict)
@@ -356,7 +376,7 @@ class MOSIPUser(BaseModel):
 
     @classmethod
     def from_response(cls, response : Response) -> Self :
-        """Decrypt the MOSIP response body."""
+        """Decrypt User info from MOSIP response."""
         response = response.json()
 
         mosip_user = {}
@@ -368,6 +388,7 @@ class MOSIPUser(BaseModel):
                 key_var, key_lang = key.split("_")
 
                 match key_var:
+                    # TODO: Add other demographics
                     case "name":
                         mosip_user["name"][key_lang] = value
                     case "gender":
@@ -384,56 +405,6 @@ class MOSIPUser(BaseModel):
         
         return cls(**mosip_user)
 
-    @classmethod
-    def kyc_via_demographics(cls, uid : int, **data) -> Self :
-        """Verifies if given details is a MOSIP Collab user using the KYC Authentication.
-
-        :param uid: User's MOSIP ID.
-        :type uid: int
-        :return: Returns a `MOSIPCollabUser` or an `ExceptionGroup`.
-        :rtype: Self
-        """
-        response = authenticator.kyc(
-            individual_id=uid,
-            individual_id_type="UIN",
-            demographic_data=_to_demographic_data(**data),
-            consent=True
-        )
-        
-        return cls.from_response(response)
-
-    @classmethod
-    def auth_via_demographics(cls, uid : int, **data) -> Self :
-        """Verifies if given details is a MOSIP Collab user using the KYC Authentication.
-
-        :param uid: User's MOSIP ID.
-        :type uid: int
-        :return: Returns a `MOSIPCollabUser` or an `ExceptionGroup`.
-        :rtype: Self
-        """
-        response = authenticator.auth(
-            individual_id=uid,
-            individual_id_type="UIN",
-            demographic_data=_to_demographic_data(**data),
-            consent=True
-        )
-
-        return cls.from_response(response)
-    
-    @classmethod
-    def kyc_via_otp(cls, uid : int, txn_id : str, otp : str) -> Self :
-        """Verifies if given details is a MOSIP Collab user using the OTP Authentication."""
-        # OTP is 111111
-        response = authenticator.kyc(
-            individual_id=uid,
-            individual_id_type="UIN",
-            txn_id=txn_id,
-            otp_value=otp,
-            consent=True
-        )
-
-        return cls.from_response(response)
-
     @property
     def info(self) -> Dict[str, str | int] :
         """
@@ -447,12 +418,22 @@ class MOSIPUser(BaseModel):
 
 
 class MOSIPResponse(BaseModel):
-    transactionID   : str
-    version         : str
-    id              : str
-    errors          : Optional[List[MOSIPResponseError]]
-    responseTime    : str
-    response        : Optional[Union[MOSIPUser, MOSIPAuthStatus]]
+    """Response body from MOSIP API.
+
+    Attributes:
+        transaction_id (str): MOSIP transaction id
+        version (str): MOSIP Version
+        id (str): id
+        errors (ExceptionGroup): Errors during MOSIP authentication
+        response_time (str): Transaction response time
+        response (Union[MOSIPUser, MOSIPAuthStatus]): Result of response
+    """
+    transaction_id : str = Field(alias="transactionID")
+    version : str
+    id : str
+    errors : Optional[List[MOSIPResponseError]]
+    response_time : str = Field(alias="responseTime")
+    response : Optional[Union[MOSIPUser, MOSIPAuthStatus]]
 
     @classmethod
     def from_response(cls, response : Response) -> Self :
@@ -468,9 +449,9 @@ class MOSIPResponse(BaseModel):
             errors = []
         
         try:
-            response = MOSIPUser.from_response(response)
+            response_result = MOSIPUser.from_response(response)
         except:
-            response = MOSIPAuthStatus.from_response(response)
+            response_result = MOSIPAuthStatus.from_response(response)
 
         return cls(
             transactionID=response_json["transactionID"],
@@ -478,5 +459,89 @@ class MOSIPResponse(BaseModel):
             id=response_json["id"],
             errors=errors,
             responseTime=response_json["responseTime"],
-            response=response,
+            response=response_result,
         )
+    
+    @classmethod
+    def kyc_via_demographics(cls, uid : int, **data) -> Self :
+        """Performs KYC verification using demographic data.
+
+        Args:
+            uid (int): User's UID
+
+        Raises:
+            ExceptionGroup: Errors was encountered during the verification process
+        """
+        response = authenticator.kyc(
+            individual_id=uid,
+            individual_id_type="UIN",
+            demographic_data=_to_demographic_data(**data),
+            consent=True
+        )
+        
+        return cls.from_response(response)
+
+    @classmethod
+    def auth_via_demographics(cls, uid : int, **data) -> Self :
+        """Performs user authentication using demographic data.
+
+        Args:
+            uid (int): Unique identifier
+
+        Raises:
+            ExceptionGroup: Errors was encountered during the verification process
+        """
+        response = authenticator.auth(
+            individual_id=uid,
+            individual_id_type="UIN",
+            demographic_data=_to_demographic_data(**data),
+            consent=True
+        )
+
+        return cls.from_response(response)
+    
+    @classmethod
+    def kyc_via_otp(cls, uid : int, txn_id : str, otp : str) -> Self :
+        """Performs KYC verification using OTP.
+
+        Args:
+            uid (int): Unique identifier
+            txn_id (str): transaction ID of KYC verification
+            otp (str): OTP value
+
+        Raises:
+            ExceptionGroup: Errors was encountered during the verification process
+        """
+        # OTP is 111111
+        response = authenticator.kyc(
+            individual_id=uid,
+            individual_id_type="UIN",
+            txn_id=txn_id,
+            otp_value=otp,
+            consent=True
+        )
+
+        return cls.from_response(response)
+    
+    @classmethod
+    def auth_via_otp(cls, uid : int, txn_id : str, otp : str) -> Self :
+        """Performs user authentication using OTP.
+
+        Args:
+            uid (int): Unique identifier
+            txn_id (str): transaction ID of KYC verification
+            otp (str): OTP value
+
+        Raises:
+            ExceptionGroup: Errors was encountered during the verification process
+        """
+        # OTP is 111111
+        response = authenticator.auth(
+            individual_id=uid,
+            individual_id_type="UIN",
+            txn_id=txn_id,
+            otp_value=otp,
+            consent=True
+        )
+
+        return cls.from_response(response)

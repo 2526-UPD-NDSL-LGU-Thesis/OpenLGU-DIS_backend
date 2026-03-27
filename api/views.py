@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pyzbar.pyzbar import decode
-from mosip.models import MOSIPCollabUser, MOSIPException, start_otp
+from mosip.models import MOSIPUser, MOSIPException, start_otp
 from io import BytesIO
 import cbor2
 import base45
@@ -71,7 +71,7 @@ def verify(request : HttpRequest) -> JsonResponse :
     pcn  = request.data.get("PCN")
 
     try:
-        user = MOSIPCollabUser.verify_kyc(pcn=pcn, name_eng=name, dob=dob)
+        user = MOSIPUser.verify_kyc(pcn=pcn, name_eng=name, dob=dob)
         return JsonResponse(user.__dict__, status=200)
     except MOSIPException:
         return JsonResponse({ "Authentication failed." }, status=400)
@@ -182,7 +182,7 @@ def verify_otp(request : HttpRequest) -> JsonResponse :
     otp = request.data.get("otp")
 
     try:
-        user = MOSIPCollabUser.verify_otp(pcn=pcn, txn_id=txn, otp=otp)
+        user = MOSIPUser.verify_otp(pcn=pcn, txn_id=txn, otp=otp)
         return JsonResponse(user.__dict__, status=200)
     except MOSIPException:
         return JsonResponse({ "Authentication failed." }, status=400)
