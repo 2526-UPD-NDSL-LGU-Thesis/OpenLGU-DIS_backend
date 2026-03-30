@@ -13,4 +13,5 @@ pillow
 qrcode
 pycose
 pydantic
+pynacl
 pyzbar
