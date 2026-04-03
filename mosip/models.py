@@ -273,7 +273,10 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
 
             case _ :
                 raise MOSIPParsingError(f"Unsupported parameter: {key}: {value}")
-            
+
+    if not(data):
+        raise MOSIPParsingError("A demographic field is required to do authentication with demographic")
+    
     return DemographicsModel(**data)
 
 
