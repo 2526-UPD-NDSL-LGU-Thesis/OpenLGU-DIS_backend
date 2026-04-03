@@ -21,8 +21,8 @@ class MOSIPAuthManager:
     Returns:
         MOSIPAuthenticator: Authenticator for MOSIP transactions.
     """
-    authenticator : Optional[MOSIPAuthenticator] = None
-    initialized : bool = False
+    _authenticator : Optional[MOSIPAuthenticator] = None
+    _initialized : bool = False
 
     def get_authenticator(self) -> Optional[MOSIPAuthenticator] :
         """Initializes and fetches the `MOSIPAuthenticator`.
@@ -34,18 +34,18 @@ class MOSIPAuthManager:
             Optional[MOSIPAuthenticator]: Authenticator for MOSIP transactions, \
                 or None if failed to initialize.
         """
-        if self.initialized:
-            if self.authenticator:
-                return self.authenticator
+        if self._initialized:
+            if self._authenticator:
+                return self._authenticator
             else:
                 raise RuntimeError("Authenticator not initialized.")
         
         try:
             config = Dynaconf(settings_files=[settings.CONFIG_MOSIP_SETTINGS], environments=False)
-            self.authenticator = MOSIPAuthenticator(config=config)
+            self._authenticator = MOSIPAuthenticator(config=config)
         except Exception as err:
             print(f"Failed to initialized MOSIPAuthenticator: {err}")
-            self.authenticator = None
-        self.initialized = True
+            self._authenticator = None
+        self._initialized = True
 
-        return self.authenticator
+        return self._authenticator
