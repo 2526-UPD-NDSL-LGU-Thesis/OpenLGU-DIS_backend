@@ -1,33 +1,52 @@
-"""
-Pydantic Models for MOSIP Collab user.
-"""
-
 import base64
 from collections import defaultdict
 from datetime import datetime
 from io import BytesIO
-from typing import Self, Dict, List, Optional
+from typing import Self, Dict, List, Optional, Union
 
+from django.conf import settings
+from dynaconf import Dynaconf
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
+from mosip_auth_sdk import MOSIPAuthenticator
 from mosip_auth_sdk.models import DemographicsModel
-from pydantic import BaseModel, Field, AliasChoices
+from pydantic import BaseModel, Field, AliasChoices, computed_field, field_validator
 from PIL import Image
 from requests.models import Response
 
-from .exceptions import (
-    MOSIPException, MOSIPParsingError,
-    MOSIPMissingFieldError,
-    MOSIPLanguageError
-)
 
-from .authenticator import MOSIPAuthManager
+def decode_face(face_b64 : str) -> str :
+    """Decode face image bytes from MOSIP response body to Base64 string."""
+    face_bytes = base64.b64decode(face_b64)[73:]
+    face_img = Image.open(BytesIO(face_bytes))
+    try:
+        face_img.load()
+    except Exception as err:
+        raise MOSIPException("Failed to decode image") from err
 
-# pylint: disable=trailing-whitespace
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-    
-manager = MOSIPAuthManager()
+    return base64.b64encode(face_bytes).decode("utf-8")
+
+
+class MOSIPException(Exception):
+    """Base class for MOSIP errors."""
+    def __init__(self, *args):
+        super().__init__(*args)
+
+
+class MOSIPParsingError(MOSIPException):
+    """Errors from parsing demographic data."""
+
+
+class MOSIPMissingFieldError(MOSIPException):
+    """Errors from missing required field/s in demograpic data."""
+
+
+class MOSIPLanguageError(MOSIPException):
+    """Errors from using unsupported language in transactions."""
+
+
+def get_authenticator():
+    pass
 
 
 def _to_demographic_data(**kwargs) -> DemographicsModel :
@@ -69,7 +88,7 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
     if not kwargs:
         raise MOSIPMissingFieldError("A demographpic field is required for authentication")
 
-    data = defaultdict(dict)
+    data = {}
 
     for key, value in kwargs.items():
         language = None
@@ -277,16 +296,50 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
     return DemographicsModel(**data)
 
 
-def decode_face(face_b64 : str) -> str :
-    """Decode face image bytes from MOSIP response body to Base64 string."""
-    face_bytes = base64.b64decode(face_b64)[73:]
-    face_img = Image.open(BytesIO(face_bytes))
-    try:
-        face_img.load()
-    except Exception as err:
-        raise MOSIPException("Failed to decode image") from err
+class MOSIPResponseError(BaseModel):
+    """Errors encounted during MOSIP authentication process.
 
-    return base64.b64encode(face_bytes).decode("utf-8")
+    Args:
+        error_code (str): Type of error
+        error_message (str): Description of error
+        action_message (str): Suggested action to resolve error
+    """
+    error_code : str = Field(validation_alias="errorCode")
+    error_message : str = Field(validation_alias="errorMessage")
+    action_message : Optional[str] = Field(
+            default=None,
+            validation_alias="actionMessage"
+        )
+
+    @classmethod
+    def from_dict(cls, error : Dict[str, str]) -> Self :
+        return cls(**error)
+
+    def __str__(self) -> str :
+        return f"{self.error_code}: {self.error_message} ({self.action_message})"
+
+
+class MOSIPBaseResponseStatus(BaseModel):
+    status : bool = Field(
+        validation_alias=AliasChoices(
+            "kycStatus", "authStatus"
+        )
+    )
+    auth_token : Optional[str] = Field(
+            default=None,
+            validation_alias="authToken"
+        )
+    thumbprint : Optional[str] = Field(default=None)
+    identity : Optional[str] = Field(default=None)
+    session_key : Optional[str] = Field(
+            default=None,
+            validation_alias="sessionKey"
+        )
+
+
+class MOSIPGenOTPResponse(BaseModel):
+    masked_mobile : str = Field(validation_alias="maskedMobile")
+    masked_Email : str = Field(validation_alias="maskedEmail")
 
 
 class MOSIPUser(BaseModel):
@@ -313,7 +366,7 @@ class MOSIPUser(BaseModel):
         MOSIPParsingError: Errors encountered during demographic data cleaning
         MOSIPResponseError: Errors encountered during authentication
     """
-    uid        : Optional[int] = Field(default=None)
+    # uid        : int
     name       : Dict[str, str] = Field(default_factory=dict)
     gender     : Dict[str, str] = Field(default_factory=dict)
     dob        : str
@@ -323,14 +376,13 @@ class MOSIPUser(BaseModel):
     face       : bytes
 
     @classmethod
-    def from_response(cls, response : Response) -> Self :
+    def from_response(cls, raw_response : Response) -> Self :
         """Decrypt User info from MOSIP response."""
-        response = response.json()
+        raw_response = raw_response.json()
 
-        authenticator = manager.get_authenticator()
         mosip_user = defaultdict(dict)
 
-        decrypted_response = authenticator.decrypt_response(response)
+        decrypted_response = authenticator.decrypt_response(raw_response)
 
         for key, value in decrypted_response.items():
             try:
@@ -364,51 +416,6 @@ class MOSIPUser(BaseModel):
             key: value for key, value in self.__dict__.items()
             if key != "face"
         }
-
-
-class MOSIPResponseError(BaseModel):
-    """Errors encounted during MOSIP authentication process.
-
-    Args:
-        error_code (str): Type of error
-        error_message (str): Description of error
-        action_message (str): Suggested action to resolve error
-    """
-    error_code : str = Field(validation_alias="errorCode")
-    error_message : str = Field(validation_alias="errorMessage")
-    action_message : Optional[str] = Field(
-            default=None,
-            validation_alias="actionMessage"
-        )
-
-    def __str__(self) -> str :
-        if self.action_message:
-            return f"{self.error_code}: {self.error_message} ({self.action_message})"
-        else:
-            return f"{self.error_code}: {self.error_message}"
-
-
-class MOSIPBaseResponseStatus(BaseModel):
-    status : bool = Field(
-        validation_alias=AliasChoices(
-            "kycStatus", "authStatus"
-        )
-    )
-    auth_token : Optional[str] = Field(
-            default=None,
-            validation_alias="authToken"
-        )
-    thumbprint : Optional[str] = Field(default=None)
-    identity : Optional[str] = Field(default=None)
-    session_key : Optional[str] = Field(
-            default=None,
-            validation_alias="sessionKey"
-        )
-
-
-class MOSIPGenOTPResponse(BaseModel):
-    masked_mobile : str = Field(validation_alias="maskedMobile")
-    masked_Email : str = Field(validation_alias="maskedEmail")
 
 
 class MOSIPBaseResponse(BaseModel):
@@ -458,8 +465,6 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
             otp (str): OTP value
         """
         # OTP is 111111
-        authenticator = manager.get_authenticator()
-
         raw_response = authenticator.kyc(
             individual_id=uid,
             individual_id_type="UIN",
@@ -477,7 +482,6 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
         Args:
             uid (int): User's UID
         """
-        authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
 
         raw_response = authenticator.kyc(
@@ -506,8 +510,6 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
             otp (str): OTP value
         """
         # OTP is 111111
-        authenticator = manager.get_authenticator()
-
         raw_response = authenticator.auth(
             individual_id=uid,
             individual_id_type="UIN",
@@ -525,7 +527,6 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         Args:
             uid (int): Unique identifier
         """
-        authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
 
         raw_response = authenticator.auth(
@@ -536,3 +537,89 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         )
 
         return cls.from_response(raw_response)
+
+
+config = Dynaconf(settings_files=["./mosip/mosip_config.toml"], environments=False)
+authenticator = MOSIPAuthenticator(config=config)
+
+# kyc auth
+demographics_data = DemographicsModel(
+    name=[{"language": "eng", "value": "James Rodrigious"}],
+)
+
+print()
+response = authenticator.kyc(
+    individual_id="2047631038",
+    individual_id_type="UIN",
+    demographic_data=demographics_data,
+    consent=True,
+)
+decrypted_response = authenticator.decrypt_response(response.json())
+print("response: ", decrypted_response.keys())
+print()
+
+# print("Response: ", response.json().keys())
+# response = MOSIPBaseResponse.from_response(response)
+# print("Response Model: ", response.model_dump().keys())
+# print("Response Response Model: ", response.response.model_dump().keys())
+
+# response = MOSIPKYCResponse.from_demographics(uid="2047631038", 
+#     name="James Rodrigious"
+# )
+# print(response.model_dump().keys())
+# print(response.user.model_dump().keys())
+# print(response.errors)
+
+
+# response = authenticator.auth(
+#     individual_id="2047631038",
+#     individual_id_type="UIN",
+#     demographic_data=demographics_data,
+#     consent=True,
+# )
+# response_body = response.json()
+# print("auth via demographics", response_body.keys())
+# print("response", response_body["response"].keys())
+# print()
+
+# response = authenticator.genotp(
+#     individual_id="2047631038",
+#     individual_id_type="UIN",
+#     email=True,
+#     phone=True,
+# )
+# print(type(response))
+# response_body = response.json()
+# transaction_id = response_body["transactionID"]
+# response = authenticator.kyc(
+#     individual_id="2047631038",
+#     individual_id_type="UIN",
+#     otp_value="111111",
+#     consent=True,
+#     txn_id=transaction_id,
+# )
+# response_body = response.json()
+# print("kyc via otp", response_body.keys())
+# decrypted_response = authenticator.decrypt_response(response_body)
+# print("response: ", decrypted_response.keys())
+# print()
+
+# response = authenticator.genotp(
+#     individual_id="2047631038",
+#     individual_id_type="UIN",
+#     email=True,
+#     phone=True,
+# )
+# response_body = response.json()
+# transaction_id = response_body["transactionID"]
+# response = authenticator.auth(
+#     individual_id="2047631038",
+#     individual_id_type="UIN",
+#     otp_value="111111",
+#     consent=True,
+#     txn_id=transaction_id,
+# )
+# response_body = response.json()
+# print("auth via otp", response_body.keys())
+# print("response", response_body["response"].keys())
+# print()
