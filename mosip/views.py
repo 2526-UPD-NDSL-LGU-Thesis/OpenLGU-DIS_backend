@@ -7,12 +7,12 @@ from .models import (
 
 
 @api_view(['POST'])
-def start_otp(request : HttpRequest) :
+def auth_via_demographics(request : HttpRequest) :
     pass
 
 
 @api_view(['POST'])
-def auth_via_demographics(request : HttpRequest) :
+def auth_start_otp(request : HttpRequest) :
     pass
 
 
@@ -23,6 +23,11 @@ def auth_via_otp(request : HttpRequest) :
 
 @api_view(['POST'])
 def kyc_via_demographics(request : HttpRequest) :
+    pass
+
+
+@api_view(['POST'])
+def kyc_start_otp(request : HttpRequest) :
     pass
 
 
