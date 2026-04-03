@@ -275,7 +275,9 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
                 raise MOSIPParsingError(f"Unsupported parameter: {key}: {value}")
 
     if not(data):
-        raise MOSIPParsingError("A demographic field is required to do authentication with demographic")
+        raise MOSIPMissingFieldError(
+            "A demographic field is required to do authentication with demographic"
+        )
     
     return DemographicsModel(**data)
 
@@ -409,9 +411,15 @@ class MOSIPBaseResponseStatus(BaseModel):
         )
 
 
-class MOSIPGenOTPResponse(BaseModel):
-    masked_mobile : str = Field(validation_alias="maskedMobile")
-    masked_Email : str = Field(validation_alias="maskedEmail")
+class MOSIPOTPResponse(BaseModel):
+    masked_mobile : Optional[str] = Field(
+        default=None,
+        validation_alias="maskedMobile"
+        )
+    masked_Email : Optional[str] = Field(
+        default=None,
+        validation_alias="maskedEmail"
+        )
 
 
 class MOSIPBaseResponse(BaseModel):
@@ -536,6 +544,31 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
             individual_id_type="UIN",
             demographic_data=demographic_data,
             consent=True
+        )
+
+        return cls.from_response(raw_response)
+
+
+class MOSIPGenOTPResponse(MOSIPBaseResponse):
+    response : Optional[MOSIPOTPResponse]
+
+    @classmethod
+    def start_otp(
+        cls, 
+        uid : int,
+        use_email : bool = True,
+        use_phone : bool = True
+    ) -> Self : 
+        authenticator = manager.get_authenticator()
+
+        if not(any(use_email, use_phone)):
+            raise MOSIPMissingFieldError
+
+        raw_response = authenticator.genotp(
+            individual_id=uid,
+            individual_id_type="UIN",
+            email=use_email,
+            phone=use_phone,
         )
 
         return cls.from_response(raw_response)

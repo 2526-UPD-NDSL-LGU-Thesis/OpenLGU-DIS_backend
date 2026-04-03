@@ -547,16 +547,16 @@ demographics_data = DemographicsModel(
     name=[{"language": "eng", "value": "James Rodrigious"}],
 )
 
-print()
-response = authenticator.kyc(
-    individual_id="2047631038",
-    individual_id_type="UIN",
-    demographic_data=demographics_data,
-    consent=True,
-)
-decrypted_response = authenticator.decrypt_response(response.json())
-print("response: ", decrypted_response.keys())
-print()
+# print()
+# response = authenticator.kyc(
+#     individual_id="2047631038",
+#     individual_id_type="UIN",
+#     demographic_data=demographics_data,
+#     consent=True,
+# )
+# decrypted_response = authenticator.decrypt_response(response.json())
+# print("response: ", decrypted_response.keys())
+# print()
 
 # print("Response: ", response.json().keys())
 # response = MOSIPBaseResponse.from_response(response)
@@ -582,14 +582,16 @@ print()
 # print("response", response_body["response"].keys())
 # print()
 
-# response = authenticator.genotp(
-#     individual_id="2047631038",
-#     individual_id_type="UIN",
-#     email=True,
-#     phone=True,
-# )
-# print(type(response))
-# response_body = response.json()
+response = authenticator.genotp(
+    individual_id="2047631038",
+    individual_id_type="UIN",
+    email=True,
+    phone=True,
+)
+print(type(response))
+response_body = response.json()
+print(response_body.keys())
+print(response_body["response"].keys())
 # transaction_id = response_body["transactionID"]
 # response = authenticator.kyc(
 #     individual_id="2047631038",
