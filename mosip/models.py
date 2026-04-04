@@ -556,8 +556,8 @@ class MOSIPGenOTPResponse(MOSIPBaseResponse):
     def start_otp(
         cls, 
         uid : int,
-        use_email : bool = True,
-        use_phone : bool = True
+        use_email : bool = False,
+        use_phone : bool = False
     ) -> Self : 
         authenticator = manager.get_authenticator()
 
