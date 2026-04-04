@@ -274,7 +274,7 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
             case _ :
                 raise MOSIPParsingError(f"Unsupported parameter: {key}: {value}")
 
-    if not(data):
+    if not data:
         raise MOSIPMissingFieldError(
             "A demographic field is required to do authentication with demographic"
         )
@@ -561,8 +561,8 @@ class MOSIPGenOTPResponse(MOSIPBaseResponse):
     ) -> Self : 
         authenticator = manager.get_authenticator()
 
-        if not(any(use_email, use_phone)):
-            raise MOSIPMissingFieldError
+        if not any(use_email, use_phone):
+            raise MOSIPMissingFieldError("Atleast one OTP method should be specified.")
 
         raw_response = authenticator.genotp(
             individual_id=uid,
@@ -572,3 +572,6 @@ class MOSIPGenOTPResponse(MOSIPBaseResponse):
         )
 
         return cls.from_response(raw_response)
+
+#TODO: Change exceptions to MOSIP model errors
+#TODO: Find a way to enforce kyc gen OTP is used for kyc gen OTP
