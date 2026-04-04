@@ -325,7 +325,7 @@ class MOSIPUser(BaseModel):
     location1  : Dict[str, str] = Field(default_factory=dict)
     phone      : str
     email      : str
-    face       : bytes
+    face       : str
 
     @classmethod
     def from_response(cls, response : Response) -> Self :
