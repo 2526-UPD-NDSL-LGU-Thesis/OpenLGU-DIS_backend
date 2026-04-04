@@ -561,7 +561,7 @@ class MOSIPGenOTPResponse(MOSIPBaseResponse):
     ) -> Self : 
         authenticator = manager.get_authenticator()
 
-        if not any(use_email, use_phone):
+        if not any([use_email, use_phone]):
             raise MOSIPMissingFieldError("Atleast one OTP method should be specified.")
 
         raw_response = authenticator.genotp(
