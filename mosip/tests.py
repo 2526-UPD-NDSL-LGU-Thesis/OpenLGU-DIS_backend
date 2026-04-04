@@ -2,17 +2,13 @@
 Tests for MOSIP app.
 """
 
-
-from mosip_auth_sdk.models import DemographicsModel
 import json
 
-
 from django.test import TestCase
-from .models import (
-    MOSIPUser, _to_demographic_data
-)
+from mosip_auth_sdk.models import DemographicsModel
 from rest_framework.test import APIRequestFactory
 
+from .models import _to_demographic_data
 from . import views as mosip_views
 
 # pylint: disable=missing-class-docstring
@@ -76,7 +72,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.ping(request)
         
-        assert(response.status_code==200)
+        assert response.status_code==200
 
     def test_auth_via_demographics(self):
         request = self.factory.post(
@@ -90,7 +86,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.auth_via_demographics(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
     
     def test_auth_start_otp(self):
         request = self.factory.post(
@@ -104,7 +100,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.auth_start_otp(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
 
     def test_auth_via_otp(self):
         request = self.factory.post(
@@ -118,7 +114,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.auth_start_otp(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
 
         content = json.loads(response.content)
 
@@ -134,7 +130,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.auth_via_otp(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
 
     def test_kyc_via_demographics(self):
         request = self.factory.post(
@@ -148,7 +144,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.kyc_via_demographics(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
 
     def test_kyc_start_otp(self):
         request = self.factory.post(
@@ -162,7 +158,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.kyc_start_otp(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
 
     def test_kyc_via_otp(self):
         request = self.factory.post(
@@ -176,7 +172,7 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.kyc_start_otp(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200
 
         content = json.loads(response.content)
 
@@ -192,4 +188,4 @@ class MOSIPAPITestCase(TestCase):
 
         response = mosip_views.kyc_via_otp(request)
 
-        assert(response.status_code==200)
+        assert response.status_code==200

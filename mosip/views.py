@@ -1,9 +1,13 @@
+"""
+API views for MOSIP app.
+"""
+
 from django.http import HttpRequest, JsonResponse
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import status
 
 from .models import (
-    MOSIPBaseResponse, MOSIPKYCResponse, MOSIPAuthResponse, MOSIPGenOTPResponse
+    MOSIPKYCResponse, MOSIPAuthResponse, MOSIPGenOTPResponse
 )
 
 # pylint: disable=trailing-whitespace
