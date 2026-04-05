@@ -1,3 +1,7 @@
+'''
+Top level router. Sends traffic out to frontend apps.
+'''
+
 from django.urls import path, include
 from rest_framework import routers
 from . import views as api_views
