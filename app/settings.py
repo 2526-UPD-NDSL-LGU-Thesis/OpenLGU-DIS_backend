@@ -205,6 +205,7 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'uploads')
 
 # Default Configurations
 DEFAULT_LANGUAGE_ISO = 'eng'
+VERSION = 1.0
 
 # Config Files
 CONFIG_MOSIP_SETTINGS = r'./mosip/mosip_config.toml'
