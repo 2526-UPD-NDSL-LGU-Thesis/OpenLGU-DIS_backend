@@ -191,45 +191,49 @@ def digitalid(request : HttpRequest) -> JsonResponse :
 # @authentication_classes([BasicAuthentication])
 # @permission_classes([IsAuthenticated])
 def authenticate_message(request : HttpRequest) -> JsonResponse :
-    qr = request.data.get("qr")
-    b45_qr = base45.b45encode(qr)
+    qr_data = request.data.get("qr_data")
+
+    if not qr_data:
+        return JsonResponse({"message": "Missing qr_data"}, status=400)
+
+    # TODO check this LLM-generated: Support both raw Base45 text and prefixed payloads like "PH1:<base45>".
+    #if isinstance(qr_data, str) and qr_data.startswith("PH1:"):
+    #    qr_data = qr_data[4:]
+
+    try:
+        decoded_b45 = base45.b45decode(qr_data)
+    except Exception:
+        return JsonResponse({"message": "QR could not be decoded"}, status=400)
     
     try:
-        uncompressed_msg = zlib.decompress(b45_qr)
+        uncompressed_msg = zlib.decompress(decoded_b45)
+    except Exception:
+        return JsonResponse({"message": "QR could not be decompressed"}, status=400)
+    '''
+    try:
+        decrypted_msg = decrypt_message(uncompressed_msg)
+    except Exception:
+        return JsonResponse({"message": "QR could not be decrypted"}, status=400)
+    '''
+
+    try:
+        verified_msg = verify_message(uncompressed_msg)
+        cwt_msg = cbor2.loads(verified_msg)
+        claim_169 = cbor2.loads(cwt_msg[169])
+
+        print("test1")
+        payload = {
+            "iss": cwt_msg[1],
+            "iat": cwt_msg[6],
+            "pcn": claim_169[1],
+            "img": base64.b64encode(claim_169[16]).decode("utf-8"),
+            "imt": claim_169[17],
+            "lid": claim_169[99],
+        }
         
-        try:
-            decrypted_msg = decrypt_message(uncompressed_msg)
-
-            try:
-                verified_msg = verify_message(decrypted_msg)
-
-                cwt_msg = cbor2.loads(verified_msg)
-                claim_169 = cbor2.loads(cwt_msg[169])
-
-                payload = {
-                    "iss" : cwt_msg[1],
-                    "iat" : cwt_msg[6],
-                    "pcn" : claim_169[1],
-                    "img" : base64.b64encode(claim_169[16]).decode("utf-8"),
-                    "imt" : claim_169[17],
-                    "lid" : claim_169[99]
-                }
-                
-                return JsonResponse(
-                    payload, status=200
-                )
-            except:
-                return JsonResponse(
-                    { "message" : "QR could not be verified" }, status=401
-                )
-        except:
-            return JsonResponse(
-                { "message" : "QR could not be decrypted" }, status=401
-            )
-    except:
-        return JsonResponse(
-            { "message" : "QR could not be decompressed" }, status=401
-        )
+        return JsonResponse(payload, status=200)
+    except Exception:
+        return JsonResponse({"message": "QR could not be verified"}, status=401)
 
 @api_view(['POST'])
 def verify_id(request: HttpRequest) -> JsonResponse:

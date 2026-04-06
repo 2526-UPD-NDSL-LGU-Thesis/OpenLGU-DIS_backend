@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [ # TODO why is this necessary? https://docs.djangoproject.com/e
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000', # TODO is this necessary? It's itself?
+    
     'http://localhost:5173', # 
 ]
 
