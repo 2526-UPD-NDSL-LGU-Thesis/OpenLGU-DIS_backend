@@ -200,12 +200,12 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
     #if isinstance(qr_data, str) and qr_data.startswith("PH1:"):
     #    qr_data = qr_data[4:]
 
-    try:
+    try: # to decode
         decoded_b45 = base45.b45decode(qr_data)
     except Exception:
         return JsonResponse({"message": "QR could not be decoded"}, status=400)
     
-    try:
+    try: # to uncompress
         uncompressed_msg = zlib.decompress(decoded_b45)
     except Exception:
         return JsonResponse({"message": "QR could not be decompressed"}, status=400)
@@ -216,24 +216,43 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
         return JsonResponse({"message": "QR could not be decrypted"}, status=400)
     '''
 
-    try:
-        verified_msg = verify_message(uncompressed_msg)
+    try: # to verify
+        verified_msg = verify_message(uncompressed_msg) # TOD IMPLEMENT
+
+
         cwt_msg = cbor2.loads(verified_msg)
         claim_169 = cbor2.loads(cwt_msg[169])
 
-        print("test1")
         payload = {
-            "iss": cwt_msg[1],
-            "iat": cwt_msg[6],
-            "pcn": claim_169[1],
-            "img": base64.b64encode(claim_169[16]).decode("utf-8"),
-            "imt": claim_169[17],
-            "lid": claim_169[99],
+            "result": "success",  # TODO PROBABLY SHOULD ENCODE TYPING TO MAKE PARITY WITH FRONTEND
+            "profile": {
+                "issued_by": cwt_msg[1],
+                "epoc_time_issued_at": cwt_msg[2],
+                "pcn": claim_169[1],
+                "full_name": claim_169[4],
+                "birthdate": claim_169[8],
+                "gender": claim_169[9],
+                "face_data": base64.b64encode(claim_169[16]).decode("utf-8"),
+                "image_format": claim_169[17],
+                "lgu_uid": claim_169[99],
+            }
         }
         
+        print("payload created successfully:", payload)
         return JsonResponse(payload, status=200)
+    except Exception as e: # TODO specifically recognize that it was the verifier that failed here. This could be the response for anything bad that happens above
+        # import traceback
+        # print(f"Verification failed: {str(e)}")
+        # traceback.print_exc()
+        # return JsonResponse({"message": f"QR could not be verified: {str(e)}"}, status=401)
+
+        payload = {
+            "result": "error_tampered"
+        }
+        return JsonResponse(payload, status=200) # TODO what proper status?
+
     except Exception:
-        return JsonResponse({"message": "QR could not be verified"}, status=401)
+        return  JsonResponse({"message": "Something went quite wrong"}, status=67)
 
 @api_view(['POST'])
 def verify_id(request: HttpRequest) -> JsonResponse:
