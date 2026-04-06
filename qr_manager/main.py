@@ -118,25 +118,29 @@ def sign_message(
     return signing_key.sign(message)
 
 
-# def sign_eddsa(message : Dict[str, Any]) -> bytes :
-#     """Generate a COSE_Sign1 signed message with EdDSA Algorithm.
+def sign_eddsa(message : Dict[str, Any]) -> bytes :
+    """Generate a COSE_Sign1 signed message with EdDSA Algorithm.
 
-#     :param message: Message to be encrypted and signed.
-#     :type message: Dict[str, Any]
-#     :return: COSE_Sign1 signed message.
-#     :rtype: bytes
-#     """
-#     cose_key = _load_eddsa_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
+    :param message: Message to be encrypted and signed.
+    :type message: Dict[str, Any]
+    :return: COSE_Sign1 signed message.
+    :rtype: bytes
+    """
+    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
+        private_key = load_pem_private_key(
+            key.read(),
+            PRIVATE_KEY_PASSWORD
+        )
     
-#     payload = cbor2.dumps(message)
+    payload = cbor2.dumps(message)
 
-#     sign1_message = Sign1Message(
-#         phdr={ Algorithm: EdDSA },
-#         payload=payload
-#     )
-#     sign1_message.key = cose_key
+    sign1_message = Sign1Message(
+        phdr={ Algorithm: EdDSA },
+        payload=payload
+    )
+    sign1_message.key = private_key
 
-#     return sign1_message.encode()           #type: ignore
+    return sign1_message.encode()           #type: ignore
 
 
 def verify_message(
@@ -155,37 +159,41 @@ def verify_message(
     return verify_key.verify(signed_message)
 
 
-# def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
-#     """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm.
+def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
+    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm.
 
-#     :param message: Encrypted message to be verified.
-#     :type message: bytes
-#     :return: Returns authentication status and the encrypted message's payload.
-#     :rtype: Tuple[bool, Dict[str, Any]]
-#     """
-#     cose_key = _load_eddsa_key(PRIVATE_KEY_PATH, PRIVATE_KEY_PASSWORD)
+    :param message: Encrypted message to be verified.
+    :type message: bytes
+    :return: Returns authentication status and the encrypted message's payload.
+    :rtype: Tuple[bool, Dict[str, Any]]
+    """
+    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
+        private_key = load_pem_private_key(
+            key.read(),
+            PRIVATE_KEY_PASSWORD
+        )
     
-#     try:
-#         decoded = Sign1Message.decode(message)
-#         decoded.key = cose_key
+    try:
+        decoded = Sign1Message.decode(message)
+        decoded.key = private_key
 
-#         algorithm = decoded.phdr.get(Algorithm)
+        algorithm = decoded.phdr.get(Algorithm)
 
-#         if algorithm != EdDSA:
-#             return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
+        if algorithm != EdDSA:
+            return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
 
-#         if decoded.payload is None:
-#             return False, { "error" : "Payload is empty" }
-#         payload = cbor2.loads(decoded.payload)
+        if decoded.payload is None:
+            return False, { "error" : "Payload is empty" }
+        payload = cbor2.loads(decoded.payload)
 
-#         try:
-#             QRInfo(**payload)
-#         except TypeError:
-#             return False, { "error" : "Payload is missing information/s" }
+        try:
+            QRInfo(**payload)
+        except TypeError:
+            return False, { "error" : "Payload is missing information/s" }
 
-#         return decoded.verify_signature(), payload or {} #type: ignore
-#     except:                                 # pylint: disable=bare-except
-#         return False, { "error" : "Failed to decode message" }
+        return decoded.verify_signature(), payload or {} #type: ignore
+    except:                                 # pylint: disable=bare-except
+        return False, { "error" : "Failed to decode message" }
 
 
 def encrypt_message(
