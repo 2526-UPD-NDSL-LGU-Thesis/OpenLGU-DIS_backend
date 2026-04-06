@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pyzbar.pyzbar import decode
-from mosip.models import MOSIPUser, MOSIPException, start_otp
+# from mosip.models import MOSIPUser, MOSIPException, start_otp
 from io import BytesIO
 import cbor2
 import base45
@@ -147,45 +147,45 @@ def digitalid(request : HttpRequest) -> JsonResponse :
     return HttpResponse(buffer, content_type="image/png", status=200)
 
 
-@api_view(['POST'])
-@authentication_classes([BasicAuthentication])
-@permission_classes([IsAuthenticated])
-def start_verify_otp(request : HttpRequest) -> JsonResponse :
-    """Starts the OTP Authentication process for a User.
+# @api_view(['POST'])
+# @authentication_classes([BasicAuthentication])
+# @permission_classes([IsAuthenticated])
+# def start_verify_otp(request : HttpRequest) -> JsonResponse :
+#     """Starts the OTP Authentication process for a User.
 
-    :param request: A request including the User's PCN from an authenticated account.
-    :type request: HttpRequest
-    :return: Returns the MOSIP OTP authentication transaction ID.
-    :rtype: JsonResponse
-    """
-    pcn = request.data.get("pcn")
+#     :param request: A request including the User's PCN from an authenticated account.
+#     :type request: HttpRequest
+#     :return: Returns the MOSIP OTP authentication transaction ID.
+#     :rtype: JsonResponse
+#     """
+#     pcn = request.data.get("pcn")
 
-    try:
-        txn = start_otp(pcn=pcn, phone_otp=True)
-        return JsonResponse({ "txn": txn }, status=200)
-    except MOSIPException:
-        return JsonResponse({ "Authentication failed." }, status=400)
+#     try:
+#         txn = start_otp(pcn=pcn, phone_otp=True)
+#         return JsonResponse({ "txn": txn }, status=200)
+#     except MOSIPException:
+#         return JsonResponse({ "Authentication failed." }, status=400)
 
-@api_view(['POST'])
-@authentication_classes([BasicAuthentication])
-@permission_classes([IsAuthenticated])
-def verify_otp(request : HttpRequest) -> JsonResponse :
-    """Verify OTP Authentication.
+# @api_view(['POST'])
+# @authentication_classes([BasicAuthentication])
+# @permission_classes([IsAuthenticated])
+# def verify_otp(request : HttpRequest) -> JsonResponse :
+#     """Verify OTP Authentication.
 
-    :param request: A request from an authenticated account.
-    :type request: HttpRequest
-    :return: Returns the requested User's information, or a fail otherwise.
-    :rtype: JsonResponse
-    """
-    pcn = request.data.get("pcn")
-    txn = request.data.get("txn")
-    otp = request.data.get("otp")
+#     :param request: A request from an authenticated account.
+#     :type request: HttpRequest
+#     :return: Returns the requested User's information, or a fail otherwise.
+#     :rtype: JsonResponse
+#     """
+#     pcn = request.data.get("pcn")
+#     txn = request.data.get("txn")
+#     otp = request.data.get("otp")
 
-    try:
-        user = MOSIPUser.verify_otp(pcn=pcn, txn_id=txn, otp=otp)
-        return JsonResponse(user.__dict__, status=200)
-    except MOSIPException:
-        return JsonResponse({ "Authentication failed." }, status=400)
+#     try:
+#         user = MOSIPUser.verify_otp(pcn=pcn, txn_id=txn, otp=otp)
+#         return JsonResponse(user.__dict__, status=200)
+#     except MOSIPException:
+#         return JsonResponse({ "Authentication failed." }, status=400)
 
 @api_view(['POST'])
 # @authentication_classes([BasicAuthentication])

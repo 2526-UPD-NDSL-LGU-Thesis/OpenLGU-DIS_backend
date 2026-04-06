@@ -293,7 +293,6 @@ def decode_face(face_b64 : str) -> str :
 
     return base64.b64encode(face_bytes).decode("utf-8")
 
-# QUESTION Why is this BaseModel?
 class MOSIPUser(BaseModel):
     """User class from MOSIP Authentication SDK's response body.
 
