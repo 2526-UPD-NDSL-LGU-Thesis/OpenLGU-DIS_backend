@@ -26,14 +26,20 @@ SECRET_KEY = 'django-insecure-yxoko58f@p=^jnqz+mm8j$qvj1uui06plvv^5ep1x+s(1dre7p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',
+ALLOWED_HOSTS = [ # TODO why is this necessary? https://docs.djangoproject.com/en/6.0/ref/settings/
+    '.localhost',
+    '127.0.0.1',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000', # TODO is this necessary? It's itself?
+    'http://localhost:5173', # 
+]
+
+
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True # TODO this seems unsafe. Check documentation
 
 
 # Application definition
@@ -45,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders', # TODO READ UP ON HOW THIS WORKS IN DETAIL FOR SECURITY https://pypi.org/project/django-cors-headers/
     'rest_framework',
     'residents',
     'service',
@@ -53,6 +60,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

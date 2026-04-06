@@ -2,7 +2,7 @@ base45
 cbor2
 cryptography
 django
-# django-cors-headers
+django-cors-headers
 djangorestframework
 dynaconf
 iso639-lang

@@ -231,6 +231,10 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
             { "message" : "QR could not be decompressed" }, status=401
         )
 
+@api_view(['POST'])
+def verify_id(request: HttpRequest) -> JsonResponse:
+    pass
+
 
 @api_view(['POST'])
 @authentication_classes([BasicAuthentication])
