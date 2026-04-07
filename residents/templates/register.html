@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>NDSG</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <nav>
+        <!-- <img src="../static/img/clid-logo.png"> -->
+        <img src="../static/img/clid-logo.png" alt="Logo" class="logo">Customizable LGU ID
+        <a href="/profile">View Profile</a>
+        <a href="/register">Register</a>
+        <!-- <a href="/labs">Labs</a> -->
+        <a href="/admin">(ADMIN)</a>
+    </nav>
+
+    <!-- Form is hidden initially; will be shown after a QR image is selected -->
+    <form id="registrationForm" enctype="multipart/form-data">
+
+        <!-- STEP 1 -->
+        <section class="step active" id="step-1">
+            <h2>Step 1: Identity Details</h2>
+
+            <label>Upload QR (optional)</label>
+            <input type="file" id="qrImage" accept="image/*">
+
+            <label>PCN</label>
+            <input type="text" name="PCN" id="PCN" required>
+
+            <label>Name</label>
+            <input type="text" name="name" id="name" required>
+
+            <label>Date of Birth</label>
+            <input type="text" name="DOB" id="DOB" required>
+            <!-- <input type="date" name="DOB" id="DOB" required> -->
+
+            <button type="button" id="verifyStep1">Verify</button>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="step" id="step-2">
+            <h2>Step 2: Review Face Image</h2>
+
+            <p>Please confirm that the image below matches the person.</p>
+
+            <img
+                id="facePreview"
+                alt="Face Image"
+                class="center-image"
+            >
+
+            <div class="button-group">
+                <button type="button" id="wrongFace" class="danger">Wrong Person</button>
+                <button type="button" id="confirmFace">Looks Correct</button>
+            </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="step" id="step-3">
+            <h2>Step 3: Upload Proof</h2>
+
+            <input type="file" name="proof" required accept="image/*,.pdf">
+
+            <button type="submit" id="register">Upload</button>
+        </section>
+        
+        <!-- STEP 4 -->
+        <section class="step" id="step-4">
+            <h2>Step 4: Picture Retake</h2>
+            <h3>Do you wish to change your image?</h3>
+
+            <!-- Live camera -->
+            <video id="video" autoplay playsinline class="center-image" style="display:none;"></video>
+
+            <!-- Hidden canvas -->
+            <canvas id="canvas" style="display:none;"></canvas>
+
+            <!-- Captured preview -->
+            <img id="capturePreview" alt="Face Image" class="center-image">
+
+            <div class="button-group">
+                <button type="button" id="rejectCapture" class="danger">No</button>
+                <button type="button" id="acceptCapture">Yes</button>
+            </div>
+        </section>
+
+        <!-- STEP 5 -->
+        <section class="step" id="step-5">
+            <h2>Step 5: ID Printing</h2>
+            <h3>Resident successfully registered!</h3>
+
+            <img
+                id="idImage"
+                alt="Digital ID Image"
+                class="center-id"
+            >
+        </section>
+
+    </form>
+
+
+
+    <div id="labid"></div>
+
+    <script src="../static/js/register.js"></script>
+
+</body>
+</html>

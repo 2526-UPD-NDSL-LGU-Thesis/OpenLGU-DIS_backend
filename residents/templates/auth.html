@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>QR Authentication</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+
+<body>
+
+<nav>
+  <img src="../static/img/clid-logo.png" alt="Logo" class="logo">
+  Customizable LGU ID
+  <a href="/auth">Authenticate</a>
+  <a href="/profile">View Profile</a>
+  <a href="/claim">Claim</a>
+  <a href="/register">Register</a>
+  <a href="/admin">(ADMIN)</a>
+</nav>
+
+<!-- Upload / Scan Section -->
+
+<div id="login-section">
+
+  <h2>Authenticate LGU ID</h2>
+  <p>Upload or scan a QR code to retrieve user details.</p>
+
+  <button onclick="showScanner()">Scan QR</button>
+
+  <div id="upload-section" style="margin-top:20px;">
+    <input type="file" id="qrFile" accept="image/*">
+    <button onclick="uploadQR()">Read QR</button>
+  </div>
+
+  <div id="qr-section" style="display:none;">
+    <div id="qr-reader"></div>
+  </div>
+
+</div>
+
+<!-- Result Section -->
+
+<div class="profile-container" id="result-section" style="display:none;">
+
+  <div class="image-section">
+
+    <div class="profile-image">
+      <img id="user_image" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+
+    <div class="verification-box">
+      <span id="verified_status" class="status not-verified">
+        Not Verified
+      </span>
+    </div>
+
+  </div>
+
+  <div class="info-section">
+
+    <h2>QR Data</h2>
+
+    <div class="info-item">
+      <span class="label">LGU ID:</span>
+      <span class="value" id="id">-</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">PhilSys ID:</span>
+      <span class="value" id="pcn">-</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">Date Issued:</span>
+      <span class="value" id="issued_at">-</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">Email:</span>
+      <span class="value" id="email">-</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">Phone Number:</span>
+      <span class="value" id="phone_number">-</span>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- QR Scanner Library -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<!-- Your Script -->
+<script src="../static/js/auth.js"></script>
+
+</body>
+</html>

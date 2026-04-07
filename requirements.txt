@@ -1,0 +1,17 @@
+base45
+cbor2
+cryptography
+django
+django-cors-headers
+djangorestframework
+dynaconf
+iso639-lang
+mosip-auth-sdk @ git+https://github.com/mosip/ida-auth-sdk.git@f322c59868123c2ef9410b5a3fecfd5dcdfd56af
+numpy
+opencv-python-headless
+pillow
+qrcode
+pycose
+pydantic
+pynacl
+pyzbar
