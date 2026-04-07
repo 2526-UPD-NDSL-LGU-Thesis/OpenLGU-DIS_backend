@@ -194,17 +194,26 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
     qr_data = request.data.get("qr_data")
 
     if not qr_data:
+        print("are we entering this")
         return JsonResponse({"message": "Missing qr_data"}, status=400)
 
+    
     # TODO check this LLM-generated: Support both raw Base45 text and prefixed payloads like "PH1:<base45>".
     #if isinstance(qr_data, str) and qr_data.startswith("PH1:"):
     #    qr_data = qr_data[4:]
-
+    print(qr_data)
     try: # to decode
         decoded_b45 = base45.b45decode(qr_data)
-    except Exception:
-        return JsonResponse({"message": "QR could not be decoded"}, status=400)
-    
+    except Exception: # TODO HANDLE MORE GRACEFULLY DETECTING RANDOM QR CAUSE THIS IN GENERAL DETECTS DECODING BASE 45 OF THE QR. At the very least, detect its an invalid base45 string
+        import traceback
+        print(f"Verification failed: {str(e)}")
+        traceback.print_exc()
+        payload = {
+            "result": "random_qr"
+        }
+        print("are we entering this?")
+        return JsonResponse(payload, status=200)
+    print("test")
     try: # to uncompress
         uncompressed_msg = zlib.decompress(decoded_b45)
     except Exception:
@@ -238,7 +247,6 @@ def authenticate_message(request : HttpRequest) -> JsonResponse :
             }
         }
         
-        print("payload created successfully:", payload)
         return JsonResponse(payload, status=200)
     except Exception as e: # TODO specifically recognize that it was the verifier that failed here. This could be the response for anything bad that happens above
         # import traceback
