@@ -31,10 +31,9 @@ from .authenticator import MOSIPAuthManager
 manager = MOSIPAuthManager()
 
 
-def _to_demographic_data(**kwargs) -> DemographicsModel :
-    """A helper function that converts demographic data to a `DemographicsModel` \
-    for MOSIP Authentication.
-
+def _to_demographic_data(**kwargs) -> DemographicsModel:
+    """Convert demographic kwargs into a `DemographicsModel` for MOSIP Authentication.
+    
     Args:
         **kwargs: Arbitrary keyword arguments representing demographic data. 
             Expected keys include:
@@ -54,231 +53,100 @@ def _to_demographic_data(**kwargs) -> DemographicsModel :
             - postal_code (str)
             - full_address / full_address_<lang> (str)
             - metadata (dict): Additional metadata for the individual.
-    
-    Returns:
-        DemographicsModel: A populated `DemographicsModel` instance ready for MOSIP Authentication.
     """
 
-    def _to_identity_info(
-            value : str,
-            language : str = settings.DEFAULT_LANGUAGE_ISO
-        ) -> List[Dict[str, str]] :
-        """A helper function that converts value to `IdentityInfo`."""
-        return [{ "language": language, "value": value }]
-    
     if not kwargs:
-        raise MOSIPMissingFieldError("A demographpic field is required for authentication")
+        raise MOSIPMissingFieldError("At least one demographic field is required")
 
-    data = defaultdict(dict)
+    def _identity(value: str, language: str = settings.DEFAULT_LANGUAGE_ISO):
+        return [{"language": language, "value": value}]
 
-    for key, value in kwargs.items():
-        language = None
-        key = key.lower()
-        
+    def _parse_language(key: str, parts_expected: int):
+        lang = None
+
+        try:
+            parts = key.split("_")
+            if len(parts) == parts_expected:
+                lang = parts[-1]
+                Lang(pt3=lang)
+                return lang
+        except InvalidLanguageValue as err:
+            raise MOSIPLanguageError(
+                f"{lang} from {key} is not a valid ISO639-3 language code"
+            ) from err
+        return settings.DEFAULT_LANGUAGE_ISO
+
+    def _parse_dob(value):
+        if isinstance(value, datetime):
+            return value.strftime("%Y/%m/%d")
+
+        if isinstance(value, str):
+            for fmt in ("%Y/%m/%d", "%Y-%m-%d"):
+                try:
+                    dt = datetime.strptime(value, fmt)
+                    return dt.strftime("%Y/%m/%d")
+                except ValueError:
+                    continue
+
+        raise MOSIPParsingError(
+            f"Invalid DOB format: {value}. Expected YYYY/MM/DD or YYYY-MM-DD"
+        )
+
+    def _validate_phone(value: str):
+        if value.isdigit() and len(value) == 11:
+            return value
+        if value.startswith("+63") and len(value) == 13 and value[1:].isdigit():
+            return value
+        raise MOSIPParsingError(f"Invalid phone number: {value}")
+
+    data: dict = {}
+
+    for raw_key, value in kwargs.items():
+        key = raw_key.lower()
+
         match key:
-            # Check if age is a valid integer.
-            case "age" :
+            case "age":
                 try:
                     data["age"] = str(int(value))
                 except ValueError as err:
-                    raise MOSIPParsingError(
-                        f"Invalid data type: Age should be an integer, not {type(value)}"
-                    ) from err
-            
-            # Check if dob is a valid date and follows the correct format %Y/%m/%d.
-            # If it does not follow the same format, (e.g. using "-" instead of "/"),
-            # correct it so that authentication does not fail.
-            # `DemographicsModel` will accept this but this will raise an error during
-            # authentication.
-            case "dob" :
-                if isinstance(value, str):
-                    try:
-                        datetime.strptime(value, r"%Y/%m/%d")
-                        data["dob"] = value
-                    except ValueError:
-                        datetime.strptime(value, r"%Y-%m-%d")
-                        data["dob"] = value.replace("-", "/")
-                    except Exception as err:
-                        raise MOSIPParsingError(
-                            f"Unsupported date format: {value} must be in %Y/%m/%d format"
-                        ) from err
-                    finally:
-                        continue
+                    raise MOSIPParsingError("Age must be an integer") from err
 
-                if isinstance(value, datetime):
-                    data["dob"] = value.strftime(r"%Y/%m/%d")
-                    continue
-                
-                raise MOSIPParsingError(
-                    f"Unsupported date value: {value} must be in %Y/%m/%d format"
-                )
+            case "dob":
+                data["dob"] = _parse_dob(value)
 
-            case _ if key.startswith("name") :
-                try:
-                    _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["name"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError:
-                    data["name"] = _to_identity_info(value)
-                finally:
-                    continue
+            case "phone_number":
+                data["phone_number"] = _validate_phone(value)
 
-            case _ if key.startswith("dob_type") :
-                try:
-                    _, _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["dob_type"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError:
-                    data["dob_type"] = _to_identity_info(value)
-                finally:
-                    continue
-
-            case _ if key.startswith("gender") :
-                try:
-                    _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["gender"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError:
-                    data["gender"] = _to_identity_info(value)
-                finally:
-                    continue
-            
-            # TODO Data validation for phone number
-            case "phone_number" :
-                # Check if number is type 09XX XXX XXXX
-                if value.isdigit() and len(value) == 11:
-                    # Check if valid SIM Carrier
-                    pass
-                
-                # Check if number is type +63 9xx xxx xxxx
-                elif value.startswith("+63") and len(value) == 13:
-                    # Check if valid SIM Carrier
-                    pass
-                
-                else:
-                    raise MOSIPParsingError(
-                        f"Invalid Phone Number: {value} is invalid or not supported"
-                    )
-            
-                data["phone_number"] = value
-
-
-            # TODO Email verification
-            case "email_id" :
+            case "email_id":
                 data["email_id"] = value.lower()
 
-            case _ if key.startswith("addressLine1") :
-                try:
-                    _, _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["address_line1"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["address_line1"] = _to_identity_info(value)
-            
-            case _ if key.startswith("addressLine2") :
-                try:
-                    _, _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["address_line2"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["address_line2"] = _to_identity_info(value)
-
-            case _ if key.startswith("addressLine3") :
-                try:
-                    _, _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["address_line3"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["address_line3"] = _to_identity_info(value)
-
-            case _ if key.startswith("location1") :
-                try:
-                    _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["location1"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["location1"] = _to_identity_info(value)
-
-            case _ if key.startswith("location2") :
-                try:
-                    _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["location2"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["location2"] = _to_identity_info(value)
-
-            case _ if key.startswith("location3") :                
-                try:
-                    _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["location3"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["location3"] = _to_identity_info(value)
-
-            case "postal_code" :
+            case "postal_code":
                 if value.isdigit() and len(value) == 4:
                     data["postal_code"] = value
                 else:
-                    raise MOSIPParsingError(
-                        f"Invalid Postal Code: {value} must be a 4-digit code"
-                    )
+                    raise MOSIPParsingError("Postal code must be a 4-digit number")
 
-            case _ if key.startswith("full_address") :
-                try:
-                    _, _, language = key.split("_")
-                    Lang(pt3=language)
-                    data["full_address"] = _to_identity_info(value, language=language)
-                except InvalidLanguageValue as err:
-                    raise MOSIPLanguageError(
-                        f"{language} from {key} is not a valid ISO639-3 language code"
-                    ) from err
-                except ValueError :
-                    data["full_address"] = _to_identity_info(value)
+            case _ if key.startswith(("name", "gender", "dob_type")):
+                lang = _parse_language(key, parts_expected=2 if "dob_type" not in key else 3)
+                field = key.split("_")[0] if "dob_type" not in key else "dob_type"
+                data[field] = _identity(value, lang)
 
-            case _ :
-                raise MOSIPParsingError(f"Unsupported parameter: {key}: {value}")
+            case _ if key.startswith((
+                "address_line1", "address_line2", "address_line3",
+                "location1", "location2", "location3",
+                "full_address"
+            )):
+                parts = key.split("_")
+                field = "_".join(parts[:2]) if "address" in key else parts[0]
+                lang = _parse_language(key, parts_expected=len(parts))
+                data[field] = _identity(value, lang)
+
+            case _:
+                raise MOSIPParsingError(f"Unsupported parameter: {raw_key}")
 
     if not data:
-        raise MOSIPMissingFieldError(
-            "A demographic field is required to do authentication with demographic"
-        )
-    
+        raise MOSIPMissingFieldError("No valid demographic data provided")
+
     return DemographicsModel(**data)
 
 
