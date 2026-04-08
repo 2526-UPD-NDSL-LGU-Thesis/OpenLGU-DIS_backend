@@ -119,7 +119,7 @@ def sign_message(
 
 
 def sign_eddsa(message : Dict[str, Any]) -> bytes :
-    """Generate a COSE_Sign1 signed message with EdDSA Algorithm.
+    """Generate a COSE_Sign1 signed message with EdDSA Algorithm with the base cryptography library.
 
     :param message: Message to be encrypted and signed.
     :type message: Dict[str, Any]
@@ -160,7 +160,7 @@ def verify_message(
 
 
 def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
-    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm.
+    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm with the base cryptography library.
 
     :param message: Encrypted message to be verified.
     :type message: bytes
@@ -202,6 +202,17 @@ def encrypt_message(
         path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
         password : bytes = PRIVATE_KEY_PASSWORD
     ):
+    """Encrypt message with XSalsa20-Poly1305 using Diffie-Hellman key exchange.
+
+    Args:
+        message (_type_): _description_
+        path_to_private_key (Path, optional): _description_. Defaults to PRIVATE_ENCRYPTING_KEY_PATH.
+        path_to_public_key (Path, optional): _description_. Defaults to PUBLIC_ENCRYPTING_KEY_PATH.
+        password (bytes, optional): _description_. Defaults to PRIVATE_KEY_PASSWORD.
+
+    Returns:
+        _type_: _description_
+    """
     box = _load_cipher_box(path_to_private_key, path_to_public_key, password)
 
     return box.encrypt(message)
