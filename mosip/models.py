@@ -172,7 +172,7 @@ class MOSIPUser(BaseModel):
     https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/mosip-authentication-sdk
     
     Attributes:
-        uid (int): User's unique identifier
+        uid (str): User's unique identifier
         name (dict[str, str]): User's name in different locales (e.g., 'eng', 'fil')
         gender (dict[str, str]): User's gender in different locales
         dob (str): User's date of birth
@@ -185,7 +185,7 @@ class MOSIPUser(BaseModel):
         MOSIPParsingError: Errors encountered during demographic data cleaning
         MOSIPResponseError: Errors encountered during authentication
     """
-    uid        : Optional[int] = Field(default=None)
+    uid        : Optional[str] = Field(default=None)
     name       : Dict[str, str] = Field(default_factory=dict)
     gender     : Dict[str, str] = Field(default_factory=dict)
     dob        : str
@@ -364,11 +364,11 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
     user : Optional[MOSIPUser] = Field(default=None)
     
     @classmethod
-    def from_otp(cls, uid : int, txn_id : str, otp : str) -> Self :
+    def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
         """Performs KYC verification using OTP.
 
         Args:
-            uid (int): Unique identifier
+            uid (str): Unique identifier
             txn_id (str): transaction ID of KYC verification
             otp (str): OTP value
         """
@@ -386,11 +386,11 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
         return cls.from_response(raw_response)
 
     @classmethod
-    def from_demographics(cls, uid : int, **data) -> Self :
+    def from_demographics(cls, uid : str, **data) -> Self :
         """Performs KYC verification using demographic data.
 
         Args:
-            uid (int): User's UID
+            uid (str): User's UID
         """
         authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
@@ -412,11 +412,11 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
 
 class MOSIPAuthResponse(MOSIPBaseResponse):
     @classmethod
-    def from_otp(cls, uid : int, txn_id : str, otp : str) -> Self :
+    def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
         """Performs user authentication using OTP.
 
         Args:
-            uid (int): Unique identifier
+            uid (str): Unique identifier
             txn_id (str): transaction ID of KYC verification
             otp (str): OTP value
         """
@@ -434,11 +434,11 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         return cls.from_response(raw_response)
 
     @classmethod
-    def from_demographics(cls, uid : int, **data) -> Self :
+    def from_demographics(cls, uid : str, **data) -> Self :
         """Performs user authentication using demographic data.
 
         Args:
-            uid (int): Unique identifier
+            uid (str): Unique identifier
         """
         authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
@@ -459,7 +459,7 @@ class MOSIPGenOTPResponse(MOSIPBaseResponse):
     @classmethod
     def start_otp(
         cls, 
-        uid : int,
+        uid : str,
         use_email : bool = False,
         use_phone : bool = False
     ) -> Self : 
