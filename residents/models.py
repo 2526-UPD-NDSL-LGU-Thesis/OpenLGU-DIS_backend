@@ -2,8 +2,6 @@
 Django model for Resident database.
 """
 
-from typing import Iterable
-
 from django.db import models, IntegrityError, transaction
 
 from .generator import generate_uid
