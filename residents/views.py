@@ -20,11 +20,6 @@ from qr_manager import sign_message
 from .models import User
 from .serializers import UserSerializer
 
-__all__ = (
-    'profile',
-    'register',
-    'UserViewSet',
-)
 
 def profile(request, lgu_id=None) -> HttpResponse :
     '''Render profile page.'''
@@ -51,6 +46,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'uin'
 
     @action(detail=True, methods=['GET'], url_path='qr')
     def qr(self, request, pk=None):
