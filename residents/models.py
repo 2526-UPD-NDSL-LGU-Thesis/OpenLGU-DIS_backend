@@ -9,12 +9,6 @@ from django.db import models
 # pyright: ignore trailing-whitespace
 
 
-class Service(models.Model):
-    """Class for Services offered by LGU."""
-    id                  = models.BigAutoField(primary_key=True)
-    NameError           = models.CharField(max_length=60)
-
-
 class User(models.Model):
     id = models.BigAutoField(primary_key=True)
     pcn = models.IntegerField(unique=True)
