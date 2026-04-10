@@ -2,9 +2,9 @@
 Serializers for REST Framework.
 '''
 
-__all__ = (
-    'UserSerializer',
-)
+# pylint: disable=trailing-whitespace
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 
 from rest_framework import serializers
 
@@ -12,8 +12,13 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    '''Serializer for User.'''
     class Meta:
-        '''Meta class for User Serializer.'''
         model = User
-        fields = '__all__'
+        fields = [
+            'pcn',
+            'uin',
+            'issued_at',
+            'active',
+            'email',
+            'phone_number'
+        ]

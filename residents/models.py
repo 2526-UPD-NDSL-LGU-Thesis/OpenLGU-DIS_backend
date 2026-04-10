@@ -1,41 +1,44 @@
 """
-https://medium.com/@ramanbazhanau/mastering-sqlalchemy-a-comprehensive-guide-for-python-developers-ddb3d9f2e829
+Django model for Resident database.
 """
 
-from typing import Dict
-from django.db import models
+from django.db import models, IntegrityError, transaction
 
+from .generator import generate_uid
 
-# pyright: ignore trailing-whitespace
+# pylint: disable=trailing-whitespace
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 
 
 class User(models.Model):
     id = models.BigAutoField(primary_key=True)
-    pcn = models.IntegerField(unique=True)
+    pcn = models.CharField(verbose_name="PCN", unique=True, db_index=True)
+    uin = models.CharField(unique=True, db_index=True, editable=False)
 
     issued_at = models.DateField(auto_now_add=True)
-    proof_of_residence = models.FileField(upload_to="uploads/")
+    proof_of_residence = models.FileField(upload_to="proofs/")
 
-    verified = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
 
     email = models.EmailField(blank=True, null=True)
 
     # Phone numbers should be CharField, not IntegerField
     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
-    face_data = models.BinaryField(default=b"")
+    profile_image = models.ImageField(upload_to="profiles/")
 
     def __str__(self):
         return f"LGU ID {self.id}"
-    
-    @property
-    def info(self) -> Dict :
-        return {
-            "id"        : self.id,
-            "pcn"       : self.pcn,
-            "issued_at" : self.issued_at,
-            "verified"  : self.verified,
-            "email"     : self.email,
-            "phone_number" : self.phone_number,
-            "face_data" : self.face_data
-        }
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.uin:
+            for _ in range(10):
+                self.uin = generate_uid(10)
+                try:
+                    with transaction.atomic():
+                        return super().save(*args, **kwargs)
+                except IntegrityError:
+                    self.uin = None
+            raise ValueError("Failed to generate UIN")
+        return super().save(*args, **kwargs)
