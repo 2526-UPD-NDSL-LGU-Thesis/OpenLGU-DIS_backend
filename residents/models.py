@@ -6,6 +6,7 @@ from django.db import models, IntegrityError, transaction
 
 from .generator import generate_uid
 
+
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
@@ -29,7 +30,7 @@ class User(models.Model):
     profile_image = models.ImageField(upload_to="profiles/")
 
     def __str__(self):
-        return f"LGU ID {self.id}"
+        return self.uin
 
     def save(self, *args, **kwargs) -> None:
         if not self.uin:
