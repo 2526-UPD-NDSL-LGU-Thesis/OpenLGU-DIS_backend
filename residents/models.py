@@ -29,10 +29,12 @@ class User(models.Model):
 
     profile_image = models.ImageField(upload_to="profiles/")
 
-    def __str__(self):
-        return self.uin
+    registered_services = models.ManyToManyField("service.Service", blank=True)
 
-    def save(self, *args, **kwargs) -> None:
+    def __str__(self) -> str :
+        return str(self.uin)
+
+    def save(self, *args, **kwargs) -> None :
         if not self.uin:
             for _ in range(10):
                 self.uin = generate_uid(10)
