@@ -46,19 +46,10 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(ServiceClaim)
 class ServiceClaimAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "service",
-        "claimed_at",
-    )
+    list_display = ("transaction_id", "user", "service", "claimed_at",)
 
-    list_filter = (
-        "service",
-        "claimed_at",
-    )
+    list_filter = ("service", "claimed_at",)
 
-    search_fields = (
-        "user__pcn",
-    )
+    search_fields = ("user__pcn",)
 
     autocomplete_fields = ("user", "service")

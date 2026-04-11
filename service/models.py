@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 from residents.models import User
+from .generator import generate_id
 
 
 class Service(models.Model):
@@ -32,6 +33,9 @@ class Service(models.Model):
 
 
 class ServiceClaim(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    transaction_id = models.CharField(unique=True, db_index=True, editable=False)
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -53,4 +57,16 @@ class ServiceClaim(models.Model):
         ordering = ["-claimed_at"]
 
     def __str__(self):
-        return f"{self.user.id} → {self.service.name}"
+        return str(self.transaction_id)
+    
+    def save(self, *args, **kwargs) -> None :
+        if not self.transaction_id:
+            for _ in range(10):
+                self.transaction_id = generate_id(length=20)
+                try:
+                    with transaction.atomic():
+                        return super().save(*args, **kwargs)
+                except IntegrityError:
+                    self.transaction_id = None
+            raise ValueError("Failed to Transaction ID")
+        return super().save(*args, **kwargs)
