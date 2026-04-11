@@ -1,5 +1,25 @@
 from django.contrib import admin
 from .models import Service, ServiceClaim
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
+from django.contrib.auth.models import Group, User
+
+
+# pylint: disable=trailing-whitespace
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
+
+admin.site.unregister(Group)
+
+
+class UserInline(admin.TabularInline):
+    model = User.groups.through
+    extra = 1
+
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin):
+    inlines = [UserInline]
 
 
 class ServiceClaimInline(admin.TabularInline):
