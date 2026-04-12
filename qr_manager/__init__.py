@@ -12,3 +12,7 @@ Generate messages with `sign_eddsa` and verify messages with `verify_eddsa`.
 from .main import (
     sign_message, verify_message, encrypt_message, decrypt_message, validate_qr
 )
+
+from .philsys import (
+    read_qr
+)
