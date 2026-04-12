@@ -15,7 +15,8 @@ class ResidentClaimInline(admin.TabularInline):
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
-        "id", "pcn", "uin", "issued_at", "proof_of_residence", "active", "email", "phone_number", "profile_image"
+        "uin", "pcn", "issued_at",
+        "proof_of_residence", "active", "email", "phone_number", "profile_image",
     )
 
     list_filter = (
