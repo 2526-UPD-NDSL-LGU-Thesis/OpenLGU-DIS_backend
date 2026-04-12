@@ -46,6 +46,15 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True # TODO this seems unsafe. Check documentation
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 
 # Application definition
 
