@@ -2,25 +2,19 @@
 # pylint: disable=trailing-whitespace
 
 from pathlib import Path
-from typing import Optional, Dict, Tuple, Any
+from typing import Dict, Tuple
 from dataclasses import dataclass
 from datetime import datetime
+import zlib
 
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
-from pycose.messages.sign1message import Sign1Message
-from pycose.keys.cosekey import CoseKey
-from pycose.headers import Algorithm
-from pycose.algorithms import EdDSA
-from pycose.keys.curves import Ed25519
-from pycose.keys.keyparam import KpKty, OKPKpD, OKPKpX, KpAlg, KpKeyOps, OKPKpCurve
-from pycose.keys.keytype import KtyOKP
-from pycose.keys.keyops import SignOp, VerifyOp
-import cbor2
-
-from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
-from nacl.signing import SigningKey, VerifyKey, SignedMessage
+import base45
+from cryptography.hazmat.primitives.serialization import (load_pem_private_key, load_pem_public_key)
+from nacl.exceptions import BadSignatureError
 from nacl.public import PrivateKey, PublicKey, Box
+from nacl.signing import SigningKey, VerifyKey, SignedMessage
+from pydantic import ValidationError
+
+from .claim169 import CBORWebToken
 
 # TODO: use .env
 PRIVATE_SIGNING_KEY_PATH = Path(r"./qr_manager/private_signing_key.pem")
@@ -118,31 +112,6 @@ def sign_message(
     return signing_key.sign(message)
 
 
-def sign_eddsa(message : Dict[str, Any]) -> bytes :
-    """Generate a COSE_Sign1 signed message with EdDSA Algorithm with the base cryptography library.
-
-    :param message: Message to be encrypted and signed.
-    :type message: Dict[str, Any]
-    :return: COSE_Sign1 signed message.
-    :rtype: bytes
-    """
-    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
-        private_key = load_pem_private_key(
-            key.read(),
-            PRIVATE_KEY_PASSWORD
-        )
-    
-    payload = cbor2.dumps(message)
-
-    sign1_message = Sign1Message(
-        phdr={ Algorithm: EdDSA },
-        payload=payload
-    )
-    sign1_message.key = private_key
-
-    return sign1_message.encode()           #type: ignore
-
-
 def verify_message(
         signed_message : bytes,
         path_to_key : Path = PUBLIC_SIGNING_KEY_PATH,
@@ -157,43 +126,6 @@ def verify_message(
     verify_key = _load_verify_key(path_to_key)
     
     return verify_key.verify(signed_message)
-
-
-def verify_eddsa(message : bytes) -> Tuple[bool, Dict[str, Any]] :
-    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm with the base cryptography library.
-
-    :param message: Encrypted message to be verified.
-    :type message: bytes
-    :return: Returns authentication status and the encrypted message's payload.
-    :rtype: Tuple[bool, Dict[str, Any]]
-    """
-    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
-        private_key = load_pem_private_key(
-            key.read(),
-            PRIVATE_KEY_PASSWORD
-        )
-    
-    try:
-        decoded = Sign1Message.decode(message)
-        decoded.key = private_key
-
-        algorithm = decoded.phdr.get(Algorithm)
-
-        if algorithm != EdDSA:
-            return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
-
-        if decoded.payload is None:
-            return False, { "error" : "Payload is empty" }
-        payload = cbor2.loads(decoded.payload)
-
-        try:
-            QRInfo(**payload)
-        except TypeError:
-            return False, { "error" : "Payload is missing information/s" }
-
-        return decoded.verify_signature(), payload or {} #type: ignore
-    except:                                 # pylint: disable=bare-except
-        return False, { "error" : "Failed to decode message" }
 
 
 def encrypt_message(
@@ -227,3 +159,34 @@ def decrypt_message(
     box = _load_cipher_box(path_to_private_key, path_to_public_key, password)
 
     return box.decrypt(message)
+
+
+def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
+    """Validates QR code. Returns the payload, if successful. Else, returns an error message.
+
+    Args:
+        qr_code (str): QR code in base45 string.
+
+    Returns:
+        Tuple[bool, Dict]: Status of validation and the payload.
+    """
+    b45_qr = base45.b45decode(qr_code)
+
+    decompressed_qr = zlib.decompress(b45_qr)
+
+    # try:
+    #     decrypt_msg = decrypt_message(decompressed_qr)
+    # except Exception:
+    #     pass
+
+    try:
+        signed_msg = verify_message(decompressed_qr)
+    except BadSignatureError:
+        return False, { "error" : "Failed to verify QR" }
+    
+    try:
+        cwt = CBORWebToken.from_cbor(signed_msg)
+
+        return True, cwt.model_dump()
+    except ValidationError as err:
+        return False, { "error" : "Failed to parse QR payload", "errors" : err }
