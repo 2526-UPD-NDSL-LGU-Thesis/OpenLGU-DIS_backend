@@ -20,5 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
             'issued_at',
             'active',
             'email',
-            'phone_number'
+            'phone_number',
+            'registered_services'
         ]

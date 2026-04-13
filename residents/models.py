@@ -6,15 +6,10 @@ from django.db import models, IntegrityError, transaction
 
 from .generator import generate_uid
 
+
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
-
-
-class Service(models.Model):
-    """Class for Services offered by LGU."""
-    id                  = models.BigAutoField(primary_key=True)
-    NameError           = models.CharField(max_length=60)
 
 
 class User(models.Model):
@@ -34,10 +29,12 @@ class User(models.Model):
 
     profile_image = models.ImageField(upload_to="profiles/")
 
-    def __str__(self):
-        return f"LGU ID {self.id}"
+    registered_services = models.ManyToManyField("service.Service", blank=True)
 
-    def save(self, *args, **kwargs) -> None:
+    def __str__(self) -> str :
+        return str(self.uin)
+
+    def save(self, *args, **kwargs) -> None :
         if not self.uin:
             for _ in range(10):
                 self.uin = generate_uid(10)

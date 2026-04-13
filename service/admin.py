@@ -1,5 +1,29 @@
 from django.contrib import admin
-from .models import Service, ServiceClaim
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
+from django.contrib.auth.models import Group, User
+from django.db.models.query import QuerySet
+from django.http import HttpRequest
+from .models import (
+    Service, ServiceClaim, GiveawayService,
+)
+
+
+# pylint: disable=trailing-whitespace
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
+
+admin.site.unregister(Group)
+
+
+class UserInline(admin.TabularInline):
+    model = User.groups.through
+    extra = 1
+
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin):
+    inlines = [UserInline]
 
 
 class ServiceClaimInline(admin.TabularInline):
@@ -11,34 +35,37 @@ class ServiceClaimInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "max_claims",
-        "period_seconds",
-        "active",
-    )
+    list_display = ("verbose_name", "stocks", "active",)
 
     list_filter = ("active",)
-    search_fields = ("name",)
+    search_fields = ("name", "verbose_name",)
 
     inlines = [ServiceClaimInline]
 
 
 @admin.register(ServiceClaim)
 class ServiceClaimAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "service",
-        "claimed_at",
-    )
+    list_display = ("transaction_id", "user", "service", "claimed_at", "claimed_by")
 
-    list_filter = (
-        "service",
-        "claimed_at",
-    )
+    list_filter = ("service", "claimed_by",)
 
-    search_fields = (
-        "user__pcn",
-    )
+    search_fields = ("user__uin", "user__pcn",)
 
     autocomplete_fields = ("user", "service")
+
+
+class BaseServiceAdmin(admin.ModelAdmin):
+    list_display = ("transaction_id", "user", "service", "claimed_at")
+    service = None
+
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
+        return super().get_queryset(request).filter(service__name=self.service)
+
+
+@admin.register(GiveawayService)
+class GiveawayServiceAdmin(BaseServiceAdmin):
+    service = "giveaway"
+
+#TODO: Find a way to order apps in Service
+#TODO: Implement Admin form validation plus logic(?)
+#TODO: Use fieldsets to create sections for very long forms

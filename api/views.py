@@ -10,11 +10,13 @@ import base64
 import io
 import json
 
+from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pyzbar.pyzbar import decode
 # from mosip.models import MOSIPUser, MOSIPException, start_otp
@@ -343,6 +345,21 @@ def upload_qr(request) -> JsonResponse :
         return JsonResponse(payload, status=400)
 
 
+@api_view(['POST'])
+def login_view(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)  # 🔥 creates session
+        return Response({"message": "Logged in"})
+    else:
+        return Response({"error": "Invalid credentials"}, status=400)
+#TODO: add 'credentials: "include"' to HTTP Requests
+
+
 @api_view(['GET'])
-def ping(request) -> JsonResponse :
+def ping(_) -> JsonResponse :
     return JsonResponse({ "message": "pong" }, status=201)

@@ -22,5 +22,6 @@ urlpatterns = [
     path('authenticate/', api_views.authenticate_message, name='authenticate'),
     path('claim/', api_views.claim, name='claim'),
     path('upload-qr/', api_views.upload_qr, name='upload-qr'),
+    path('login/', api_views.login_view),
     path('ping/', api_views.ping, name='ping')
 ]
