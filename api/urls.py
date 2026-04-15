@@ -14,14 +14,17 @@ router.register(r'services', service_views.ServiceViewSet)
 
 urlpatterns = [  
     path('', include(router.urls)),
-    path('read/', api_views.read, name='read'),
-    path('verify/', api_views.verify, name='verify'),
+    path('', include('mosip.urls')),
+    path('', include('qr_manager.urls')),
+    path('', include('service.urls')),
+    # path('read/', api_views.read, name='read'),
+    # path('verify/', api_views.verify, name='verify'),
 #    path('startotp/', api_views.start_verify_otp, name='startotp'),
 #    path('otp/', api_views.verify_otp, name='otp'),
-    path('digitalid/', api_views.digitalid, name='digitalid'),
-    path('authenticate/', api_views.authenticate_message, name='authenticate'),
-    path('claim/', api_views.claim, name='claim'),
-    path('upload-qr/', api_views.upload_qr, name='upload-qr'),
+    # path('digitalid/', api_views.digitalid, name='digitalid'),
+    # path('authenticate/', api_views.authenticate_message, name='authenticate'),
+    # path('claim/', api_views.claim, name='claim'),
+    # path('upload-qr/', api_views.upload_qr, name='upload-qr'),
     path('login/', api_views.login_view),
     path('ping/', api_views.ping, name='ping')
 ]
