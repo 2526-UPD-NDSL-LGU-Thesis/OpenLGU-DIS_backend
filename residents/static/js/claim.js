@@ -2,6 +2,21 @@ let selectedServiceId = null;
 let verifiedID = null;
 let qrScanner = null;
 
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookies[i].substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 /* ================= STEP CONTROLLER ================= */
 
 function goToStep(stepId) {
@@ -12,12 +27,58 @@ function goToStep(stepId) {
     document.getElementById(stepId).classList.add("active");
 }
 
+/* ================= LOGIN ================= */
+
+document.getElementById("login-btn").addEventListener("click", login);
+
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (!username || !password) {
+        alert("Please enter username and password");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/login/", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.error || "Login failed");
+            return;
+        }
+
+        // OPTIONAL: store token if your API returns one
+        // localStorage.setItem("token", data.token);
+
+        // Move to next step
+        goToStep("step-service");
+
+    } catch (err) {
+        console.error(err);
+        alert("Login error");
+    }
+}
+
 /* ================= LOAD SERVICES ON PAGE LOAD ================= */
 
-window.addEventListener("DOMContentLoaded", loadServices);
+window.addEventListener("DOMContentLoaded", () => {
+    loadServices();
+    goToStep("step-login"); // ensure login is first
+});
 
 async function loadServices() {
-    const res = await fetch("/api/services/active");
+    const res = await fetch("/api/services/active/");
     const services = await res.json();
 
     const dropdown = document.getElementById("service-dropdown");
@@ -25,7 +86,7 @@ async function loadServices() {
 
     services.forEach(service => {
         const option = document.createElement("option");
-        option.value = service.id;
+        option.value = service.name;
         option.textContent = service.name;
         dropdown.appendChild(option);
     });
@@ -51,7 +112,6 @@ document.getElementById("start-scan-btn").addEventListener("click", () => {
 
 async function onScanSuccess(decodedText) {
     await qrScanner.stop();
-
     await processQr(decodedText);
 }
 
@@ -63,35 +123,62 @@ uploadQrInput.addEventListener("change", async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        const qrDataUrl = e.target.result;
+    try {
+        const tempScanner = new Html5Qrcode("qr-reader");
+        const decodedText = await tempScanner.scanFile(file, true);
 
-        try {
-            const decodedText = await Html5Qrcode.getCameras().then(() => {
-                // Use decodeFromImage method of Html5Qrcode
-                const tempScanner = new Html5Qrcode("qr-reader");
-                return tempScanner.decodeFromImage(qrDataUrl);
-            });
+        console.log("QR Code detected:", decodedText);
+        await processQr(decodedText);
 
-            console.log("QR Code detected:", decodedText);
-            await processQr(decodedText);
-        } catch (err) {
-            console.error("QR decode error:", err);
-            alert("Failed to decode QR from uploaded image.");
-        }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+        console.error("QR decode error:", err);
+        alert("Failed to decode QR from uploaded image.");
+    }
 });
 
+/* =================== PHILSYS QR UPLOAD ================== */
+
+const uploadPhilSysQrInput = document.getElementById("upload-philsys-qr");
+
+uploadPhilSysQrInput.addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        const tempScanner = new Html5Qrcode("qr-reader");
+
+        const decodedText = await tempScanner.scanFile(file, {
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
+            }
+        }, true);
+
+        console.log("PhilSys QR Code detected:", decodedText);
+
+        // OPTIONAL: tag or differentiate PhilSys QR if backend expects it
+        await processPhilSysQr(decodedText);
+
+    } catch (err) {
+        console.error("PhilSys QR decode error:", err);
+        alert("Failed to decode PhilSys QR from uploaded image.");
+    }
+});
+
+/* =================== PROCESS QR ================== */
+
 async function processQr(decodedText) {
-    const res = await fetch("/api/authenticate/", {
+    const res = await fetch(`/api/service/${selectedServiceId}/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
         body: JSON.stringify({ qr: decodedText })
     });
 
     const data = await res.json();
+    console.log(data);
 
     if (!res.ok) {
         alert("QR verification failed");
@@ -100,7 +187,31 @@ async function processQr(decodedText) {
     }
 
     verifiedID = data.id;
-    // document.getElementById("user-image").src = data.image_url;
+
+    goToStep("step-verify");
+}
+
+async function processPhilSysQr(decodedText) {
+    const res = await fetch(`/api/service/${selectedServiceId}/pcn/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ qr: decodedText })
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (!res.ok) {
+        alert("QR verification failed");
+        goToStep("step-service");
+        return;
+    }
+
+    verifiedID = data.id;
 
     goToStep("step-verify");
 }
@@ -124,7 +235,11 @@ async function submitClaim(isMatch) {
 
     const res = await fetch("/api/claim/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
         body: JSON.stringify({
             user_id: verifiedID,
             service_id: selectedServiceId
@@ -150,7 +265,7 @@ document.getElementById("new-claim-btn")
     .addEventListener("click", resetFlow);
 
 function resetFlow() {
-    verifiedPCN = null;
+    verifiedID = null;
     selectedServiceId = null;
     document.getElementById("qr-reader").innerHTML = "";
     goToStep("step-service");

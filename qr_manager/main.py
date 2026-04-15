@@ -7,12 +7,13 @@ from dataclasses import dataclass
 from datetime import datetime
 import zlib
 
-import base45
 from cryptography.hazmat.primitives.serialization import (load_pem_private_key, load_pem_public_key)
 from nacl.exceptions import BadSignatureError
 from nacl.public import PrivateKey, PublicKey, Box
 from nacl.signing import SigningKey, VerifyKey, SignedMessage
 from pydantic import ValidationError
+import base45
+import cbor2
 
 from .claim169 import CBORWebToken
 
@@ -185,8 +186,10 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
         return False, { "error" : "Failed to verify QR" }
     
     try:
-        cwt = CBORWebToken.from_cbor(signed_msg)
+        # cwt = CBORWebToken.from_cbor(signed_msg)
+        cwt = cbor2.loads(signed_msg)
+        cwt[169] = cbor2.loads(cwt[169])
 
-        return True, cwt.model_dump()
+        return True, cwt
     except ValidationError as err:
         return False, { "error" : "Failed to parse QR payload", "errors" : err }

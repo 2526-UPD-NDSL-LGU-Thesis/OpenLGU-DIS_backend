@@ -18,8 +18,16 @@
 <div class="container">
     <div class="left-container">
 
+        <!-- STEP 0: LOGIN -->
+        <div id="step-login" class="step active">
+            <h3>Login</h3>
+            <input type="text" id="username" placeholder="Username" />
+            <input type="password" id="password" placeholder="Password" />
+            <button id="login-btn">Login</button>
+        </div>
+
         <!-- STEP 1: SELECT SERVICE -->
-        <div id="step-service" class="step active">
+        <div id="step-service" class="step">
             <h3>Select Service</h3>
             <select id="service-dropdown"></select>
             <button id="start-scan-btn">Start QR Scan</button>
@@ -31,8 +39,12 @@
             <div id="qr-reader"></div>
 
             <!-- Upload button -->
-            <label for="upload-qr" class="upload-label">Or Upload QR Image</label>
+            <label for="upload-qr" class="upload-label">Upload QR Image</label>
             <input type="file" id="upload-qr" accept="image/*">
+
+            <!-- NEW: Upload PhilSys QR -->
+            <label for="upload-philsys-qr" class="upload-label">Upload PhilSys QR</label>
+            <input type="file" id="upload-philsys-qr" accept="image/*">
         </div>
 
         <!-- STEP 3: VERIFY FACE -->

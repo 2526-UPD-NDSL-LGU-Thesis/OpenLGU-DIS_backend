@@ -18,8 +18,12 @@ def read_qr(qr_code : str) -> Optional[Dict] :
 
     b45_qr = base45.b45decode(b45_payload)
 
-    signed_msg = Sign1Message.decode(b45_qr)
+    # signed_msg = Sign1Message.decode(b45_qr)
+    signed_message = cbor2.loads(b45_qr)
 
-    payload = cbor2.loads(signed_msg)
+    # payload = cbor2.loads(signed_msg)
+    payload = signed_message.value[2]
+    
+    cwt = cbor2.loads(payload)
 
-    return payload
+    return cwt

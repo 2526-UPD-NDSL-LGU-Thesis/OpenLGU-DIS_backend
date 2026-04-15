@@ -1,6 +1,7 @@
 from django.http import HttpRequest, JsonResponse
 from rest_framework import viewsets, status as HTTPStatus
 from rest_framework.decorators import action, api_view, permission_classes
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -26,6 +27,7 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
+@csrf_exempt
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def claim_service(request : HttpRequest, service_id : str) -> JsonResponse :
@@ -41,16 +43,16 @@ def claim_service(request : HttpRequest, service_id : str) -> JsonResponse :
         )
 
     try:
-        service = Service.objects.get(service__name=service_id)
+        service = Service.objects.get(name=service_id)
     except Service.DoesNotExist:
         return JsonResponse(
             { "error" : "Service does not exist" },
             status=HTTPStatus.HTTP_400_BAD_REQUEST
         )
     
-    user_uin = payload["identity_data"]["local_id"]
+    user_uin = payload[169][99]
     try:
-        resident = User.objects.get(pk=user_uin)
+        resident = User.objects.get(uin=user_uin)
     except User.DoesNotExist:
         return JsonResponse(
             { "error" : "User does not exist" },
@@ -94,14 +96,14 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> JsonRespo
         )
 
     try:
-        service = Service.objects.get(service__name=service_id)
+        service = Service.objects.get(name=service_id)
     except Service.DoesNotExist:
         return JsonResponse(
             { "error" : "Service does not exist" },
             status=HTTPStatus.HTTP_400_BAD_REQUEST
         )
     
-    user_pcn = payload["169"]["sn"]["PCN"]
+    user_pcn = payload[169]["sb"]["PCN"]
     try:
         resident = User.objects.get(pcn=user_pcn)
     except User.DoesNotExist:

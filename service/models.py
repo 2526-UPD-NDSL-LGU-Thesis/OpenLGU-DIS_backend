@@ -113,7 +113,7 @@ class ServiceClaim(models.Model):
 
     @staticmethod
     def can_claim(user : Resident, service : Service, amount : int) -> bool :
-        if not service in user.registered_services:
+        if not service in user.registered_services.all():
             return False
 
         if int(service.stocks) - amount < 0:

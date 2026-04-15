@@ -55,7 +55,7 @@ class ServiceClaimAdmin(admin.ModelAdmin):
 
 
 class BaseServiceAdmin(admin.ModelAdmin):
-    list_display = ("transaction_id", "user", "service", "claimed_at")
+    list_display = ("transaction_id", "user", "service", "claimed_at", "claimed_by")
     service = None
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
