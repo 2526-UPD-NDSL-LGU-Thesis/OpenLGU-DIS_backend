@@ -13,8 +13,17 @@ from .main import validate_qr
 @api_view(['POST'])
 def decrypt_qr(request : HttpRequest) -> JsonResponse :
     data = request.data
-    b45_qr = data.pop("qr")
-
+    try:
+        b45_qr = data.pop("qr")
+    except KeyError:
+        return JsonResponse(
+            {
+                "error" : "KeyError",
+                "error_message" : "Invalid POST body. Expected 'qr', got none instead."
+            },
+            status=HTTPStatus.HTTP_400_BAD_REQUEST
+        )
+    
     status, payload = validate_qr(b45_qr)
 
     if status:
