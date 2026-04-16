@@ -4,7 +4,8 @@ Tests for MOSIP app.
 
 import json
 
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
 from mosip_auth_sdk.models import DemographicsModel
 from rest_framework.test import APIRequestFactory
 
@@ -67,8 +68,15 @@ class MOSIPAPITestCase(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
 
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username="testuser",
+            password="password123"
+        )
+
     def test_ping(self):
-        request = self.factory.get("/mosip/ping/")
+        request = self.factory.get("/api/mosip/ping/")
+        request.user = self.user
 
         response = mosip_views.ping(request)
         
@@ -76,41 +84,46 @@ class MOSIPAPITestCase(TestCase):
 
     def test_auth_via_demographics(self):
         request = self.factory.post(
-            "/auth/demo/",
+            "/api/auth/demo/",
             {
                 "uid" : sample_data["individual_id"],
                 "name" : sample_data["name"][0]["value"]
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.auth_via_demographics(request)
 
         assert response.status_code==200
     
     def test_auth_start_otp(self):
+        self.client.login(username="testuser", password="password123")
         request = self.factory.post(
-            "/auth/otp/start/",
+            "/api/auth/otp/start/",
             {
                 "uid" : sample_data["individual_id"],
                 "use_phone" : True
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.auth_start_otp(request)
 
         assert response.status_code==200
 
     def test_auth_via_otp(self):
+        self.client.login(username="testuser", password="password123")
         request = self.factory.post(
-            "/auth/otp/start/",
+            "/api/auth/otp/start/",
             {
                 "uid" : sample_data["individual_id"],
                 "use_phone" : True
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.auth_start_otp(request)
 
@@ -119,7 +132,7 @@ class MOSIPAPITestCase(TestCase):
         content = json.loads(response.content)
 
         request = self.factory.post(
-            "/auth/otp/verify/",
+            "/api/auth/otp/verify/",
             {
                 "uid" : sample_data["individual_id"],
                 "txn_id" : content["txn_id"],
@@ -127,48 +140,55 @@ class MOSIPAPITestCase(TestCase):
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.auth_via_otp(request)
 
         assert response.status_code==200
 
     def test_kyc_via_demographics(self):
+        self.client.login(username="testuser", password="password123")
         request = self.factory.post(
-            "/kyc/demo/",
+            "/api/kyc/demo/",
             {
                 "uid" : sample_data["individual_id"],
                 "name" : sample_data["name"][0]["value"]
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.kyc_via_demographics(request)
 
         assert response.status_code==200
 
     def test_kyc_start_otp(self):
+        self.client.login(username="testuser", password="password123")
         request = self.factory.post(
-            "/kyc/otp/start/",
+            "/api/kyc/otp/start/",
             {
                 "uid" : sample_data["individual_id"],
                 "use_phone" : True
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.kyc_start_otp(request)
 
         assert response.status_code==200
 
     def test_kyc_via_otp(self):
+        self.client.login(username="testuser", password="password123")
         request = self.factory.post(
-            "/kyc/otp/start/",
+            "/api/kyc/otp/start/",
             {
                 "uid" : sample_data["individual_id"],
                 "use_phone" : True
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.kyc_start_otp(request)
 
@@ -177,7 +197,7 @@ class MOSIPAPITestCase(TestCase):
         content = json.loads(response.content)
 
         request = self.factory.post(
-            "/kyc/otp/verify/",
+            "/api/kyc/otp/verify/",
             {
                 "uid" : sample_data["individual_id"],
                 "txn_id" : content["txn_id"],
@@ -185,6 +205,7 @@ class MOSIPAPITestCase(TestCase):
             },
             format="json"
         )
+        request.user = self.user
 
         response = mosip_views.kyc_via_otp(request)
 
