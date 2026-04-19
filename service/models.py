@@ -14,43 +14,30 @@ from .generator import generate_id
 
 
 class Service(models.Model):
-    # class ClaimPolicy(models.TextChoices):
-    #     PER_USER = "per_user", "Per User"
-    #     SHARED_STOCK = "shared_stock", "Shared Stock"
-
-    # class ClaimTypes(models.TextChoices):
-    #     ONCE = "once", "Once"
-    #     PERIODIC = "periodic", "Periodic"
-    #     COOLDOWN = "cooldown", "Cooldown"
-
-    # class ClaimPeriods(models.TextChoices):
-    #     DAILY = "daily", "Daily"
-    #     WEEKLY = "weekly", "Weekly"
-    #     MONTHLY = "monthly", "Monthly"
-    #     QUARTERLY = "quarterly", "Quarterly"
-    #     YEARLY = "yearly", "Yearly"
+    class TypeChoices(models.TextChoices):
+        ONCE = "once", "Once"
+        PERIODIC = "periodic", "Periodic"
     
-    # class ClaimResetDay(models.TextChoices):
-    #     SUNDAY = "sunday", "Sunday"
-    #     MONDAY = "monday", "Monday"
-    #     TEUSDAY = "teusday", "Teusday"
-    #     WEDNESDAY = "wednesday", "Wednesday"
-    #     THURSDAY = "thursday", "Thursday"
-    #     FRIDAY = "friday", "Friday"
-    #     SATURDAY = "saturday", "Saturday"
-    
-    # class InventoryTypes(models.TextChoices):
-    #     UNLIMITED = "unlimited", "Unlimited"
-    #     LIMITED = "limited", "Limited"
+    class IntervalChoices(models.TextChoices):
+        PERIODIC  = "periodic", "Periodic"
+        DAILY     = "daily", "Daily"
+        WEEKLY    = "weekly", "Weekly"
+        MONTHLY   = "monthly", "Monthly"
+        QUARTERLY = "quarterly", "Quarterly"
+        CUSTOM    = "custom", "Custom"
 
     name = models.CharField(max_length=40, primary_key=True)
     verbose_name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
 
+    max_claims_per_user = models.PositiveIntegerField(default=1)
+
+    claim_type = models.CharField(max_length=20, choices=TypeChoices, null=True, blank=True)
+
+    claim_interval = models.CharField(max_length=20, choices=IntervalChoices, null=True, blank=True)
+
     # claim_policy = models.CharField(max_length=20, choices=ClaimPolicy, null=True, blank=True)
     
-    # claim_type = models.CharField(max_length=20, choices=ClaimTypes, null=True, blank=True)
-
     # claim_period = models.CharField(max_length=20, choices=ClaimPeriods, null=True, blank=True)
 
     # claim_reset_day = models.CharField(max_length=20, choices=ClaimResetDay, null=True, blank=True)
@@ -63,10 +50,14 @@ class Service(models.Model):
         return str(self.name)
     
     def save(self, *args, **kwargs) -> None :
+        if self.name:
+            self.name = self.name.upper()
         return super().save(*args, **kwargs)
     
     def clean(self) -> None:
         #TODO: Implement Validations
+        if self.name:
+            self.name = self.name.upper()
         return super().clean()
 
 
@@ -114,6 +105,10 @@ class ServiceClaim(models.Model):
     @staticmethod
     def can_claim(user : Resident, service : Service, amount : int) -> bool :
         if not service in user.registered_services.all():
+            return False
+        
+        total_claims = ServiceClaim.objects.filter(user=user).count()
+        if total_claims - amount < 0:
             return False
 
         if int(service.stocks) - amount < 0:
