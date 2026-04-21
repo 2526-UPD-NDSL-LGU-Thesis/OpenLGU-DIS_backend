@@ -26,6 +26,7 @@ urlpatterns = [
     # path('claim/', api_views.claim, name='claim'),
     # path('upload-qr/', api_views.upload_qr, name='upload-qr'),
     path('login/', api_views.login_view),
-    path('ping/', api_views.ping, name='ping')
     path('ping/', api_views.ping),
+    path('user/ping/', api_views.user_ping),
+    path('csrf/', api_views.get_csrf),
 ]
