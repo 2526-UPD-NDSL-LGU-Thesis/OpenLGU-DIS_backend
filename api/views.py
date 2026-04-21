@@ -11,11 +11,10 @@ import io
 import json
 
 from django.contrib.auth import authenticate, login
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from PIL import Image, ImageDraw, ImageFont, ImageOps
@@ -367,3 +366,6 @@ def login_view(request):
 @permission_classes([AllowAny])
 def ping(_) -> JsonResponse :
     return JsonResponse({ "message": "pong" }, status=201)    return JsonResponse({ "message" : "pong" }, status=200)
+@ensure_csrf_cookie
+def get_csrf(_) -> Response :
+    return Response({ "detail" : "CSRF cookie set" }, status=200)
