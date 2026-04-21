@@ -3,36 +3,37 @@ API views for QR Manager app.
 """
 
 
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework import status as HTTPStatus
+from rest_framework.response import Response
+from rest_framework import status
 
 from .main import validate_qr
 
 
 @api_view(['POST'])
-def decrypt_qr(request : HttpRequest) -> JsonResponse :
+def decrypt_qr(request : HttpRequest) -> Response :
     data = request.data
     try:
         b45_qr = data.pop("qr")
     except KeyError:
-        return JsonResponse(
+        return Response(
             {
                 "error" : "KeyError",
                 "error_message" : "Invalid POST body. Expected 'qr', got none instead."
             },
-            status=HTTPStatus.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST
         )
     
-    status, payload = validate_qr(b45_qr)
+    _status, payload = validate_qr(b45_qr)
 
-    if status:
-        return JsonResponse(
+    if _status:
+        return Response(
             payload,
-            status=HTTPStatus.HTTP_200_OK
+            status=status.HTTP_200_OK
         )
 
-    return JsonResponse(
+    return Response(
         payload,
-        status=HTTPStatus.HTTP_400_BAD_REQUEST
+        status=status.HTTP_400_BAD_REQUEST
     )

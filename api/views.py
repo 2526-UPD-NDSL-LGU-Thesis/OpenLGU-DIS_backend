@@ -365,8 +365,9 @@ def login_view(request):
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def ping(_) -> JsonResponse :
-    return JsonResponse({ "message": "pong" }, status=201)    return JsonResponse({ "message" : "pong" }, status=200)
+def ping(_) -> Response :
+    return Response({ "message" : "pong" }, status=200)
+
 @api_view(['GET'])
 def user_ping(_) -> Response :
     return Response({ "message" : "pong"}, status=200)
