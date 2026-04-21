@@ -171,9 +171,15 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
     Returns:
         Tuple[bool, Dict]: Status of validation and the payload.
     """
-    b45_qr = base45.b45decode(qr_code)
+    try:
+        b45_qr = base45.b45decode(qr_code)
+    except:
+        return False, { "error" : "Invalid QR: Invalid Base45" }
 
-    decompressed_qr = zlib.decompress(b45_qr)
+    try:
+        decompressed_qr = zlib.decompress(b45_qr)
+    except:
+        return False, { "error" : "Invalid QR: Payload not compressed" }
 
     # try:
     #     decrypt_msg = decrypt_message(decompressed_qr)
