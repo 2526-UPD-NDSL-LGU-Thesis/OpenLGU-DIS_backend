@@ -27,4 +27,5 @@ urlpatterns = [
     # path('upload-qr/', api_views.upload_qr, name='upload-qr'),
     path('login/', api_views.login_view),
     path('ping/', api_views.ping, name='ping')
+    path('ping/', api_views.ping),
 ]

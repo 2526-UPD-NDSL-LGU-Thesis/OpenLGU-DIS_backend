@@ -16,6 +16,7 @@ from django.http import HttpRequest, JsonResponse, HttpResponse
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from pyzbar.pyzbar import decode
@@ -361,6 +362,8 @@ def login_view(request):
 #TODO: add 'credentials: "include"' to HTTP Requests
 
 
+@csrf_exempt
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def ping(_) -> JsonResponse :
-    return JsonResponse({ "message": "pong" }, status=201)
+    return JsonResponse({ "message": "pong" }, status=201)    return JsonResponse({ "message" : "pong" }, status=200)
