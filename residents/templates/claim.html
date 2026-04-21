@@ -26,28 +26,48 @@
             <button id="login-btn">Login</button>
         </div>
 
-        <!-- STEP 1: SELECT SERVICE -->
+        <!-- NEW STEP 1: TABLE VIEW -->
+        <div id="step-table" class="step">
+            <h3>Available Claims</h3>
+            <select id="claims-dropdown"></select>
+
+            <table border="1" width="100%" style="margin-top: 15px; background: #fff;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Service</th>
+                        <th>Claimed At</th>
+                        <th>Claimed By</th>
+                    </tr>
+                </thead>
+                <tbody id="claims-table-body">
+                </tbody>
+            </table>
+
+            <button id="proceed-to-service-btn">Create New Claim</button>
+        </div>
+
+        <!-- STEP 2: SELECT SERVICE -->
         <div id="step-service" class="step">
             <h3>Select Service</h3>
             <select id="service-dropdown"></select>
             <button id="start-scan-btn">Start QR Scan</button>
         </div>
 
-        <!-- STEP 2: QR SCAN -->
+        <!-- STEP 3: QR SCAN -->
         <div id="step-scan" class="step">
             <h3>Scan QR</h3>
             <div id="qr-reader"></div>
 
-            <!-- Upload button -->
             <label for="upload-qr" class="upload-label">Upload QR Image</label>
             <input type="file" id="upload-qr" accept="image/*">
 
-            <!-- NEW: Upload PhilSys QR -->
             <label for="upload-philsys-qr" class="upload-label">Upload PhilSys QR</label>
             <input type="file" id="upload-philsys-qr" accept="image/*">
         </div>
 
-        <!-- STEP 3: VERIFY FACE -->
+        <!-- STEP 4: VERIFY FACE -->
         <div id="step-verify" class="step">
             <h3>Verify Face</h3>
             <img id="user-image" class="center-image">
@@ -57,7 +77,7 @@
             </div>
         </div>
 
-        <!-- STEP 4: RESULT -->
+        <!-- STEP 5: RESULT -->
         <div id="step-result" class="step">
             <h3>Result</h3>
             <div id="result-message"></div>

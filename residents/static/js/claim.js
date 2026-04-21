@@ -62,13 +62,54 @@ async function login() {
         // localStorage.setItem("token", data.token);
 
         // Move to next step
-        goToStep("step-service");
+        goToStep("step-table");
+        console.log("Hello");
 
     } catch (err) {
         console.error(err);
         alert("Login error");
     }
 }
+
+/* ================= LOAD TABLE ================= */
+document.getElementById("claims-dropdown").addEventListener("change", loadClaims);
+
+async function loadClaims() {
+    const service = document.getElementById("claims-dropdown").value;
+
+    const res = await fetch(`/api/services/${service}/claims/`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+    });
+
+    const data = await res.json();
+    const tableBody = document.getElementById('claims-table-body');
+    tableBody.innerHTML = '';
+
+    data.forEach(claim => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${claim.transaction_id}</td>
+            <td>${claim.user}</td>
+            <td>${claim.service}</td>
+            <td>${claim.claimed_at}</td>
+            <td>Official #${claim.claimed_by}</td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+};
+
+document.getElementById("proceed-to-service-btn").addEventListener("click", () => {
+    loadServices();
+    goToStep("step-service");
+});
+
 
 /* ================= LOAD SERVICES ON PAGE LOAD ================= */
 
@@ -78,11 +119,19 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadServices() {
-    const res = await fetch("/api/services/active/");
+    const res = await fetch("/api/services/active/", {
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+    });
     const services = await res.json();
 
     const dropdown = document.getElementById("service-dropdown");
+    const dropdown2 = document.getElementById("claims-dropdown");
     dropdown.innerHTML = "";
+    dropdown2.innerHTML = "";
 
     services.forEach(service => {
         const option = document.createElement("option");
@@ -90,22 +139,33 @@ async function loadServices() {
         option.textContent = service.name;
         dropdown.appendChild(option);
     });
+
+    services.forEach(service => {
+        const option = document.createElement("option");
+        option.value = service.name;
+        option.textContent = service.name;
+        dropdown2.appendChild(option);
+    });
 }
 
 /* ================= START SCANNER ================= */
 
 document.getElementById("start-scan-btn").addEventListener("click", () => {
-    selectedServiceId = document.getElementById("service-dropdown").value;
+    try {
+        selectedServiceId = document.getElementById("service-dropdown").value;
 
-    qrScanner = new Html5Qrcode("qr-reader");
+        qrScanner = new Html5Qrcode("qr-reader");
 
-    qrScanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        onScanSuccess
-    );
+        qrScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            onScanSuccess
+        );
 
-    goToStep("step-scan");
+        goToStep("step-scan");
+    } catch (error) {
+        console.error("Error starting scanner:", error);
+    }
 });
 
 /* ================= QR SUCCESS ================= */
@@ -181,14 +241,15 @@ async function processQr(decodedText) {
     console.log(data);
 
     if (!res.ok) {
-        alert("QR verification failed");
+        alert(data.error);
         goToStep("step-service");
         return;
     }
 
     verifiedID = data.id;
 
-    goToStep("step-verify");
+    // goToStep("step-verify");
+    goToStep("step-result");
 }
 
 async function processPhilSysQr(decodedText) {
