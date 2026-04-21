@@ -49,23 +49,6 @@ class ServiceClaimAdmin(admin.ModelAdmin):
 
     list_filter = ("service", "claimed_by",)
 
-    search_fields = ("user__uin", "user__pcn",)
+    search_fields = ("transaction_id", "user__uin", "user__pcn",)
 
     autocomplete_fields = ("user", "service")
-
-
-class BaseServiceAdmin(admin.ModelAdmin):
-    list_display = ("transaction_id", "user", "service", "claimed_at", "claimed_by")
-    service = None
-
-    def get_queryset(self, request: HttpRequest) -> QuerySet:
-        return super().get_queryset(request).filter(service__name=self.service)
-
-
-@admin.register(GiveawayService)
-class GiveawayServiceAdmin(BaseServiceAdmin):
-    service = "giveaway"
-
-#TODO: Find a way to order apps in Service
-#TODO: Implement Admin form validation plus logic(?)
-#TODO: Use fieldsets to create sections for very long forms
