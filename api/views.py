@@ -37,5 +37,6 @@ def user_ping(_) -> Response :
     return Response({ "message" : "pong"}, status=200)
 
 @ensure_csrf_cookie
+@api_view(['GET'])
 def get_csrf(_) -> Response :
     return Response({ "detail" : "CSRF cookie set" }, status=200)
