@@ -42,6 +42,8 @@ class Service(models.Model):
 
     stocks = models.PositiveIntegerField()
 
+    allowed_groups = models.ManyToManyField(Group, blank=True)
+
     active = models.BooleanField(default=True)
 
     def __str__(self) -> str :
