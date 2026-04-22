@@ -8,18 +8,16 @@ Serializers for REST Framework.
 
 from rest_framework import serializers
 
-from .models import User
+from .models import Resident, ResidentSector
 
 
-class UserSerializer(serializers.ModelSerializer):
+class SectorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = [
-            'pcn',
-            'uin',
-            'issued_at',
-            'active',
-            'email',
-            'phone_number',
-            'registered_services'
-        ]
+        model = ResidentSector
+        fields = "__all__"
+
+
+class ResidentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resident
+        exclude = ["id", "proof_of_residence", "profile_image"]

@@ -17,8 +17,8 @@ import json
 import base45
 
 from qr_manager import sign_message
-from .models import User
-from .serializers import UserSerializer
+from .models import Resident
+from .serializers import ResidentSerializer
 
 
 def profile(request, lgu_id=None) -> HttpResponse :
@@ -40,12 +40,12 @@ def auth(request) -> HttpResponse :
     return render(request, "auth.html")
 
 @authentication_classes([BasicAuthentication])
-class UserViewSet(viewsets.ModelViewSet):
+class ResidentViewSet(viewsets.ModelViewSet):
     '''View set for `User`.'''
     http_method_names = ['get', 'post']
     permission_classes = [AllowAny]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = Resident.objects.all()
+    serializer_class = ResidentSerializer
     lookup_field = 'uin'
 
     @action(detail=True, methods=['GET'], url_path='qr')

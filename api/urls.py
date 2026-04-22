@@ -12,7 +12,7 @@ from . import views as api_views
 # pylint: disable=trailing-whitespace
 
 router = routers.DefaultRouter()
-router.register(r'ids', resident_views.UserViewSet)
+router.register(r'ids', resident_views.ResidentViewSet)
 router.register(r'services', service_views.ServiceViewSet)
 
 urlpatterns = [  
