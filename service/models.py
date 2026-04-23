@@ -1,9 +1,11 @@
+from typing import Tuple, Dict
+
 from django.db import transaction
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User as Official
 from django.db import models, IntegrityError, transaction
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User, Group
 from django.utils import timezone
-from residents.models import User as Resident
+from residents.models import Resident as Resident
 
 from .generator import generate_id
 
@@ -14,48 +16,33 @@ from .generator import generate_id
 
 
 class Service(models.Model):
-    # class ClaimPolicy(models.TextChoices):
-    #     PER_USER = "per_user", "Per User"
-    #     SHARED_STOCK = "shared_stock", "Shared Stock"
-
-    # class ClaimTypes(models.TextChoices):
-    #     ONCE = "once", "Once"
-    #     PERIODIC = "periodic", "Periodic"
-    #     COOLDOWN = "cooldown", "Cooldown"
-
-    # class ClaimPeriods(models.TextChoices):
-    #     DAILY = "daily", "Daily"
-    #     WEEKLY = "weekly", "Weekly"
-    #     MONTHLY = "monthly", "Monthly"
-    #     QUARTERLY = "quarterly", "Quarterly"
-    #     YEARLY = "yearly", "Yearly"
+    class TypeChoices(models.TextChoices):
+        ONCE = "once", "Once"
+        PERIODIC = "periodic", "Periodic"
     
-    # class ClaimResetDay(models.TextChoices):
-    #     SUNDAY = "sunday", "Sunday"
-    #     MONDAY = "monday", "Monday"
-    #     TEUSDAY = "teusday", "Teusday"
-    #     WEDNESDAY = "wednesday", "Wednesday"
-    #     THURSDAY = "thursday", "Thursday"
-    #     FRIDAY = "friday", "Friday"
-    #     SATURDAY = "saturday", "Saturday"
-    
-    # class InventoryTypes(models.TextChoices):
-    #     UNLIMITED = "unlimited", "Unlimited"
-    #     LIMITED = "limited", "Limited"
+    class IntervalChoices(models.TextChoices):
+        PERIODIC  = "periodic", "Periodic"
+        DAILY     = "daily", "Daily"
+        WEEKLY    = "weekly", "Weekly"
+        MONTHLY   = "monthly", "Monthly"
+        QUARTERLY = "quarterly", "Quarterly"
+        CUSTOM    = "custom", "Custom"
 
     name = models.CharField(max_length=40, primary_key=True)
     verbose_name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
 
-    # claim_policy = models.CharField(max_length=20, choices=ClaimPolicy, null=True, blank=True)
-    
-    # claim_type = models.CharField(max_length=20, choices=ClaimTypes, null=True, blank=True)
+    max_claims_per_user = models.PositiveIntegerField(default=1)
 
-    # claim_period = models.CharField(max_length=20, choices=ClaimPeriods, null=True, blank=True)
+    claim_type = models.CharField(max_length=20, choices=TypeChoices, null=True, blank=True)
 
-    # claim_reset_day = models.CharField(max_length=20, choices=ClaimResetDay, null=True, blank=True)
+    claim_interval = models.CharField(max_length=20, choices=IntervalChoices, null=True, blank=True)
+
+    recepient_sectors = models.ManyToManyField("residents.ResidentSector")
 
     stocks = models.PositiveIntegerField()
+
+    allowed_groups = models.ManyToManyField(Group, blank=True)
 
     active = models.BooleanField(default=True)
 
@@ -63,10 +50,14 @@ class Service(models.Model):
         return str(self.name)
     
     def save(self, *args, **kwargs) -> None :
+        if self.name:
+            self.name = self.name.upper()
         return super().save(*args, **kwargs)
     
     def clean(self) -> None:
         #TODO: Implement Validations
+        if self.name:
+            self.name = self.name.upper()
         return super().clean()
 
 
@@ -88,7 +79,10 @@ class ServiceClaim(models.Model):
 
     claimed_at = models.DateTimeField(default=timezone.now)
 
-    claimed_by = models.ForeignKey(Official, on_delete=models.SET_NULL, null=True, related_name="claims_made")
+    claimed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                                   related_name="claims_made")
+    
+    notes = models.CharField(blank=True, null=True)
 
     class Meta:
         indexes = [
@@ -112,26 +106,32 @@ class ServiceClaim(models.Model):
         return super().save(*args, **kwargs)
 
     @staticmethod
-    def can_claim(user : Resident, service : Service, amount : int) -> bool :
-        if not service in user.registered_services:
-            return False
+    def can_claim(user : Resident, service : Service, amount : int) -> Tuple[bool, Dict] :
+        if not service in user.registered_services.all():
+            return False, { "error" : "user not registered in services" }
+        
+        total_claims = ServiceClaim.objects.filter(user=user, service=service).count()
+        if total_claims >= service.max_claims_per_user:
+            return False, { "error" : "Reached max claims" }
 
         if int(service.stocks) - amount < 0:
-            return False
+            return False, { "error" : "not enough stocks" }
 
-        return True
+        return True, { "error" : None }
 
 
 @transaction.atomic
-def claim(user : Resident, service : Service, amount : int, claimed_by : Official) -> bool :
+def claim(user : Resident, service : Service, amount : int, claimed_by : User) -> Tuple[bool, Dict] :
     service = (
         Service.objects
         .select_for_update()
         .get(pk=service.pk)
     )
 
-    if not ServiceClaim.can_claim(user, service, amount):
-        return False
+    res, err = ServiceClaim.can_claim(user, service, amount)
+
+    if not res:
+        return False, err
     
     service.stocks -= 1
     service.save(update_fields=["stocks"])
@@ -142,7 +142,7 @@ def claim(user : Resident, service : Service, amount : int, claimed_by : Officia
         claimed_by=claimed_by
     )
 
-    return True
+    return True, { "error": None }
 
 
 class GiveawayService(ServiceClaim):

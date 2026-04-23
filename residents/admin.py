@@ -1,8 +1,17 @@
 from django.contrib import admin
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import Resident, ResidentSector
 from service.models import ServiceClaim
+
+
+@admin.register(ResidentSector)
+class SectorAdmin(admin.ModelAdmin):
+    list_display = (
+        "verbose_name", "description",
+    )
+
+    search_fields = (
+        "name", "verbose_name",
+    )
 
 
 class ResidentClaimInline(admin.TabularInline):
@@ -12,8 +21,8 @@ class ResidentClaimInline(admin.TabularInline):
     can_delete = False
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(Resident)
+class ResidentAdmin(admin.ModelAdmin):
     list_display = (
         "uin", "pcn", "issued_at",
         "proof_of_residence", "active", "email", "phone_number", "profile_image",

@@ -1,8 +1,14 @@
 from rest_framework import serializers
-from .models import Service
+from .models import Service, ServiceClaim
 
 
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = "__all__"
+
+
+class ServiceClaimSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceClaim
+        exclude = ["id"]

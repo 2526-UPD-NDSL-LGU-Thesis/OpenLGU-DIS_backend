@@ -2,8 +2,10 @@
 API views for MOSIP app.
 """
 
-from django.http import HttpRequest, JsonResponse
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from django.http import HttpRequest
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework import status
 
 from .models import (
@@ -15,7 +17,7 @@ from .models import (
 # pylint: disable=missing-function-docstring
 
 @api_view(['POST'])
-def auth_via_demographics(request : HttpRequest) -> JsonResponse :
+def auth_via_demographics(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
 
@@ -24,14 +26,14 @@ def auth_via_demographics(request : HttpRequest) -> JsonResponse :
         **data
     )
 
-    return JsonResponse(
+    return Response(
         mosip_response.model_dump(),
         status=status.HTTP_200_OK
     )
 
 
 @api_view(['POST'])
-def auth_start_otp(request : HttpRequest) -> JsonResponse :
+def auth_start_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
 
@@ -40,14 +42,14 @@ def auth_start_otp(request : HttpRequest) -> JsonResponse :
         **data
     )
 
-    return JsonResponse(
+    return Response(
         { "txn_id" : mosip_response.transaction_id },
         status=status.HTTP_200_OK
     )
 
 
 @api_view(['POST'])
-def auth_via_otp(request : HttpRequest) -> JsonResponse :
+def auth_via_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
     txn_id = data.pop("txn_id")
@@ -59,14 +61,14 @@ def auth_via_otp(request : HttpRequest) -> JsonResponse :
         otp=otp
     )
 
-    return JsonResponse(
+    return Response(
         mosip_response.model_dump(),
         status=status.HTTP_200_OK
     )
 
 
 @api_view(['POST'])
-def kyc_via_demographics(request : HttpRequest) -> JsonResponse :
+def kyc_via_demographics(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
 
@@ -75,14 +77,14 @@ def kyc_via_demographics(request : HttpRequest) -> JsonResponse :
         **data
     )
 
-    return JsonResponse(
+    return Response(
         mosip_response.model_dump(),
         status=status.HTTP_200_OK
     )
 
 
 @api_view(['POST'])
-def kyc_start_otp(request : HttpRequest) -> JsonResponse :
+def kyc_start_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
 
@@ -91,14 +93,14 @@ def kyc_start_otp(request : HttpRequest) -> JsonResponse :
         **data
     )
 
-    return JsonResponse(
+    return Response(
         { "txn_id" : mosip_response.transaction_id },
         status=status.HTTP_200_OK
     )
 
 
 @api_view(['POST'])
-def kyc_via_otp(request : HttpRequest) -> JsonResponse :
+def kyc_via_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
     txn_id = data.pop("txn_id")
@@ -110,15 +112,16 @@ def kyc_via_otp(request : HttpRequest) -> JsonResponse :
         otp=otp
     )
 
-    return JsonResponse(
+    return Response(
         mosip_response.model_dump(),
         status=status.HTTP_200_OK
     )
 
 
+@csrf_exempt
 @api_view(['GET'])
-def ping(_) -> JsonResponse :
-    return JsonResponse({ "message": "pong" }, status=200)
+def ping(_) -> Response :
+    return Response({ "message": "pong" }, status=status.HTTP_200_OK)
 
 #TODO: change 200 statuses to 202 if async operations
 #TODO: write errors

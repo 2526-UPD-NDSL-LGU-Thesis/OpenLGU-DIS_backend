@@ -8,6 +8,15 @@ from pydantic import BaseModel, Field, AliasChoices, model_validator
 import cbor2
 
 
+def convert_keys_to_str(obj):
+    if isinstance(obj, dict):
+        return {str(k): convert_keys_to_str(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_keys_to_str(i) for i in obj]
+    else:
+        return obj
+
+
 class Claim169(BaseModel):
     id : str = Field(validation_alias=AliasChoices("id", "1"))
     version : str = Field(validation_alias=AliasChoices("version", "2"))
@@ -75,5 +84,6 @@ class CBORWebToken(BaseModel):
     @classmethod
     def from_cbor(cls, cbor : bytes) -> Self :
         cbor_data = cbor2.loads(cbor)
+        cbor_data = convert_keys_to_str(cbor_data)
 
         return cls.model_validate(**cbor_data)
