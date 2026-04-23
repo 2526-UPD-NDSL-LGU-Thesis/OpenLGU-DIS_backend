@@ -47,6 +47,15 @@ class ResidentViewSet(mixins.RetrieveModelMixin,
         obj = get_object_or_404(queryset, uin=self.kwargs["uin"])
         self.check_object_permissions(self.request, obj)
         return obj
+    
+    @action(detail=False, methods=['GET'], url_path=r"pcn/(?P<pcn>[^/.]+)")
+    def by_pcn(self, request, pcn=None):
+        """Search Resident by their PCN."""
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, pcn=pcn)
+        self.check_object_permissions(request, obj)
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
 
     # @action(detail=True, methods=['GET'], url_path='qr')
     # def qr(self, request, pk=None):
