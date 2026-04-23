@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from .models import (
-    Service, ServiceClaim, GiveawayService,
+    Service, ServiceClaim,
 )
 
 

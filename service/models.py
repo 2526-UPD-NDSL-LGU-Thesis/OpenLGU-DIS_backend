@@ -5,7 +5,7 @@ from django.db import models, IntegrityError, transaction
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User, Group
 from django.utils import timezone
-from residents.models import Resident as Resident
+from residents.models import Resident
 
 from .generator import generate_id
 
@@ -143,10 +143,3 @@ def claim(user : Resident, service : Service, amount : int, claimed_by : User) -
     )
 
     return True, { "error": None }
-
-
-class GiveawayService(ServiceClaim):
-    class Meta:
-        proxy = True
-        verbose_name = "Giveaway Claims"
-        verbose_name_plural = "Giveaway Claims"
