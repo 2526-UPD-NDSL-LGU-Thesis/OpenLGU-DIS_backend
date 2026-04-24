@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
 
 from .models import Resident
 from .serializers import ResidentSerializer
@@ -33,7 +33,8 @@ def auth(request) -> HttpResponse :
     return render(request, "auth.html")
 
 
-class ResidentViewSet(mixins.RetrieveModelMixin,
+class ResidentViewSet(mixins.CreateModelMixin,
+                      mixins.RetrieveModelMixin,
                       mixins.UpdateModelMixin,
                       mixins.DestroyModelMixin,
                       viewsets.GenericViewSet):
