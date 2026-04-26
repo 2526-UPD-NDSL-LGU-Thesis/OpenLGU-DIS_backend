@@ -6,7 +6,7 @@ import base64
 from collections import defaultdict
 from datetime import datetime
 from io import BytesIO
-from typing import Self, Dict, List, Optional
+from typing import Self, Dict, List, Optional, Any
 
 from django.conf import settings
 from iso639 import Lang
@@ -238,7 +238,7 @@ class MOSIPUser(BaseModel):
         }
     
     @property
-    def to_claim169(self) -> Dict[int, any] :
+    def to_claim169(self) -> Dict[int, Any] :
         default_lang = settings.DEFAULT_LANGUAGE_ISO
         claim169 = {
             1 : self.uid,
@@ -257,8 +257,8 @@ class MOSIPUser(BaseModel):
             # 13 : nationality (unsupported)
             # 14 : marital status (unsupported)
             # 15 : guardian (unsupported)
-            16 : self.face,
-            17 : 2,                                 # JPEG
+            # 16 : (depreciated)
+            # 17 : (depreciated)
             # 18 : best quality fingers (unsupported)
             # 19 : full name in secondary language (unsupported)
             # 20 : secondary language (unsupported)
@@ -266,7 +266,12 @@ class MOSIPUser(BaseModel):
             # 22 : legal status (unsupported)
             # 23 : country of issuance (unsupported)
             # 24 - 49 : unassigned
-            # 50 - 65 : biometrics
+            # 50 - 59 : finger biometrics
+            # 60 : Right Iris
+            # 61 : Left Iris
+            62 : self.face,
+            # 63 - 64 : Palm Print
+            # 65 : Voice
             # 66 - 74 : for future biometrics
             # 75 - 99 : for future data
             # 99 : local_id
