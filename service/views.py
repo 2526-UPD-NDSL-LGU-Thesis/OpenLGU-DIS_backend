@@ -105,16 +105,16 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
     
     authenticated_user = request.user
 
-    res, err = claim(
-        user=resident,
+    result, error = claim(
+        resident=resident,
         service=service,
         amount=1,
         claimed_by=authenticated_user
     )
 
-    if not res:
+    if not result:
         return Response(
-            err,
+            error,
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -122,7 +122,6 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
         { "status" : "Service claimed" },
         status=status.HTTP_201_CREATED
     )
-
 
 
 @api_view(["POST"])
@@ -158,16 +157,16 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
     
     authenticated_user = request.user
 
-    success = claim(
-        user=resident,
+    result, error = claim(
+        resident=resident,
         service=service,
         amount=1,
         claimed_by=authenticated_user
     )
 
-    if not success:
+    if not result:
         return Response(
-            { "error" : "Failed to claim service" },
+            error,
             status=status.HTTP_400_BAD_REQUEST
         )
 
