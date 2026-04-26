@@ -16,6 +16,7 @@ import base45
 import cbor2
 
 from .claim169 import CBORWebToken
+from mosip import MOSIPUser
 
 # TODO: use .env
 PRIVATE_SIGNING_KEY_PATH = Path(r"./qr_manager/private_signing_key.pem")
@@ -96,7 +97,7 @@ def _load_cipher_box(
 
     return Box(private_key, public_key)
 
-def sign_message(
+def pynacl_sign_message(
         message : bytes,
         path_to_key : Path = PRIVATE_SIGNING_KEY_PATH,
         password : bytes = PRIVATE_KEY_PASSWORD
@@ -113,7 +114,7 @@ def sign_message(
     return signing_key.sign(message)
 
 
-def verify_message(
+def pynacl_verify_message(
         signed_message : bytes,
         path_to_key : Path = PUBLIC_SIGNING_KEY_PATH,
     ) -> bytes :
@@ -187,7 +188,7 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
     #     pass
 
     try:
-        signed_msg = verify_message(decompressed_qr)
+        signed_msg = pynacl_verify_message(decompressed_qr)
     except BadSignatureError:
         return False, { "error" : "Failed to verify QR" }
     
@@ -199,3 +200,17 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
         return True, cwt
     except ValidationError as err:
         return False, { "error" : "Failed to parse QR payload", "errors" : err }
+
+
+def generate_qr(uin : str, user : MOSIPUser) :
+    claim169 = user.to_claim169
+    claim169[99] = uin
+
+    cwt = {
+        1   : "OpenLGU",
+        2   : int(datetime.now().timestamp()),
+        169 : claim169
+    }
+
+    cbor_cwt = cbor2.dumps(cwt)
+    #TODO: Revert to COSE message
