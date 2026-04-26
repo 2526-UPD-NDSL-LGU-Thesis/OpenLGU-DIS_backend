@@ -94,7 +94,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user_uin = payload[169][99]
+    user_uin = payload[169][75]
     try:
         resident = Resident.objects.get(uin=user_uin)
     except Resident.DoesNotExist:

@@ -2,10 +2,22 @@
 # pylint: disable=trailing-whitespace
 
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Optional, Dict, Tuple, Any
 from dataclasses import dataclass
 from datetime import datetime
 import zlib
+
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from pycose.messages.sign1message import Sign1Message
+from pycose.keys.cosekey import CoseKey
+from pycose.headers import Algorithm
+from pycose.algorithms import EdDSA
+from pycose.keys.curves import Ed25519
+from pycose.keys.keyparam import KpKty, OKPKpD, OKPKpX, KpAlg, KpKeyOps, OKPKpCurve
+from pycose.keys.keytype import KtyOKP
+from pycose.keys.keyops import SignOp, VerifyOp
+import cbor2
 
 from cryptography.hazmat.primitives.serialization import (load_pem_private_key, load_pem_public_key)
 from nacl.exceptions import BadSignatureError
@@ -15,8 +27,7 @@ from pydantic import ValidationError
 import base45
 import cbor2
 
-from .claim169 import CBORWebToken
-from mosip import MOSIPUser
+# from .claim169 import CBORWebToken
 
 # TODO: use .env
 PRIVATE_SIGNING_KEY_PATH = Path(r"./qr_manager/private_signing_key.pem")
@@ -97,6 +108,35 @@ def _load_cipher_box(
 
     return Box(private_key, public_key)
 
+
+def pycose_sign_message(payload : bytes) -> bytes :
+    """Generate a COSE_Sign1 signed message with EdDSA Algorithm with the base cryptography library.
+
+    :param message: Message to be encrypted and signed.
+    :type message: Dict[str, Any]
+    :return: COSE_Sign1 signed message.
+    :rtype: bytes
+    """
+    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
+        # private_key = load_pem_private_key(
+        #     key.read(),
+        #     PRIVATE_KEY_PASSWORD
+        # )
+
+        private_key = CoseKey.from_pem_private_key(
+            key.read(),
+            password=PRIVATE_KEY_PASSWORD
+        )
+
+    sign1_message = Sign1Message(
+        phdr={ Algorithm: EdDSA },
+        payload=payload
+    )
+    sign1_message.key = private_key
+
+    return sign1_message.encode()           #type: ignore
+
+
 def pynacl_sign_message(
         message : bytes,
         path_to_key : Path = PRIVATE_SIGNING_KEY_PATH,
@@ -112,6 +152,43 @@ def pynacl_sign_message(
     signing_key = _load_signing_key(path_to_key, password)
 
     return signing_key.sign(message)
+
+
+def pycose_verify_message(message : bytes) -> Tuple[bool, Dict[str, Any]] :
+    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm with the base cryptography library.
+
+    :param message: Encrypted message to be verified.
+    :type message: bytes
+    :return: Returns authentication status and the encrypted message's payload.
+    :rtype: Tuple[bool, Dict[str, Any]]
+    """
+    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
+        private_key = load_pem_private_key(
+            key.read(),
+            PRIVATE_KEY_PASSWORD
+        )
+    
+    try:
+        decoded = Sign1Message.decode(message)
+        decoded.key = private_key
+
+        algorithm = decoded.phdr.get(Algorithm)
+
+        if algorithm != EdDSA:
+            return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
+
+        if decoded.payload is None:
+            return False, { "error" : "Payload is empty" }
+        payload = cbor2.loads(decoded.payload)
+
+        try:
+            QRInfo(**payload)
+        except TypeError:
+            return False, { "error" : "Payload is missing information/s" }
+
+        return decoded.verify_signature(), payload or {} #type: ignore
+    except:                                 # pylint: disable=bare-except
+        return False, { "error" : "Failed to decode message" }
 
 
 def pynacl_verify_message(
@@ -200,17 +277,3 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
         return True, cwt
     except ValidationError as err:
         return False, { "error" : "Failed to parse QR payload", "errors" : err }
-
-
-def generate_qr(uin : str, user : MOSIPUser) :
-    claim169 = user.to_claim169
-    claim169[99] = uin
-
-    cwt = {
-        1   : "OpenLGU",
-        2   : int(datetime.now().timestamp()),
-        169 : claim169
-    }
-
-    cbor_cwt = cbor2.dumps(cwt)
-    #TODO: Revert to COSE message

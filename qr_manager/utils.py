@@ -7,6 +7,8 @@ import cbor2
 
 import base45
 
+from mosip import MOSIPUser
+
 
 def read_qr(qr_code : str) -> Optional[Dict] :
     """Decodes information from supported QRs.
@@ -41,3 +43,17 @@ def read_qr(qr_code : str) -> Optional[Dict] :
 
 def read_qr_image():
     pass
+
+
+def generate_qr(uin : str, user : MOSIPUser) :
+    claim169 = user.to_claim169
+    claim169[99] = uin
+
+    cwt = {
+        1   : "OpenLGU",
+        2   : int(datetime.now().timestamp()),
+        169 : claim169
+    }
+
+    cbor_cwt = cbor2.dumps(cwt)
+    #TODO: Revert to COSE message

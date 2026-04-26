@@ -274,7 +274,8 @@ class MOSIPUser(BaseModel):
             # 65 : Voice
             # 66 - 74 : for future biometrics
             # 75 - 99 : for future data
-            # 99 : local_id
+            # 75 : local UIN
+            # 76 : sectors
         }
 
         return claim169
