@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8000/api/services/
+  url: http://localhost:8000/api/services/SENIORDISCOUNT/claims/
   auth: inherit
 
 settings:
