@@ -252,12 +252,12 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
     try:
         b45_qr = base45.b45decode(qr_code)
     except:
-        return False, { "error" : "Invalid QR: Invalid Base45" }
+        return False, { "error" : "error_not_base45" }
 
     try:
         decompressed_qr = zlib.decompress(b45_qr)
     except:
-        return False, { "error" : "Invalid QR: Payload not compressed" }
+        return False, { "error" : "error_not_compressed" }
 
     # try:
     #     decrypt_msg = decrypt_message(decompressed_qr)
@@ -267,7 +267,7 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
     try:
         signed_msg = pynacl_verify_message(decompressed_qr)
     except BadSignatureError:
-        return False, { "error" : "Failed to verify QR" }
+        return False, { "error" : "error_tampered" }
     
     try:
         # cwt = CBORWebToken.from_cbor(signed_msg)
@@ -276,4 +276,4 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
 
         return True, cwt
     except ValidationError as err:
-        return False, { "error" : "Failed to parse QR payload", "errors" : err }
+        return False, { "error" : "error_other", "errors" : err }

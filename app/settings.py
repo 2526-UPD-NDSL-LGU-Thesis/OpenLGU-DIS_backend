@@ -34,10 +34,10 @@ ALLOWED_HOSTS = [ # TODO why is this necessary? https://docs.djangoproject.com/e
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000', # TODO is this necessary? It's itself?
     
-    'http://localhost:5173', # 
-    'http://localhost:5174',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174'
+    'http://localhost:2999', # 
+    'http://localhost:3000',
+    'http://127.0.0.1:2999',
+    'http://127.0.0.1:3000'
 
 ]
 
@@ -51,7 +51,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny', # TODO Remove
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.UserRateThrottle",

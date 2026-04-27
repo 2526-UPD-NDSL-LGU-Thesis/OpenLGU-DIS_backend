@@ -19,8 +19,8 @@ def decrypt_qr(request : HttpRequest) -> Response :
     except KeyError:
         return Response(
             {
-                "error" : "KeyError",
-                "error_message" : "Invalid POST body. Expected 'qr', got none instead."
+                "error" : "error_random_qr",
+                "message" : "Invalid POST body. Expected 'qr', got none instead."
             },
             status=status.HTTP_400_BAD_REQUEST
         )
