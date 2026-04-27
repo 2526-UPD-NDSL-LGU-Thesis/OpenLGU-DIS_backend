@@ -272,7 +272,6 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
     try:
         # cwt = CBORWebToken.from_cbor(signed_msg)
         cwt = cbor2.loads(signed_msg)
-        cwt[169] = cbor2.loads(cwt[169])
 
         return True, cwt
     except ValidationError as err:

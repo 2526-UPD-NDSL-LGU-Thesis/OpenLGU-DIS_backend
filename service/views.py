@@ -14,7 +14,7 @@ from residents.models import Resident
 from qr_manager import validate_qr, read_qr
 
 
-class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
+class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 
