@@ -1,7 +1,7 @@
 info:
   name: Residents
   type: folder
-  seq: 8
+  seq: 6
 
 request:
   auth: inherit

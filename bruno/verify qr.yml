@@ -1,11 +1,11 @@
 info:
-  name: claim service
+  name: verify qr
   type: http
   seq: 5
 
 http:
   method: POST
-  url: http://localhost:8000/api/claim/GIVEAWAY/
+  url: http://localhost:8000/api/qr/verify/
   headers:
     - name: Content-Type
       value: application/json
