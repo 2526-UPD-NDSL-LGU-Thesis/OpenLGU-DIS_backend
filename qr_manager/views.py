@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .main import validate_qr
+from residents.models import Resident
 
 
 @api_view(['POST'])
@@ -26,6 +27,12 @@ def decrypt_qr(request : HttpRequest) -> Response :
         )
     
     _status, payload = validate_qr(b45_qr)
+
+    if not Resident.objects.filter(uin=payload[169][75]).exists():
+        return Response(
+            { "error" : "User does not exist" },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     if _status:
         return Response(
