@@ -84,7 +84,7 @@ class Service(models.Model):
 
     def can_claim(self, resident : Resident, official : User, amount : int) -> Tuple[bool, Dict] :
         # Check if User is authorized to make claims on the service.
-        if not self.allowed_groups.filter(name=[group for group in official.groups]).exists():
+        if not self.allowed_groups.filter(id__in=official.groups.all()).exists():
             return False, {
                 "error"   : "user_unauthorized",
                 "details" : "User doing the claim is not authorized to dispense service."
@@ -98,7 +98,7 @@ class Service(models.Model):
             }
         
         # Check if resident is a valid recepient of the service.
-        if not self.recepient_sectors.filter(name=[sector for sector in resident.sector]).exists():
+        if not self.recepient_sectors.filter(name__in=resident.sector.all()).exists():
             return False, {
                 "error"   : "resident_not_a_recepient",
                 "details" : "Resident is not a recepient of the service."

@@ -275,6 +275,6 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
         cwt = cbor2.loads(signed_msg)
         cwt[169][62] = base64.b64encode(cwt[169][62]).decode()
 
-        return True, { "id_details" : cwt }
+        return True, cwt
     except ValidationError as err:
         return False, { "error" : "error_other", "errors" : err }

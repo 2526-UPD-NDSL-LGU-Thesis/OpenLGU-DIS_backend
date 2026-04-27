@@ -29,7 +29,7 @@ def decrypt_qr(request : HttpRequest) -> Response :
 
     if _status:
         return Response(
-            payload,
+            { "id_details" : payload },
             status=status.HTTP_200_OK
         )
 
