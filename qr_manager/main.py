@@ -25,6 +25,7 @@ from nacl.public import PrivateKey, PublicKey, Box
 from nacl.signing import SigningKey, VerifyKey, SignedMessage
 from pydantic import ValidationError
 import base45
+import base64
 import cbor2
 
 # from .claim169 import CBORWebToken
@@ -265,14 +266,15 @@ def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
     #     pass
 
     try:
-        signed_msg = pynacl_verify_message(decompressed_qr)
+        signed_msg = pynacl_verify_message(decompressed_qr)        
     except BadSignatureError:
         return False, { "error" : "error_tampered" }
     
     try:
         # cwt = CBORWebToken.from_cbor(signed_msg)
         cwt = cbor2.loads(signed_msg)
+        cwt[169][62] = base64.b64encode(cwt[169][62]).decode()
 
-        return True, cwt
+        return True, { "id_details" : cwt }
     except ValidationError as err:
         return False, { "error" : "error_other", "errors" : err }
