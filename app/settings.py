@@ -48,10 +48,11 @@ CORS_ALLOW_CREDENTIALS = True # TODO this seems unsafe. Check documentation
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny', # TODO Remove
+        'rest_framework.permissions.IsAuthenticated',
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.UserRateThrottle",
@@ -61,6 +62,13 @@ REST_FRAMEWORK = {
     },
 }
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 # Application definition
 
@@ -73,6 +81,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders', # TODO READ UP ON HOW THIS WORKS IN DETAIL FOR SECURITY https://pypi.org/project/django-cors-headers/
     'rest_framework',
+    'rest_framework_simplejwt',
     'residents',
     'service',
     'qr_manager'
