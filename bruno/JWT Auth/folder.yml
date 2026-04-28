@@ -1,7 +1,7 @@
 info:
-  name: Services
+  name: JWT Auth
   type: folder
-  seq: 5
+  seq: 3
 
 request:
   auth: inherit

@@ -1,0 +1,66 @@
+info:
+  name: get token
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8000/api/token/
+  body:
+    type: json
+    data: |-
+      {
+        "username" : "james",
+        "password" : "rootroot"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: james admin login
+    request:
+      url: http://localhost:8000/api/token/
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "username" : "james",
+            "password" : "rootroot"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Tue, 28 Apr 2026 11:31:24 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "489"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3NzQ2MjI4NCwiaWF0IjoxNzc3Mzc1ODg0LCJqdGkiOiIxOGY1YTljNDFjMzE0YTg1YTljYjE4Mzk2NTc4NjI0MSIsInVzZXJfaWQiOiIyIn0.abaNhVoNEdUqQJzsfLW2NUtC0J3ECRqqp8RmN5edDi4",
+            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc3Mzc5NDg0LCJpYXQiOjE3NzczNzU4ODQsImp0aSI6IjliNWZlZDc2NjAzMTRkN2FiMjZlYmY4NmU5ZDZlZGE4IiwidXNlcl9pZCI6IjIifQ.zYSfylaarZPSQiqlrAJ9LTDz6RQ84tbexrvVq6HZdE8"
+          }
