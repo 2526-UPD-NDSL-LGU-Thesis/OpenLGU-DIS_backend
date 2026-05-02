@@ -10,8 +10,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 
-from .models import Resident
-from .serializers import ResidentSerializer
+from .models import Resident, ResidentSector
+from .serializers import ResidentSerializer, SectorSerializer
 
 
 def profile(request, lgu_id=None) -> HttpResponse :
@@ -121,3 +121,13 @@ class ResidentViewSet(mixins.CreateModelMixin,
     #     buffer.seek(0)
         
     #     return HttpResponse(buffer, content_type="image/png")
+
+class SectorViewset(viewsets.ModelViewSet):
+    queryset = ResidentSector.objects.all()
+    serializer_class = SectorSerializer
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj

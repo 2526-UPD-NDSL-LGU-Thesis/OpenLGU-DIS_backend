@@ -22,6 +22,7 @@ from service import views as service_views
 router = routers.DefaultRouter()
 router.register(r'ids', resident_views.ResidentViewSet)
 router.register(r'services', service_views.ServiceViewSet)
+router.register(r'sectors', resident_views.SectorViewset)
 
 urlpatterns = [  
     path('', include(router.urls)),
