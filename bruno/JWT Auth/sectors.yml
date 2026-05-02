@@ -24,7 +24,7 @@ examples:
       statusText: OK
       headers:
         - name: date
-          value: Sat, 02 May 2026 02:26:57 GMT
+          value: Sat, 02 May 2026 09:03:25 GMT
         - name: server
           value: WSGIServer/0.2 CPython/3.12.10
         - name: content-type
@@ -36,7 +36,7 @@ examples:
         - name: x-frame-options
           value: DENY
         - name: content-length
-          value: "794"
+          value: "970"
         - name: x-content-type-options
           value: nosniff
         - name: referrer-policy
@@ -48,58 +48,58 @@ examples:
         data: |-
           [
             {
-              "name": "WORKERTEACHER",
-              "verbose_name": "Teacher",
+              "id": "SECTOR5664",
+              "name": "Teacher",
               "description": null
             },
             {
-              "name": "WORKERHEALTH",
-              "verbose_name": "Health Worker",
+              "id": "SECTOR7751",
+              "name": "Health Worker",
               "description": null
             },
             {
-              "name": "WORKERGOV",
-              "verbose_name": "Government Worker",
+              "id": "SECTOR1763",
+              "name": "Government Worker",
               "description": null
             },
             {
-              "name": "STUDENT",
-              "verbose_name": "Student",
+              "id": "SECTOR9899",
+              "name": "Student",
               "description": null
             },
             {
-              "name": "SINGLEPARENT",
-              "verbose_name": "Single Parent",
+              "id": "SECTOR1085",
+              "name": "Single Parent",
               "description": null
             },
             {
-              "name": "SENIOR",
-              "verbose_name": "Senior Citizen",
+              "id": "SECTOR9628",
+              "name": "Senior Citizen",
               "description": null
             },
             {
-              "name": "SBUSINESSES",
-              "verbose_name": "Small Businesses",
+              "id": "SECTOR8374",
+              "name": "Small Businesses",
               "description": null
             },
             {
-              "name": "RESIDENT",
-              "verbose_name": "Resident",
+              "id": "SECTOR7639",
+              "name": "Resident",
               "description": null
             },
             {
-              "name": "PUVJEEP",
-              "verbose_name": "Jeepney Driver",
+              "id": "SECTOR3389",
+              "name": "Jeepney Driver",
               "description": null
             },
             {
-              "name": "PUVBUS",
-              "verbose_name": "Bus Driver",
+              "id": "SECTOR9139",
+              "name": "Bus Driver",
               "description": null
             },
             {
-              "name": "4PS",
-              "verbose_name": "Pantawid Pamilyang Pilipino Program (4Ps)",
+              "id": "SECTOR6271",
+              "name": "Pantawid Pamilyang Pilipino Program (4Ps)",
               "description": null
             }
           ]
