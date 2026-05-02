@@ -3,6 +3,9 @@ Django model for Resident database.
 """
 
 from django.db import models, IntegrityError, transaction
+import uuid
+import os
+
 
 from .generator import generate_id, generate_uid
 
@@ -10,6 +13,18 @@ from .generator import generate_id, generate_uid
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
+
+
+def image_upload_to(instance, filename):
+    ext = filename.split(".")[-1]
+    new_filename = f"{uuid.uuid4()}.{ext}"
+    return os.path.join("profiles/", new_filename)
+
+
+def proof_upload_to(instance, filename):
+    ext = filename.split(".")[-1]
+    new_filename = f"{uuid.uuid4()}.{ext}"
+    return os.path.join("proofs/", new_filename)
 
 
 class ResidentSector(models.Model):
@@ -37,7 +52,7 @@ class Resident(models.Model):
     sector = models.ManyToManyField(ResidentSector, related_name="sectors")
 
     issued_at = models.DateField(auto_now_add=True)
-    proof_of_residence = models.FileField(upload_to="proofs/")
+    proof_of_residence = models.FileField(upload_to=proof_upload_to)
 
     active = models.BooleanField(default=True)
 
@@ -45,7 +60,7 @@ class Resident(models.Model):
 
     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
-    profile_image = models.ImageField(upload_to="profiles/")
+    profile_image = models.ImageField(upload_to=image_upload_to)
 
     def __str__(self) -> str :
         return str(self.uin)
