@@ -1,7 +1,9 @@
 info:
   name: JWT Auth
   type: folder
-  seq: 3
+  seq: 5
 
 request:
-  auth: inherit
+  auth:
+    type: bearer
+    token: "{{jwt_access_token}}"

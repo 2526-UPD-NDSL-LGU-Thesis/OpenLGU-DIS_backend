@@ -1,5 +1,5 @@
 info:
-  name: get token
+  name: token fetch
   type: http
   seq: 1
 
@@ -15,6 +15,15 @@ http:
       }
   auth: inherit
 
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody();
+
+        bru.setEnvVar("jwt_access_token", body.access);
+        bru.setEnvVar("jwt_refresh_token", body.refresh);
+
 settings:
   encodeUrl: true
   timeout: 0
@@ -22,7 +31,7 @@ settings:
   maxRedirects: 5
 
 examples:
-  - name: james admin login
+  - name: Success
     request:
       url: http://localhost:8000/api/token/
       method: POST
