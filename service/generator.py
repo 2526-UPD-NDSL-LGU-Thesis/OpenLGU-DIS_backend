@@ -11,5 +11,5 @@ def generate_id(length : int = 10) -> str :
     while True:
         _id = ''.join(secrets.choice(string.digits) for _ in range(length))
 
-        if _id[0] != "0" : 
+        if _id[0] != "0" and len(_id) == length: 
             return _id
