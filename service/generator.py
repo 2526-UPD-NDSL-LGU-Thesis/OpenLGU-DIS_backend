@@ -8,4 +8,8 @@ import string
 
 def generate_id(length : int = 10) -> str :
     """Cryptographically generate a random UID."""
-    return ''.join(secrets.choice(string.digits) for _ in range(length))
+    while True:
+        _id = ''.join(secrets.choice(string.digits) for _ in range(length))
+
+        if _id[0] != "0" : 
+            return _id

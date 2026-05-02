@@ -32,8 +32,9 @@ class Service(models.Model):
         QUARTERLY = "quarterly", "Quarterly"
         YEARLY    = "yearly", "Yearly"
 
-    name = models.CharField(max_length=40, primary_key=True)
-    verbose_name = models.CharField(max_length=255)
+    id = models.CharField(max_length=30, editable=False, unique=True, primary_key=True,
+                          db_index=True)
+    name = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
 
     max_claims_per_user = models.PositiveIntegerField(default=1)
@@ -57,25 +58,23 @@ class Service(models.Model):
         return str(self.name)
     
     def save(self, *args, **kwargs) -> None :
-        if self.name:
-            self.name = self.name.upper()
+        if not self.id:
+            for _ in range(10):
+                self.id = "SERVICE" + generate_id(8)
         return super().save(*args, **kwargs)
     
     def clean(self) -> None:
         if self.name:
-            self.name = self.name.upper()
-
-        if self.verbose_name:
-            self.verbose_name = self.verbose_name.title()
+            self.name = self.name.title()
         
         if self.claim_type == self.ClaimChoices.ONETIME:
-            if self.refresh_interval != None:
+            if self.refresh_interval is not None:
                 raise ValidationError({
                     "refresh_interval" : "Must be `NONE` when claim type is `ONETIME`."
                 })
         
         if self.claim_type == self.ClaimChoices.PERIODIC:
-            if self.refresh_interval == None:
+            if self.refresh_interval is None:
                 raise ValidationError({
                     "refresh_interval" : "Must not be empty when claim type is `PERIODIC`."
                 })

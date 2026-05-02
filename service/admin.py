@@ -45,7 +45,7 @@ class ServiceClaimInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("verbose_name", "stocks", "active",)
+    list_display = ("name", "stocks", "active",)
 
     list_filter = ("active",)
     search_fields = ("name", "verbose_name",)
