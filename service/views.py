@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
-from .models import Service, ServiceClaim, claim
+from .models import Service, ServiceClaim
 from .permissions import CanAccessServiceClaim
 from .serializers import ServiceSerializer, ServiceClaimSerializer
 from residents.models import Resident
@@ -17,6 +17,13 @@ from qr_manager import validate_qr, read_qr
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        return Service.objects.filter(
+            allowed_groups__in=user.groups.all()
+        ).distinct()
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -105,9 +112,8 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
     
     authenticated_user = request.user
 
-    result, error = claim(
+    result, error = service.claim(
         resident=resident,
-        service=service,
         amount=1,
         claimed_by=authenticated_user
     )
@@ -157,9 +163,8 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
     
     authenticated_user = request.user
 
-    result, error = claim(
+    result, error = service.claim(
         resident=resident,
-        service=service,
         amount=1,
         claimed_by=authenticated_user
     )
@@ -169,6 +174,8 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
             error,
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+    #TODO: Return the object created
 
     return Response(
         { "status" : "Service claimed" },

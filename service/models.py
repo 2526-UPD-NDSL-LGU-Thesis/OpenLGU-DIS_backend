@@ -1,4 +1,4 @@
-from typing import Tuple, Dict
+from typing import Optional, Tuple, Dict
 
 from datetime import timedelta
 from django.db import transaction
@@ -48,7 +48,7 @@ class Service(models.Model):
 
     stocks_type = models.CharField(max_length=20, choices=StockChoices)
 
-    stocks = models.PositiveIntegerField()
+    stocks = models.PositiveIntegerField(blank=True, null=True)
 
     allowed_groups = models.ManyToManyField(Group, blank=True)
 
@@ -78,10 +78,22 @@ class Service(models.Model):
                 raise ValidationError({
                     "refresh_interval" : "Must not be empty when claim type is `PERIODIC`."
                 })
+        
+        if self.stocks_type == self.StockChoices.UNLIMITED:
+            if self.stocks is not None:
+                raise ValidationError({
+                    "stocks" : "Must be `NONE` when stocks type is `UNLIMITED`."
+                })
+        
+        if self.stocks_type == self.StockChoices.LIMITED:
+            if self.stocks is None:
+                raise ValidationError({
+                    "stocks" : "Must not be empty when stocks type is `LIMITED`."
+                })
 
         return super().clean()
 
-    def can_claim(self, resident : Resident, official : User, amount : int) -> Tuple[bool, Dict] :
+    def can_claim(self, resident : Resident, official : User, amount : Optional[int]) -> Tuple[bool, Dict] :
         # Check if User is authorized to make claims on the service.
         if not self.allowed_groups.filter(id__in=official.groups.all()).exists():
             return False, {
@@ -97,7 +109,7 @@ class Service(models.Model):
             }
         
         # Check if resident is a valid recepient of the service.
-        if not self.recepient_sectors.filter(name__in=resident.sector.all()).exists():
+        if not self.recipient_sectors.filter(id__in=resident.sector.all()).exists():
             return False, {
                 "error"   : "resident_not_a_recepient",
                 "details" : "Resident is not a recepient of the service."
@@ -165,6 +177,30 @@ class Service(models.Model):
 
         return True, { "error" : None }
 
+    def claim(self, resident : Resident, amount : int, claimed_by : User):
+        with transaction.atomic():
+            service = Service.objects.select_for_update().get(pk=self.pk)
+
+            status, error = service.can_claim(resident, claimed_by, amount)
+
+            if not status:
+                return False, error
+
+            try:
+                transaction = ServiceClaim.objects.create(
+                    user=resident,
+                    service=service,
+                    claimed_by=claimed_by
+                )
+
+                if service.stocks_type == Service.StockChoices.LIMITED:
+                    service.stocks -= amount
+                    service.save(update_fields=["stocks"])
+                
+                return True, { "body" : transaction }
+            except Exception as err:
+                return False, { "error" : f"Failed to save service claim: {err}"}
+
 
 class ServiceClaim(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -182,6 +218,8 @@ class ServiceClaim(models.Model):
         related_name="claims"
     )
 
+    amount = models.PositiveIntegerField(default=1)
+
     claimed_at = models.DateTimeField(default=timezone.now)
 
     claimed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
@@ -198,43 +236,25 @@ class ServiceClaim(models.Model):
     def __str__(self):
         return str(self.transaction_id)
     
+    def clean(self) -> None :
+        status, err = self.service.can_claim(resident=self.user, official=self.claimed_by, amount=self.amount)
+        if not status:
+            raise ValidationError(
+                f"This claim is not allowed : {err["details"]}"
+            )
+        return super().clean()
+    
     def save(self, *args, **kwargs) -> None :
         if not self.transaction_id:
             for _ in range(10):
                 self.transaction_id = generate_id(length=20)
                 try:
                     with transaction.atomic():
+                        self.full_clean()
                         return super().save(*args, **kwargs)
                 except IntegrityError:
                     self.transaction_id = None
             raise ValueError("Failed to Transaction ID")
+        
+        self.full_clean()
         return super().save(*args, **kwargs)
-
-
-@transaction.atomic
-def claim(resident : Resident, service : Service, amount : int, claimed_by : User) -> Tuple[bool, Dict] :
-    service = (
-        Service.objects
-        .select_for_update()
-        .get(name=service.name)
-    )
-
-    status, error = service.can_claim(resident, claimed_by, amount)
-
-    if not status:
-        return False, error
-
-    try:
-        ServiceClaim.objects.create(
-            user=resident,
-            service=service,
-            claimed_by=claimed_by
-        )
-
-        if service.stocks_type == Service.StockChoices.LIMITED:
-            service.stocks -= amount
-            service.save(update_fields=["stocks"])
-    except Exception as err:
-        return False, { "error" : f"Failed to save service claim: {err}"}
-
-    return True, { "error": None }
