@@ -30,14 +30,16 @@ def proof_upload_to(instance, filename):
 class ResidentSector(models.Model):
     id = models.CharField(max_length=20, editable=False, unique=True, primary_key=True,
                           db_index=True)
-    name = models.CharField(max_length=100)
-    short_name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=50)
     description = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.short_name if self.short_name else self.name
+        return self.name
 
     def save(self, *args, **kwargs) -> None :
+        if self.name:
+            self.name = self.name.title()
+        
         if not self.id:
             for _ in range(10):
                 self.id = "SECTOR" + generate_id(4)
