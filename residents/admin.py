@@ -6,11 +6,11 @@ from service.models import ServiceClaim
 @admin.register(ResidentSector)
 class SectorAdmin(admin.ModelAdmin):
     list_display = (
-        "verbose_name", "description",
+        "name", "description",
     )
 
     search_fields = (
-        "name", "verbose_name",
+        "name", "short_name",
     )
 
 

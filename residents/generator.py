@@ -228,3 +228,11 @@ def generate_uid(id_length : int = 10) -> str :
         uid = candidate + verhoeff.calc_check_digit(candidate)
         if is_valid(uid, id_length):
             return uid
+
+def generate_id(id_length : int = 8) -> str :
+    """Generate a simple ID where the first number should not be a 0."""
+    while True:
+        _id = generate_candidate(id_length)
+
+        if _id[0] != "0" : 
+            return _id
