@@ -43,7 +43,7 @@ class Service(models.Model):
     refresh_interval = models.CharField(max_length=20, choices=IntervalChoices,
                                         null=True, blank=True)
 
-    recepient_sectors = models.ManyToManyField("residents.ResidentSector")
+    recipient_sectors = models.ManyToManyField("residents.ResidentSector")
 
     stocks_type = models.CharField(max_length=20, choices=StockChoices)
 
