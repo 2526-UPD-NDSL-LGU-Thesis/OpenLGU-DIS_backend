@@ -172,8 +172,9 @@ class Service(models.Model):
                     "details" : "User has reached the maximum amount of claims."
                 }
 
-        if int(self.stocks) - amount < 0:
-            return False, { "error" : "not enough stocks" }
+        if self.stocks_type == Service.StockChoices.LIMITED:
+            if self.stocks - amount < 0:
+                return False, { "error" : "not enough stocks" }
 
         return True, { "error" : None }
 
