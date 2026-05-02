@@ -15,37 +15,37 @@ class Command(BaseCommand):
 
     base_sectors = [
         {
-            "name" : "WORKERTEACHER", "verbose_name" : "teacher", "description" : None,
+            "short_name" : "WORKERTEACHER", "name" : "teacher", "description" : None,
         },
         {
-            "name" : "WORKERHEALTH", "verbose_name" : "health worker", "description" : None,
+            "short_name" : "WORKERHEALTH", "name" : "health worker", "description" : None,
         },
         {
-            "name" : "WORKERGOV", "verbose_name" : "government worker", "description" : None,
+            "short_name" : "WORKERGOV", "name" : "government worker", "description" : None,
         },
         {
-            "name" : "STUDENT", "verbose_name" : "student", "description" : None,
+            "short_name" : "STUDENT", "name" : "student", "description" : None,
         },
         {
-            "name" : "SINGLEPARENT", "verbose_name" : "single parent", "description" : None,
+            "short_name" : "SINGLEPARENT", "name" : "single parent", "description" : None,
         },
         {
-            "name" : "SENIOR", "verbose_name" : "senior citizen", "description" : None,
+            "short_name" : "SENIOR", "name" : "senior citizen", "description" : None,
         },
         {
-            "name" : "SBUSINESSES", "verbose_name" : "Small Businesses", "description" : None,
+            "short_name" : "SBUSINESSES", "name" : "Small Businesses", "description" : None,
         },
         {
-            "name" : "RESIDENT", "verbose_name" : "resident", "description" : None,
+            "short_name" : "RESIDENT", "name" : "resident", "description" : None,
         },
         {
-            "name" : "PUVJEEP", "verbose_name" : "Jeepney Driver", "description" : None,
+            "short_name" : "PUVJEEP", "name" : "Jeepney Driver", "description" : None,
         },
         {
-            "name" : "PUVBUS", "verbose_name" : "Bus Driver", "description" : None,
+            "short_name" : "PUVBUS", "name" : "Bus Driver", "description" : None,
         },
         {
-            "name" : "4PS", "verbose_name" : "Pantawid Pamilyang Pilipino Program (4Ps)", "description" : None,
+            "short_name" : "4PS", "name" : "Pantawid Pamilyang Pilipino Program (4Ps)", "description" : None,
         },
     ]
 
@@ -54,7 +54,7 @@ class Command(BaseCommand):
             if ResidentSector.objects.filter(name=sector["name"]).exists():
                 self.stdout.write(
                     self.style.WARNING(
-                        f"Sector {sector["name"]} already exsits."
+                        f"Sector {sector["name"].title()} already exsits."
                     )
                 )
             else:
@@ -62,12 +62,12 @@ class Command(BaseCommand):
                     ResidentSector.objects.create(**sector)
                     self.stdout.write(
                         self.style.SUCCESS(
-                            f"Sector {sector["name"]} created."
+                            f"Sector {sector["name"].title()} created."
                         )
                     )
                 except Exception as err:
                     self.stdout.write(
                         self.style.WARNING(
-                            f"Sector {sector["name"]} failed to generate: {err}."
+                            f"Sector {sector["name"].title()} failed to generate: {err}."
                         )
                     )
