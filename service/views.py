@@ -47,6 +47,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
 @permission_classes([CanAccessServiceClaim, IsAuthenticated])
 class ServiceClaimViewSet(viewsets.ModelViewSet):
+    queryset = ServiceClaim.objects.all()
     serializer_class = ServiceClaimSerializer
 
     def get_queryset(self):
@@ -59,7 +60,7 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
             return ServiceClaim.objects.all()
 
         return ServiceClaim.objects.filter(
-            service__allowed_groups__in=user.groups.all()
+            claimed_by=user
         ).distinct()
 
     def get_object(self):
