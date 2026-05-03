@@ -2,6 +2,7 @@
 Django views for `identity` app.
 '''
 
+from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from rest_framework.decorators import action
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 
 from .models import Resident, ResidentSector
-from .serializers import ResidentSerializer, SectorSerializer
+from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
 
 
 def profile(request, lgu_id=None) -> HttpResponse :
@@ -31,6 +32,16 @@ def claim(request) -> HttpResponse :
 
 def auth(request) -> HttpResponse :
     return render(request, "auth.html")
+
+
+class UserGroupViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = UserGroupSerializer
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class ResidentViewSet(mixins.CreateModelMixin,

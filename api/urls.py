@@ -21,6 +21,8 @@ from service import views as service_views
 
 router = routers.DefaultRouter()
 router.register(r'ids', resident_views.ResidentViewSet)
+router.register(r'users', resident_views.UserViewSet)
+router.register(r'groups', resident_views.UserGroupViewSet)
 router.register(r'services', service_views.ServiceViewSet)
 router.register(r'sectors', resident_views.SectorViewset)
 
