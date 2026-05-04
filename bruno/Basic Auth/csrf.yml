@@ -1,0 +1,33 @@
+info:
+  name: csrf
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:8000/api/csrf/
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const cookies = res.getHeader("set-cookie");
+
+        let csrfToken = null;
+
+        cookies.forEach(cookie => {
+          if (cookie.startsWith("csrftoken=")) {
+            csrfToken = cookie.split(";")[0].split("=")[1];
+          }
+        });
+
+        if (csrfToken) {
+          bru.setEnvVar("CSRFToken", csrfToken, { persist : true });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

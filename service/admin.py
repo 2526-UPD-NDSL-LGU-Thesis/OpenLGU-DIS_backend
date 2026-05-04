@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from .models import (
-    Service, ServiceClaim, GiveawayService,
+    Service, ServiceClaim,
 )
 
 
@@ -27,6 +27,7 @@ class UserInline(admin.TabularInline):
 class GroupAdmin(BaseGroupAdmin):
     inlines = [UserInline]
 
+
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     class Meta:
@@ -45,17 +46,18 @@ class ServiceClaimInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("verbose_name", "stocks", "active",)
+    list_display = ("name", "claim_type", "stocks_type", "refresh_interval",
+                    "max_claims_per_user", "stocks", "active",)
 
-    list_filter = ("active",)
-    search_fields = ("name", "verbose_name",)
+    list_filter = ("claim_type", "stocks_type", "refresh_interval", "active",)
+    search_fields = ("name",)
 
     inlines = [ServiceClaimInline]
 
 
 @admin.register(ServiceClaim)
 class ServiceClaimAdmin(admin.ModelAdmin):
-    list_display = ("transaction_id", "user", "service", "claimed_at", "claimed_by")
+    list_display = ("transaction_id", "user", "service", "amount", "claimed_at", "claimed_by")
 
     list_filter = ("service", "claimed_by",)
 

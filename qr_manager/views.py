@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .main import validate_qr
+from residents.models import Resident
 
 
 @api_view(['POST'])
@@ -19,17 +20,23 @@ def decrypt_qr(request : HttpRequest) -> Response :
     except KeyError:
         return Response(
             {
-                "error" : "KeyError",
-                "error_message" : "Invalid POST body. Expected 'qr', got none instead."
+                "error" : "error_random_qr",
+                "message" : "Invalid POST body. Expected 'qr', got none instead."
             },
             status=status.HTTP_400_BAD_REQUEST
         )
     
     _status, payload = validate_qr(b45_qr)
 
+    if not Resident.objects.filter(uin=payload[169][75]).exists():
+        return Response(
+            { "error" : "User does not exist" },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     if _status:
         return Response(
-            payload,
+            { "id_details" : payload },
             status=status.HTTP_200_OK
         )
 

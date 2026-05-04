@@ -6,11 +6,11 @@ from service.models import ServiceClaim
 @admin.register(ResidentSector)
 class SectorAdmin(admin.ModelAdmin):
     list_display = (
-        "verbose_name", "description",
+        "id", "name", "description",
     )
 
     search_fields = (
-        "name", "verbose_name",
+        "id", "name",
     )
 
 
@@ -25,7 +25,8 @@ class ResidentClaimInline(admin.TabularInline):
 class ResidentAdmin(admin.ModelAdmin):
     list_display = (
         "uin", "pcn", "issued_at",
-        "proof_of_residence", "active", "email", "phone_number", "profile_image",
+        "proof_of_residence", "profile_image",
+        "active",
     )
 
     list_filter = (

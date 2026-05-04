@@ -1,0 +1,4 @@
+name: CSRFToken
+variables:
+  - name: CSRFToken
+    value: KQALTYXdlbmDHQCYp8AUxRh5dgDEWwjR

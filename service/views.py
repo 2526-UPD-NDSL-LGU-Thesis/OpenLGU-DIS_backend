@@ -7,16 +7,23 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
-from .models import Service, ServiceClaim, claim
+from .models import Service, ServiceClaim
 from .permissions import CanAccessServiceClaim
 from .serializers import ServiceSerializer, ServiceClaimSerializer
 from residents.models import Resident
 from qr_manager import validate_qr, read_qr
 
 
-class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
+class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        return Service.objects.filter(
+            allowed_groups__in=user.groups.all()
+        ).distinct()
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -40,6 +47,7 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
 
 @permission_classes([CanAccessServiceClaim, IsAuthenticated])
 class ServiceClaimViewSet(viewsets.ModelViewSet):
+    queryset = ServiceClaim.objects.all()
     serializer_class = ServiceClaimSerializer
 
     def get_queryset(self):
@@ -52,7 +60,7 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
             return ServiceClaim.objects.all()
 
         return ServiceClaim.objects.filter(
-            service__allowed_groups__in=user.groups.all()
+            claimed_by=user
         ).distinct()
 
     def get_object(self):
@@ -73,7 +81,7 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
 
 @csrf_exempt
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated]) TODO re-place
 def claim_service(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
@@ -94,7 +102,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user_uin = payload[169][99]
+    user_uin = payload[169][75]
     try:
         resident = Resident.objects.get(uin=user_uin)
     except Resident.DoesNotExist:
@@ -105,16 +113,15 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
     
     authenticated_user = request.user
 
-    res, err = claim(
-        user=resident,
-        service=service,
+    result, error = service.claim(
+        resident=resident,
         amount=1,
         claimed_by=authenticated_user
     )
 
-    if not res:
+    if not result:
         return Response(
-            err,
+            error,
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -124,9 +131,8 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
     )
 
 
-
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated]) TODO re-place
 def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
@@ -158,18 +164,19 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
     
     authenticated_user = request.user
 
-    success = claim(
-        user=resident,
-        service=service,
+    result, error = service.claim(
+        resident=resident,
         amount=1,
         claimed_by=authenticated_user
     )
 
-    if not success:
+    if not result:
         return Response(
-            { "error" : "Failed to claim service" },
+            error,
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+    #TODO: Return the object created
 
     return Response(
         { "status" : "Service claimed" },
