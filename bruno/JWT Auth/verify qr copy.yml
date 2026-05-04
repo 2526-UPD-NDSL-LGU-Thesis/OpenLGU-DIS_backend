@@ -1,0 +1,86 @@
+info:
+  name: verify qr copy
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8000/api/qr/verify/
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "qr" : "6BF6RC:0KZ:LTOR FCV6EIPKSA7X3V+H5WDUCQ69PV3NEW2T:3V2QPEA3L1RD 83HJ3DQLTJ9%6 +J .T7TJM%PUII:B4FR8/3HW*RKXS-%PR.T$S35S4*PVPKQRMCHK9KQ5QL8-L9MH00PE+QC4ES+-35FOOA7PW6$-JN$R:96T-M:LOR35Z/MQR8RS8EJOQ+MS961Y4SN42HP2EO+CSKLAQGQNO6:/6Y/4UOOHMI$FV .H*+1.Q0+$RZ.R423Y73I439EI4DWJ 0E.G$OEM/6DRKL:6 9N6GQ-IV J27W2$DFA5C5DUVCF-08EESDI0X.0R*5L$50SK0ZOHJ40MI.+0HNGB8GK%4DZ26+8NDKNYNMH0NI29K68M6SF1U*G5DBIHPCJI+75UBWKY0QAI*OFPW5+8K+SEX2BTQBC BL7S2.759UD0O L2I:RZINQOV.V9:0IX%MHF21%3QN69NJBA3$KDLS7ZQPV8T0*S PH-VHX%QR6R-9B1RKEIT/:4*0S3SGM5DOCN4OQ 32N%C-SO92Q*+C*-D9IMUCB0W2CYVABNS:F0YJ%ZUO3FL/073LQJ1O6V-HH-Q3LUT2PMGUPBPF Z576U9RVD2LE5F:JM9+GLIIPLN.HIVWG+OAY8E$DL-TL769QBI5CMW8HN40AKK95"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Success
+    request:
+      url: http://localhost:8000/api/qr/verify/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BF6RC:0KZ:LTOR FCV6EIPKSA7X3V+H5WDUCQ69PV3NEW2T:3V2QPEA3L1RD 83HJ3DQLTJ9%6 +J .T7TJM%PUII:B4FR8/3HW*RKXS-%PR.T$S35S4*PVPKQRMCHK9KQ5QL8-L9MH00PE+QC4ES+-35FOOA7PW6$-JN$R:96T-M:LOR35Z/MQR8RS8EJOQ+MS961Y4SN42HP2EO+CSKLAQGQNO6:/6Y/4UOOHMI$FV .H*+1.Q0+$RZ.R423Y73I439EI4DWJ 0E.G$OEM/6DRKL:6 9N6GQ-IV J27W2$DFA5C5DUVCF-08EESDI0X.0R*5L$50SK0ZOHJ40MI.+0HNGB8GK%4DZ26+8NDKNYNMH0NI29K68M6SF1U*G5DBIHPCJI+75UBWKY0QAI*OFPW5+8K+SEX2BTQBC BL7S2.759UD0O L2I:RZINQOV.V9:0IX%MHF21%3QN69NJBA3$KDLS7ZQPV8T0*S PH-VHX%QR6R-9B1RKEIT/:4*0S3SGM5DOCN4OQ 32N%C-SO92Q*+C*-D9IMUCB0W2CYVABNS:F0YJ%ZUO3FL/073LQJ1O6V-HH-Q3LUT2PMGUPBPF Z576U9RVD2LE5F:JM9+GLIIPLN.HIVWG+OAY8E$DL-TL769QBI5CMW8HN40AKK95"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Mon, 04 May 2026 07:29:15 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, Cookie, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "600"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "id_details": {
+              "1": "DCS",
+              "2": 1777877324,
+              "169": {
+                "1": "6149804723",
+                "2": 1.0,
+                "3": "eng",
+                "4": "James Ernest T. Geraldo",
+                "8": "2001/09/15",
+                "9": "Male",
+                "62": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////wAALCAAtAC0BAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgMEAAEF/8QAHxAAAgICAwADAAAAAAAAAAAAAREAAgMhEjFBBDJR/9oACAEBAAA/ACoBTGHOG9T7OQbWA7MHmD7F3qeRltwE05PkHGy4iGarGDFIJpmCg+owFSnxwDUGzM2T6qJQMyAnDKzoqAQi4u5JBD7iwf2YmNwYhkBb1KMg24mwNrDaAgZCOuUSRvudct+PXjiD7O4ywBqXJxE5jtRfk1bKwKa2p6NLcqC3TDn/2Q==",
+                "75": "3481217724",
+                "76": [
+                  "STUDENT",
+                  "RESIDENT"
+                ]
+              }
+            }
+          }
