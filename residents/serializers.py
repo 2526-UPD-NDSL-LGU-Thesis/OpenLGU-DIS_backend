@@ -20,9 +20,11 @@ class UserGroupSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    groups = UserGroupSerializer(many=True, read_only=True)
+    
     class Meta:
         model = User
-        fields = ["id", "username"]
+        fields = ["id", "username", "first_name", "last_name", "groups"]
 
 
 class SectorSerializer(serializers.ModelSerializer):

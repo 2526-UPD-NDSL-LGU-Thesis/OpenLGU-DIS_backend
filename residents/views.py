@@ -43,6 +43,11 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    @action(detail=False, methods=['GET'], url_path='me')
+    def get_me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
 
 class ResidentViewSet(mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin,
