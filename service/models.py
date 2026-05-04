@@ -95,7 +95,9 @@ class Service(models.Model):
 
     def can_claim(self, resident : Resident, official : User, amount : Optional[int]) -> Tuple[bool, Dict] :
         # Check if User is authorized to make claims on the service.
-        if not self.allowed_groups.filter(id__in=official.groups.all()).exists():
+        if official.is_superuser:
+            pass
+        elif not self.allowed_groups.filter(id__in=official.groups.all()).exists():
             return False, {
                 "error"   : "user_unauthorized",
                 "details" : "User doing the claim is not authorized to dispense service."

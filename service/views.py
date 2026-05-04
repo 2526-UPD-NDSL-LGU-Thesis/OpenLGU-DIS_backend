@@ -21,6 +21,9 @@ class ServiceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
+        if user.is_superuser:
+            return Service.objects.all()
+
         return Service.objects.filter(
             allowed_groups__in=user.groups.all()
         ).distinct()
