@@ -98,7 +98,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
         )
 
     try:
-        service = Service.objects.get(name=service_id)
+        service = Service.objects.get(id=service_id)
     except Service.DoesNotExist:
         return Response(
             { "error" : "Service does not exist" },

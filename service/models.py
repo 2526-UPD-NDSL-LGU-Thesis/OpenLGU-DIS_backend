@@ -190,7 +190,7 @@ class Service(models.Model):
                 return False, error
 
             try:
-                transaction = ServiceClaim.objects.create(
+                _transaction = ServiceClaim.objects.create(
                     user=resident,
                     service=service,
                     claimed_by=claimed_by
@@ -200,7 +200,7 @@ class Service(models.Model):
                     service.stocks -= amount
                     service.save(update_fields=["stocks"])
                 
-                return True, { "body" : transaction }
+                return True, { "body" : _transaction }
             except Exception as err:
                 return False, { "error" : f"Failed to save service claim: {err}"}
 
