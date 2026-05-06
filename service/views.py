@@ -11,7 +11,7 @@ from .models import Service, ServiceClaim
 from .permissions import CanAccessServiceClaim
 from .serializers import ServiceSerializer, ServiceClaimSerializer
 from residents.models import Resident
-from qr_manager import validate_qr, read_qr
+from qr_manager import read_qr, QRTypes
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
@@ -22,6 +22,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         if user.is_superuser:
+            print("hello")
             return Service.objects.all()
 
         return Service.objects.filter(
@@ -89,11 +90,17 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
 
-    _status, payload = validate_qr(b45_qr)
-    
-    if not _status:
+    try:
+        type, payload = read_qr(b45_qr).values()
+    except Exception as err:
         return Response(
-            payload,
+            { "error" : f"Failed to read QR: {err}" },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if type != QRTypes.OpenLGUQR:
+        return Response(
+            { "error" : f"Invalid QR Type. Expected {QRTypes.OpenLGUQR}, got {type}." },
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -140,11 +147,19 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
     data = request.data
     b45_qr = data.pop("qr")
 
-    payload = read_qr(b45_qr)
+    type, payload = read_qr(b45_qr).values()
 
-    if not payload:
+    try:
+        type, payload = read_qr(b45_qr).values()
+    except Exception as err:
         return Response(
-            { "error" : "Failed to parse QR" },
+            { "error" : f"Failed to read QR: {err}" },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if type != QRTypes.PhilSysTemporaryQR:
+        return Response(
+            { "error" : f"Invalid QR Type. Expected {QRTypes.PhilSysTemporaryQR}, got {type}." },
             status=status.HTTP_400_BAD_REQUEST
         )
 
