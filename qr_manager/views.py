@@ -32,7 +32,10 @@ def decrypt_qr(request : HttpRequest) -> Response :
         type, payload = read_qr(b45_qr).values()
     except Exception as err:
         return Response(
-            { "error" : f"Failed to read QR: {err}" },
+            { 
+                "error"   : "Failed to read QR.",
+                "details" : str(err)
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
 
