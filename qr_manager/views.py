@@ -10,7 +10,7 @@ from rest_framework import status
 
 from residents.models import Resident
 from .utils import read_qr, read_qr_image
-from .classes import QRTypes
+from .classes import QRTypes, DRFErrors
 
 
 @api_view(['POST'])
@@ -22,8 +22,8 @@ def decrypt_qr(request : HttpRequest) -> Response :
     except KeyError:
         return Response(
             {
-                "error" : "error_random_qr",
-                "message" : "Invalid POST body. Expected 'qr', got none instead."
+                "error" : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected qr, got None instead."
             },
             status=status.HTTP_400_BAD_REQUEST
         )
@@ -32,8 +32,8 @@ def decrypt_qr(request : HttpRequest) -> Response :
         type, payload = read_qr(b45_qr).values()
     except Exception as err:
         return Response(
-            { 
-                "error"   : "Failed to read QR.",
+            {
+                "error"   : DRFErrors.QRVerificationFailed,
                 "details" : str(err)
             },
             status=status.HTTP_400_BAD_REQUEST
@@ -42,12 +42,15 @@ def decrypt_qr(request : HttpRequest) -> Response :
     if type == QRTypes.OpenLGUQR:
         if not Resident.objects.filter(uin=payload[169][75]).exists():
             return Response(
-                { "error" : "User does not exist" },
+                {
+                    "error"   : DRFErrors.DjangoUserDoesNotExist,
+                    "details" : f"User {payload[169][75]} does not exist." 
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
     
     return Response(
-        {   
+        {
             "qr_type"    : type, 
             "id_details" : payload
         },
@@ -65,8 +68,8 @@ def decrypt_qr_image(request : HttpRequest) -> Response :
     except KeyError:
         return Response(
             {
-                "error" : "error_random_qr",
-                "message" : "Invalid POST body. Expected 'qr', got none instead."
+                "error" : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected qr, got None instead."
             },
             status=status.HTTP_400_BAD_REQUEST
         )
@@ -75,19 +78,25 @@ def decrypt_qr_image(request : HttpRequest) -> Response :
         type, payload = read_qr_image(image_str).values()
     except Exception as err:
         return Response(
-            { "error" : f"Failed to read QR: {err}" },
+            {
+                "error"   : DRFErrors.QRVerificationFailed,
+                "details" : str(err)
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
 
     if type == QRTypes.OpenLGUQR:
         if not Resident.objects.filter(uin=payload[169][75]).exists():
             return Response(
-                { "error" : "User does not exist" },
+                {
+                    "error"   : DRFErrors.DjangoUserDoesNotExist,
+                    "details" : f"User {payload[169][75]} does not exist." 
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
     
     return Response(
-        {   
+        { 
             "qr_type"    : type, 
             "id_details" : payload
         },
