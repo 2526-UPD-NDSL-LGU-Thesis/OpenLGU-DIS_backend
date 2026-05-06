@@ -114,7 +114,7 @@ def read_qr_image(b64_image : str) -> Dict :
     try:
         return read_qr(qr_code)
     except Exception as err:
-        raise ValueError(f"{err}")
+        raise ValueError(f"{err}") from err
 
 # def generate_qr(uin : str, user : MOSIPUser) :
 #     claim169 = user.to_claim169
