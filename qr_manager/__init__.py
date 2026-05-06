@@ -13,6 +13,10 @@ from .main import (
     pycose_sign_message, pycose_verify_message
 )
 
+from .classes import (
+    QRTypes
+)
+
 from .utils import (
     read_qr, read_qr_image
 )
