@@ -1,0 +1,197 @@
+info:
+  name: verify qr
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8000/api/qr/
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "qr" : "PH1:RRQXO8P609CK B00XKDJCX495F34CJH$6:FKQPCC$CD536ZKBVCNF6PF64W5KF6+967EC:OCSNA3KCCLCHECRUCAECY C1H8R CX96NG6ZJC5/D:X88IAV3411A-+9%VDO2DGY8LB8RS8.JC3/DYTAMY9 S91T8MQEF8CRS8$H81A6NA73W56L6TF6:OC+M8E8EE%60A6IL66:6D46BL6D%6TG6*6A6I84K37C91CB:0A$34SB8*B91Q5QY9VTA60AMY9G+9 S9OPCH$DFBBWUC%B9C+8V50.100Y817AG6A$34V50S40N018%J.E5010I10D925UM7Q5Q K51MUI1.8GO81E008CL:*O.:EV7IYTFZ%NN+R7T9ZLJ1V4H5F223:NM8E9Z6U4L0URG*PNBB1608ZTQP7E/IF*YS5A1T50A-L32L/27K%GEK2M*MV026C0HHAL%F.CS SRJ6RKKOSRD-ZQ97VT11.+SGXH8Q4+6N-ALJI1EZPGKRKAU.:GC1E.CE14N$STWFITMNEIK4.D9A8$KRAQ7M$I-QP+D98$4AR0N26%STNCRCS7AFM82BXINXO1WG8N4HIY4BWQBRMPLCKCRKF7.*J1:CM1M-AH*YVNNLY8V7+COXC4YGEEJ/AD+SV353H9CN/TIU52KJ1M8XXG:+TY1R+QEOCA8HC$2VVX6V49X620A0KXD:B5RTDFYK+ 4GF2MP6NHVD.2I7T3ZE8.8TZN4.77CLG4F8DOOTDH5K+QVEI21T7LVQZK8:0PV-7U9T3XEPIRAAULX3Z28C P9-JUAFMUBD3C/10X58VY1846R7LW$N%1KXQRAJFKZ99*FCHSVN3$PV6Q4T%A3M9X8C AAP2P %HZGNE176-6MXR6FSXTDKZ4310Z1CJSMS%29Y2F0"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 OpenLGU QR
+    request:
+      url: http://localhost:8000/api/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BFOXN*TS0BIP$F%T4KOH-ZHC-5TJO+JAFBOJGTOZL%LP% C$8DMEDE8C0/D/+PN R6H0R23Q0557TRVMPPF67T5 2BCNJ1TN%2M55XFTLFN:Z247TS*SKTCY73X63PK3 QTSNJ*4LD-4SYKFFRTJ6A9WVQUR80OBGMUJUI3+J46H0LJ42K66BO%IS732$0EL.CYS2R8TSZ2CD3/2CGPKLE4QAMK$TQ%J15A8.4JQ3JJSYAC9*C  C0Q2UIVHWGPH2T58U9IJBEP*O-RO0DP9ZI:.2E8CVJCI.C:/GW90746%J5N837NM4Y0/AODCO/QQ7BQ*0P.SID:9SQPWP9BSDRVJY5D8Y3$8NVTSSL7+4JS18DNP9MQH2NCSOQN85.CGXU*I0I:PN-03OR/ZJ/+VTDA$JMPJ7RLJQL5SWIR0O$WCERFTKU0WHZ2F PRMPKAR5UGNXLNXXD%V53%6NVL-H8WBO3+2$CUSUM92G37Q+CGNWEDE8%1ODOU3VO.V3 2NWNVBDUEX04$FSFWD$I13Q6-6A46RF65:6UH6UHUEG9%Y15%E1:UTIP$IEP4VN96YT3HT2O7G*2S+ZFHYKIIM-9N+ B-2NNKPJ4I99DDKE59D-SHJGR6O915QIX6 OB/PM6AT6715GN9Z39ZMZ6VMDA0QM05CMJMT5KMJJM20TA100"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Wed, 06 May 2026 03:07:00 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "622"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "qr_type": "OpenLGUQR",
+            "id_details": {
+              "1": "DCS",
+              "2": 1778035756,
+              "169": {
+                "1": "6149804723",
+                "2": 1.0,
+                "3": "eng",
+                "4": "James Ernest T. Geraldo",
+                "8": "2001/09/15",
+                "9": "Male",
+                "62": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////wAALCAAtAC0BAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgMEAAEF/8QAHxAAAgICAwADAAAAAAAAAAAAAREAAgMhEjFBBDJR/9oACAEBAAA/ACoBTGHOG9T7OQbWA7MHmD7F3qeRltwE05PkHGy4iGarGDFIJpmCg+owFSnxwDUGzM2T6qJQMyAnDKzoqAQi4u5JBD7iwf2YmNwYhkBb1KMg24mwNrDaAgZCOuUSRvudct+PXjiD7O4ywBqXJxE5jtRfk1bKwKa2p6NLcqC3TDn/2Q==",
+                "75": "3481217724",
+                "76": [
+                  "STUDENT",
+                  "RESIDENT"
+                ]
+              }
+            }
+          }
+  - name: 200 PhilSys Temporary QR
+    request:
+      url: http://localhost:8000/api/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "PH1:RRQXO8P609CK B00XKDJCX495F34CJH$6:FKQPCC$CD536ZKBVCNF6PF64W5KF6+967EC:OCSNA3KCCLCHECRUCAECY C1H8R CX96NG6ZJC5/D:X88IAV3411A-+9%VDO2DGY8LB8RS8.JC3/DYTAMY9 S91T8MQEF8CRS8$H81A6NA73W56L6TF6:OC+M8E8EE%60A6IL66:6D46BL6D%6TG6*6A6I84K37C91CB:0A$34SB8*B91Q5QY9VTA60AMY9G+9 S9OPCH$DFBBWUC%B9C+8V50.100Y817AG6A$34V50S40N018%J.E5010I10D925UM7Q5Q K51MUI1.8GO81E008CL:*O.:EV7IYTFZ%NN+R7T9ZLJ1V4H5F223:NM8E9Z6U4L0URG*PNBB1608ZTQP7E/IF*YS5A1T50A-L32L/27K%GEK2M*MV026C0HHAL%F.CS SRJ6RKKOSRD-ZQ97VT11.+SGXH8Q4+6N-ALJI1EZPGKRKAU.:GC1E.CE14N$STWFITMNEIK4.D9A8$KRAQ7M$I-QP+D98$4AR0N26%STNCRCS7AFM82BXINXO1WG8N4HIY4BWQBRMPLCKCRKF7.*J1:CM1M-AH*YVNNLY8V7+COXC4YGEEJ/AD+SV353H9CN/TIU52KJ1M8XXG:+TY1R+QEOCA8HC$2VVX6V49X620A0KXD:B5RTDFYK+ 4GF2MP6NHVD.2I7T3ZE8.8TZN4.77CLG4F8DOOTDH5K+QVEI21T7LVQZK8:0PV-7U9T3XEPIRAAULX3Z28C P9-JUAFMUBD3C/10X58VY1846R7LW$N%1KXQRAJFKZ99*FCHSVN3$PV6Q4T%A3M9X8C AAP2P %HZGNE176-6MXR6FSXTDKZ4310Z1CJSMS%29Y2F0"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Wed, 06 May 2026 03:09:38 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "773"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "qr_type": "PhilSysTemporaryQR",
+            "id_details": {
+              "1": "PH",
+              "6": 1670933302,
+              "8": {
+                "3": "key"
+              },
+              "169": {
+                "d": "2022-12-13",
+                "i": "PSA",
+                "sb": {
+                  "s": "Male",
+                  "BF": "[1,2]",
+                  "fn": "EARL JOHN",
+                  "ln": "GERALDO",
+                  "mn": "TUMALAD",
+                  "sf": "",
+                  "DOB": "1998-03-26",
+                  "PCN": "4621839780732612",
+                  "POB": "CITY OF PASIG, METRO MANILA"
+                },
+                "img": "UklGRlwBAABXRUJQVlA4IFABAADQCACdASotAC0APxF0s1EsJqSirjgLMYAiCWkADqhBxN92pI+8e+K8wNyyTFGaHyUYd5kYF7I9Sa/ufwO1g226ewnjP07S5nASefzjnQmwAP6tXKZ6N+SFUhNktPcP8QIiUih9at/C2qPWtMFwa7DT+vZ7CDPkroxWJD63JagICybL9tkn7ySGdm73cQS2pOp2kSW56qFsbjtBE9k8O/uU+cp8SaImLQTJL+fqd9fGPFews1dluToMQkI4h0QlsNNVstBittfDOhadUGaprkmIZPtYqj/2wWX7ZNGEjpjPaML6SxifYJLtCyzlmdFDJ4R+7JnV4nN4UU5h8fW2NWJIBBEBAcJstimobAmkPSYgEoUz8fhLF0HmsnToRrK8Mz7FqEB3a8ApbAafJvnxEwo8edMyQu/F7T6z5xh0jtjW7xodnT/FzCGdiXiHXF9fgAA="
+              }
+            }
+          }
+  - name: "400"
+    request:
+      url: http://localhost:8000/api/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BF6RC:0KZ:LTOR FCV6EIPKSA7X3V+H5WDUCQ69PV3NEW2T:3V2QPEA3L1RD 83HJ3DQLTJ9%6 +J .T7TJM%PUII:B4FR8/3HW*RKXS-%PR.T$S35S4*PVPKQRMCHK9KQ5QL8-L9MH00PE+QC4ES+-35FOOA7PW6$-JN$R:96T-M:LOR35Z/MQR8RS8EJOQ+MS961Y4SN42HP2EO+CSKLAQGQNO6:/6Y/4UOOHMI$FV .H*+1.Q0+$RZ.R423Y73I439EI4DWJ 0E.G$OEM/6DRKL:6 9N6GQ-IV J27W2$DFA5C5DUVCF-08EESDI0X.0R*5L$50SK0ZOHJ40MI.+0HNGB8GK%4DZ26+8NDKNYNMH0NI29K68M6SF1U*G5DBIHPCJI+75UBWKY0QAI*OFPW5+8K+SEX2BTQBC BL7S2.759UD0O L2I:RZINQOV.V9:0IX%MHF21%3QN69NJBA3$KDLS7ZQPV8T0*S PH-VHX%QR6R-9B1RKEIT/:4*0S3SGM5DOCN4OQ 32N%C-SO92Q*+C*-D9IMUCB0W2CYVABNS:F0YJ%ZUO3FL/073LQJ1O6V-HH-Q3LUT2PMGUPBPF Z576U9RVD2LE5F:JM9+GLIIPLN.HIVWG+OAY8E$DL-TL769QBI5CMW8HN40AKK95"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Wed, 06 May 2026 02:48:34 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "105"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "error": "Failed to read QR.",
+            "details": "Failed to verify QR code: Message is not a valid Sign1Message."
+          }
