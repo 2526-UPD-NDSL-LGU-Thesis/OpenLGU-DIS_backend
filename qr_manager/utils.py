@@ -18,6 +18,10 @@ from .main import pycose_verify_message
 from .classes import QRTypes
 
 
+def to_base64_image(image_bytes : bytes) -> str :
+    return base64.b64encode(image_bytes).decode()
+
+
 def read_qr(qr_code : str) -> Dict :
     """Decodes information from supported QRs.
 
@@ -40,6 +44,8 @@ def read_qr(qr_code : str) -> Dict :
         
         payload = cbor2.loads(signed_msg.payload)
 
+        payload[169]['img'] = to_base64_image(payload[169]['img'])
+
         return {
             "type"    : QRTypes.PhilSysTemporaryQR,
             "content" :  payload
@@ -57,12 +63,13 @@ def read_qr(qr_code : str) -> Dict :
 
         try:
             payload = pycose_verify_message(decompressed_qr)
+            payload[169][62] = to_base64_image(payload[169][62])
             return {
                 "type"    : QRTypes.OpenLGUQR,
                 "content" : payload
             }
         except Exception as err:
-            raise ValueError("Could not verify QR code.") from err
+            raise ValueError(f"Failed to verify QR code: {err}") from err
 
 
 def read_qr_image(b64_image : str) -> Dict :
