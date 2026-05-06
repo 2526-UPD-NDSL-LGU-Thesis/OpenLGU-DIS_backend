@@ -1,14 +1,15 @@
+# pylint: disable=missing-function-docstring
 # pylint: disable=missing-module-docstring
 # pylint: disable=trailing-whitespace
 
+
+from typing import Dict
 from pathlib import Path
-from typing import Optional, Dict, Tuple, Any
-from dataclasses import dataclass
-from datetime import datetime
-import zlib
 
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_private_key, load_pem_public_key
+)
 from pycose.messages.sign1message import Sign1Message
 from pycose.keys.cosekey import CoseKey
 from pycose.headers import Algorithm
@@ -19,16 +20,6 @@ from pycose.keys.keytype import KtyOKP
 from pycose.keys.keyops import SignOp, VerifyOp
 import cbor2
 
-from cryptography.hazmat.primitives.serialization import (load_pem_private_key, load_pem_public_key)
-from nacl.exceptions import BadSignatureError
-from nacl.public import PrivateKey, PublicKey, Box
-from nacl.signing import SigningKey, VerifyKey, SignedMessage
-from pydantic import ValidationError
-import base45
-import base64
-import cbor2
-
-# from .claim169 import CBORWebToken
 
 # TODO: use .env
 PRIVATE_SIGNING_KEY_PATH = Path(r"./qr_manager/private_signing_key.pem")
@@ -38,243 +29,132 @@ PUBLIC_ENCRYPTING_KEY_PATH = Path(r"./qr_manager/public_encrypting_key.pem")
 
 PRIVATE_KEY_PASSWORD = b"password"
 
-@dataclass
-class QRInfo:
-    """Class for checking proper headers with payload.
-    """
-    id : str
-    pcn  : int
-    issued_at : datetime
-    verified : bool
-    email : str
-    phone_number : str
-    face_data : bytes
 
-
-def _load_signing_key(
-        path_to_key : Path = PRIVATE_SIGNING_KEY_PATH,
-        password : bytes = PRIVATE_KEY_PASSWORD
-    ) :          # pylint: disable=missing-function-docstring
+def _load_private_signing_key(path_to_key : Path, password : bytes) -> CoseKey :
     with open(path_to_key, "rb") as key:
-        signing_key = load_pem_private_key(
+        private_key = load_pem_private_key(
             key.read(),
-            password=password
+            password
         )
+
+    private_bytes = private_key.private_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PrivateFormat.Raw,
+        encryption_algorithm=serialization.NoEncryption()
+    )
     
-    return SigningKey(signing_key.private_bytes_raw())
-
-
-def _load_verify_key(
-        path_to_key : Path = PUBLIC_SIGNING_KEY_PATH,
-    ) :          # pylint: disable=missing-function-docstring
-    with open(path_to_key, "rb") as key:
-        verify_key = load_pem_public_key(
-            key.read()
-        )
+    public_key = private_key.public_key()
+    public_bytes = public_key.public_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PublicFormat.Raw
+    )
     
-    return VerifyKey(verify_key.public_bytes_raw())
+    cose_key = {
+        KpKty: KtyOKP,
+        KpAlg: EdDSA,
+        OKPKpCurve: Ed25519,
+        KpKeyOps: [SignOp, VerifyOp],
+        OKPKpD: private_bytes,
+        OKPKpX: public_bytes
+    }
+
+    return CoseKey.from_dict(cose_key)
 
 
-def _load_encrypting_key(
-        path_to_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
-        password : bytes = PRIVATE_KEY_PASSWORD
-    ) :
+def _load_public_signing_key(path_to_key : Path) -> CoseKey :
     with open(path_to_key, "rb") as key:
-        encrypting_key = load_pem_private_key(
+        public_key = load_pem_public_key(
             key.read(),
-            password=password
         )
     
-    return PrivateKey(encrypting_key.private_bytes_raw())
+    public_bytes = public_key.public_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PublicFormat.Raw
+    )
 
+    cose_key = {
+        KpKty: KtyOKP,
+        KpAlg: EdDSA,
+        OKPKpCurve: Ed25519,
+        OKPKpX: public_bytes
+    }
 
-def _load_decrypting_key(
-        path_to_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
-    ) :          # pylint: disable=missing-function-docstring
-    with open(path_to_key, "rb") as key:
-        verify_key = load_pem_public_key(
-            key.read()
-        )
-    
-    return PublicKey(verify_key.public_bytes_raw())
-
-
-def _load_cipher_box(
-        path_to_private_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
-        path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
-        password : bytes = PRIVATE_KEY_PASSWORD
-    ):
-    private_key = _load_encrypting_key(path_to_private_key, password)
-    public_key = _load_decrypting_key(path_to_public_key)
-
-    return Box(private_key, public_key)
+    return CoseKey.from_dict(cose_key)
 
 
 def pycose_sign_message(payload : bytes) -> bytes :
-    """Generate a COSE_Sign1 signed message with EdDSA Algorithm with the base cryptography library.
+    """Generate a COSE_Sign1 message with EdDSA Algorithm using the base cryptography library.
 
-    :param message: Message to be encrypted and signed.
-    :type message: Dict[str, Any]
-    :return: COSE_Sign1 signed message.
-    :rtype: bytes
+    _extended_summary_
+
+    Args:
+        payload (bytes): CBOR payload to be signed.
+
+    Returns:
+        bytes:  A COSE_Sign1 message bytes.
     """
-    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
-        # private_key = load_pem_private_key(
-        #     key.read(),
-        #     PRIVATE_KEY_PASSWORD
-        # )
+    if not isinstance(payload, (bytes, bytearray)):
+        raise TypeError("Payload must be of type bytes or bytearray.")
 
-        private_key = CoseKey.from_pem_private_key(
-            key.read(),
-            password=PRIVATE_KEY_PASSWORD
-        )
+    try:
+        cbor2.loads(payload)
+    except Exception as err:
+        raise ValueError("Payload is not a valid CBOR object.") from err
+
+    try:
+        cose_key = _load_private_signing_key(PRIVATE_SIGNING_KEY_PATH, PRIVATE_KEY_PASSWORD)
+    except Exception as err:
+        raise ValueError("Failed to load private signing key.") from err
 
     sign1_message = Sign1Message(
         phdr={ Algorithm: EdDSA },
         payload=payload
     )
-    sign1_message.key = private_key
+    sign1_message.key = cose_key
 
     return sign1_message.encode()           #type: ignore
 
 
-def pynacl_sign_message(
-        message : bytes,
-        path_to_key : Path = PRIVATE_SIGNING_KEY_PATH,
-        password : bytes = PRIVATE_KEY_PASSWORD
-    ) -> SignedMessage :
-    """Generate a COSE_Sign1 signed message with EdDSA Algorithm.
-
-    :param message: Message in bytes to be verified.
-    :type message: bytes
-    :return: Returns a `nacl.signing.SignedMessage`.
-    :rtype: SignedMessage
-    """
-    signing_key = _load_signing_key(path_to_key, password)
-
-    return signing_key.sign(message)
-
-
-def pycose_verify_message(message : bytes) -> Tuple[bool, Dict[str, Any]] :
-    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm with the base cryptography library.
-
-    :param message: Encrypted message to be verified.
-    :type message: bytes
-    :return: Returns authentication status and the encrypted message's payload.
-    :rtype: Tuple[bool, Dict[str, Any]]
-    """
-    with open(PRIVATE_SIGNING_KEY_PATH, "rb") as key:
-        private_key = load_pem_private_key(
-            key.read(),
-            PRIVATE_KEY_PASSWORD
-        )
-    
-    try:
-        decoded = Sign1Message.decode(message)
-        decoded.key = private_key
-
-        algorithm = decoded.phdr.get(Algorithm)
-
-        if algorithm != EdDSA:
-            return False, { "error" : f"Cannot verify message encrypted in {algorithm}" }
-
-        if decoded.payload is None:
-            return False, { "error" : "Payload is empty" }
-        payload = cbor2.loads(decoded.payload)
-
-        try:
-            QRInfo(**payload)
-        except TypeError:
-            return False, { "error" : "Payload is missing information/s" }
-
-        return decoded.verify_signature(), payload or {} #type: ignore
-    except:                                 # pylint: disable=bare-except
-        return False, { "error" : "Failed to decode message" }
-
-
-def pynacl_verify_message(
-        signed_message : bytes,
-        path_to_key : Path = PUBLIC_SIGNING_KEY_PATH,
-    ) -> bytes :
-    """Verify COSE_Sign1 signed message with COSE key with EdDSA Algorithm.
-
-    :param message: Encrypted message to be verified.
-    :type message: bytes
-    :return: Returns authentication status and the encrypted message's payload.
-    :rtype: Tuple[bool, Dict[str, Any]]
-    """
-    verify_key = _load_verify_key(path_to_key)
-    
-    return verify_key.verify(signed_message)
-
-
-def encrypt_message(
-        message,
-        path_to_private_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
-        path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
-        password : bytes = PRIVATE_KEY_PASSWORD
-    ):
-    """Encrypt message with XSalsa20-Poly1305 using Diffie-Hellman key exchange.
+def pycose_verify_message(message : bytes) -> Dict :
+    """Verifies signature of a signed message with the public key.
 
     Args:
-        message (_type_): _description_
-        path_to_private_key (Path, optional): _description_. Defaults to PRIVATE_ENCRYPTING_KEY_PATH.
-        path_to_public_key (Path, optional): _description_. Defaults to PUBLIC_ENCRYPTING_KEY_PATH.
-        password (bytes, optional): _description_. Defaults to PRIVATE_KEY_PASSWORD.
+        message (bytes): Bytes message to be verified.
 
     Returns:
-        _type_: _description_
+        Dict: Returns the payload of the COSE_Sign1 message.
     """
-    box = _load_cipher_box(path_to_private_key, path_to_public_key, password)
-
-    return box.encrypt(message)
-
-
-def decrypt_message(
-        message,
-        path_to_private_key : Path = PRIVATE_ENCRYPTING_KEY_PATH,
-        path_to_public_key : Path = PUBLIC_ENCRYPTING_KEY_PATH,
-        password : bytes = PRIVATE_KEY_PASSWORD
-    ):
-    box = _load_cipher_box(path_to_private_key, path_to_public_key, password)
-
-    return box.decrypt(message)
-
-
-def validate_qr(qr_code : str) -> Tuple[bool, Dict] :
-    """Validates QR code. Returns the payload, if successful. Else, returns an error message.
-
-    Args:
-        qr_code (str): QR code in base45 string.
-
-    Returns:
-        Tuple[bool, Dict]: Status of validation and the payload.
-    """
-    try:
-        b45_qr = base45.b45decode(qr_code)
-    except:
-        return False, { "error" : "error_not_base45" }
-
-    try:
-        decompressed_qr = zlib.decompress(b45_qr)
-    except:
-        return False, { "error" : "error_not_compressed" }
-
-    # try:
-    #     decrypt_msg = decrypt_message(decompressed_qr)
-    # except Exception:
-    #     pass
-
-    try:
-        signed_msg = pynacl_verify_message(decompressed_qr)        
-    except BadSignatureError:
-        return False, { "error" : "error_tampered" }
+    if not isinstance(message, (bytes, bytearray)):
+        raise TypeError("Payload must be of type bytes or bytearray.")
     
     try:
-        # cwt = CBORWebToken.from_cbor(signed_msg)
-        cwt = cbor2.loads(signed_msg)
-        cwt[169][62] = base64.b64encode(cwt[169][62]).decode()
+        signed_message = Sign1Message.decode(message)
+    except Exception as err:
+        raise TypeError("Message is not a valid Sign1Message.") from err
+    
+    try:
+        cose_key = _load_public_signing_key(PUBLIC_SIGNING_KEY_PATH)
+        signed_message.key = cose_key
+    except Exception as err:
+        raise ValueError("Failed to load public signing key.") from err
+    
+    algorithm = signed_message.phdr.get(Algorithm)
 
-        return True, cwt
-    except ValidationError as err:
-        return False, { "error" : "error_other", "errors" : err }
+    if algorithm != EdDSA:
+        raise ValueError(f"Invalid algorithm. Expected EdDSA, got {algorithm} instead.")
+
+    if signed_message.payload is None:
+        raise ValueError(f"Payload is empty.")
+    
+    valid = signed_message.verify_signature()
+    if not valid:
+        raise ValueError("Invalid signature. Message may be tampered or key used was invalid.")
+    
+    try:
+        payload = cbor2.loads(signed_message.payload)
+    except Exception as err:
+        raise TypeError("Payload is not a valid CBOR object.")
+    
+    #TODO: Check Content
+
+    return payload

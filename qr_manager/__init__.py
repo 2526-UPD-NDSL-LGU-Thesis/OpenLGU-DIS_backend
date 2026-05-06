@@ -10,10 +10,9 @@ Generate messages with `sign_eddsa` and verify messages with `verify_eddsa`.
 '''
 
 from .main import (
-    pynacl_sign_message, pynacl_verify_message, encrypt_message, decrypt_message, validate_qr,
     pycose_sign_message, pycose_verify_message
 )
 
 from .utils import (
-    read_qr
+    read_qr, read_qr_image
 )

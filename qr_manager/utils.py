@@ -2,15 +2,23 @@
 Parsing library for QRs.
 """
 
-from typing import Optional, Dict
-import cbor2
 
+from typing import Dict
+from pycose.messages.sign1message import Sign1Message
+from pyzbar import pyzbar
+from io import BytesIO
+from PIL import Image
 import base45
+import base64
+import cbor2
+import zlib
 
-from mosip import MOSIPUser
+
+from .main import pycose_verify_message
+from .classes import QRTypes
 
 
-def read_qr(qr_code : str) -> Optional[Dict] :
+def read_qr(qr_code : str) -> Dict :
     """Decodes information from supported QRs.
 
     Args:
@@ -22,38 +30,63 @@ def read_qr(qr_code : str) -> Optional[Dict] :
     Returns:
         Optional[Dict]: Payload inside the QR.
     """
+    #TODO: Handle eGovPH QRs
     if qr_code[:4] == "PH1:":
         prefix, content = qr_code[:4], qr_code[4:]
 
         b45_qr = base45.b45decode(content)
 
-        # signed_msg = Sign1Message.decode(b45_qr)
-        signed_message = cbor2.loads(b45_qr)
-
-        # payload = cbor2.loads(signed_msg)
-        payload = signed_message.value[2]
+        signed_msg = Sign1Message.decode(b45_qr)
         
-        data = cbor2.loads(payload)
-        data["type"] = "claim169"
+        payload = cbor2.loads(signed_msg.payload)
 
-        return data
+        return {
+            "type"    : QRTypes.PhilSysTemporaryQR,
+            "content" :  payload
+        }
+    else:
+        try:
+            b45_qr = base45.b45decode(qr_code)
+        except Exception as err:
+            raise ValueError("QR code is not a valid base45 encoding.") from err
+
+        try:
+            decompressed_qr = zlib.decompress(b45_qr)
+        except Exception as err:
+            raise ValueError("Content is not decompressed using zlib.") from err
+
+        try:
+            payload = pycose_verify_message(decompressed_qr)
+            return {
+                "type"    : QRTypes.OpenLGUQR,
+                "content" : payload
+            }
+        except Exception as err:
+            raise ValueError("Could not verify QR code.") from err
+
+
+def read_qr_image(b64_image : str) -> Dict :
+    try:
+        image_bytes = base64.b64decode(b64_image)
+        image = Image.open(BytesIO(image_bytes))
+    except Exception as err:
+        raise ValueError("Failed to read image.") from err
     
-    raise ValueError("QR not supported")
+    qr_code = pyzbar.decode(image)[0].data.decode()
+    if qr_code:
+        return read_qr(qr_code)
+    else:
+        raise ValueError("Failed to decode QR code from image.")
 
+# def generate_qr(uin : str, user : MOSIPUser) :
+#     claim169 = user.to_claim169
+#     claim169[99] = uin
 
-def read_qr_image():
-    pass
+#     cwt = {
+#         1   : "OpenLGU",
+#         2   : int(datetime.now().timestamp()),
+#         169 : claim169
+#     }
 
-
-def generate_qr(uin : str, user : MOSIPUser) :
-    claim169 = user.to_claim169
-    claim169[99] = uin
-
-    cwt = {
-        1   : "OpenLGU",
-        2   : int(datetime.now().timestamp()),
-        169 : claim169
-    }
-
-    cbor_cwt = cbor2.dumps(cwt)
-    #TODO: Revert to COSE message
+#     cbor_cwt = cbor2.dumps(cwt)
+    # pass
