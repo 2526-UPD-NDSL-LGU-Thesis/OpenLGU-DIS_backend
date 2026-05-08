@@ -1,7 +1,7 @@
 info:
   name: claim service
   type: http
-  seq: 9
+  seq: 1
 
 http:
   method: POST
