@@ -1,28 +1,20 @@
 info:
-  name: token fetch
+  name: resident enlist
   type: http
   seq: 1
 
 http:
   method: POST
-  url: http://localhost:8000/api/token/
+  url: http://localhost:8000/api/ids/3481217724/enlist/
   body:
     type: json
     data: |-
       {
-        "username" : "james",
-        "password" : "rootroot"
+        "sector" : [
+          "SECTOR8374"
+        ]
       }
   auth: inherit
-
-runtime:
-  scripts:
-    - type: after-response
-      code: |-
-        const body = res.getBody();
-
-        bru.setEnvVar("jwt_access_token", body.access);
-        bru.setEnvVar("jwt_refresh_token", body.refresh);
 
 settings:
   encodeUrl: true
@@ -33,21 +25,22 @@ settings:
 examples:
   - name: "200"
     request:
-      url: http://localhost:8000/api/token/
+      url: http://localhost:8000/api/ids/3481217724/enlist/
       method: POST
       body:
         type: json
         data: |-
           {
-            "username" : "james",
-            "password" : "rootroot"
+            "sector" : [
+              "SECTOR8374"
+            ]
           }
     response:
       status: 200
       statusText: OK
       headers:
         - name: date
-          value: Tue, 28 Apr 2026 11:31:24 GMT
+          value: Fri, 08 May 2026 08:41:08 GMT
         - name: server
           value: WSGIServer/0.2 CPython/3.12.10
         - name: content-type
@@ -59,7 +52,7 @@ examples:
         - name: x-frame-options
           value: DENY
         - name: content-length
-          value: "489"
+          value: "265"
         - name: x-content-type-options
           value: nosniff
         - name: referrer-policy
@@ -70,32 +63,48 @@ examples:
         type: json
         data: |-
           {
-            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3NzQ2MjI4NCwiaWF0IjoxNzc3Mzc1ODg0LCJqdGkiOiIxOGY1YTljNDFjMzE0YTg1YTljYjE4Mzk2NTc4NjI0MSIsInVzZXJfaWQiOiIyIn0.abaNhVoNEdUqQJzsfLW2NUtC0J3ECRqqp8RmN5edDi4",
-            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc3Mzc5NDg0LCJpYXQiOjE3NzczNzU4ODQsImp0aSI6IjliNWZlZDc2NjAzMTRkN2FiMjZlYmY4NmU5ZDZlZGE4IiwidXNlcl9pZCI6IjIifQ.zYSfylaarZPSQiqlrAJ9LTDz6RQ84tbexrvVq6HZdE8"
+            "pcn": "6149804723",
+            "uin": "3481217724",
+            "issued_at": "2026-05-04",
+            "active": true,
+            "email": null,
+            "phone_number": null,
+            "sector": [
+              "SECTOR1085",
+              "SECTOR1763",
+              "SECTOR3389",
+              "SECTOR5664",
+              "SECTOR6271",
+              "SECTOR7639",
+              "SECTOR7751",
+              "SECTOR8374",
+              "SECTOR9139",
+              "SECTOR9628",
+              "SECTOR9899"
+            ]
           }
-  - name: 401 Invalid user
+  - name: 404 Invalid sector
     request:
-      url: http://localhost:8000/api/token/
+      url: http://localhost:8000/api/ids/3481217724/enlist/
       method: POST
       body:
         type: json
         data: |-
           {
-            "username" : "jame",
-            "password" : "rootroot"
+            "sector" : [
+              "SECTOR834"
+            ]
           }
     response:
-      status: 401
-      statusText: Unauthorized
+      status: 404
+      statusText: Not Found
       headers:
         - name: date
-          value: Fri, 08 May 2026 05:50:17 GMT
+          value: Fri, 08 May 2026 08:41:46 GMT
         - name: server
           value: WSGIServer/0.2 CPython/3.12.10
         - name: content-type
           value: application/json
-        - name: www-authenticate
-          value: Bearer realm="api"
         - name: vary
           value: Accept, origin
         - name: allow
@@ -103,7 +112,7 @@ examples:
         - name: x-frame-options
           value: DENY
         - name: content-length
-          value: "63"
+          value: "55"
         - name: x-content-type-options
           value: nosniff
         - name: referrer-policy
@@ -114,5 +123,5 @@ examples:
         type: json
         data: |-
           {
-            "detail": "No active account found with the given credentials"
+            "detail": "No ResidentSector matches the given query."
           }

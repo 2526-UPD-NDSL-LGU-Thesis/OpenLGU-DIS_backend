@@ -13,6 +13,7 @@ from rest_framework import mixins, viewsets, status
 
 from .models import Resident, ResidentSector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
+from .exceptions import DRFErrors
 
 
 def profile(request, lgu_id=None) -> HttpResponse :
@@ -74,69 +75,76 @@ class ResidentViewSet(mixins.CreateModelMixin,
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
 
-    # @action(detail=True, methods=['GET'], url_path='qr')
-    # def qr(self, request, pk=None):
-    #     user = self.get_object()
-
-    #     signed_message = sign_eddsa(user.info)
-
-    #     qr = qrcode.make(base45.b45encode(signed_message))
-
-    #     buffer = BytesIO()
-    #     qr.save(buffer, format="PNG")
-    #     buffer.seek(0)
-
-    #     # qr.show()
-    #     return HttpResponse(buffer, content_type="image/png")
-    
-    # @action(detail=True, methods=['GET'], url_path='id')
-    # def id(self, request, pk=None):
-    #     _id = self.get_object()
-
-    #     # Load the ID template image
-    #     id_image = Image.open(
-    #         r'./identity/static/img/labs/ndsg-template.png'
-    #     )
-
-    #     # Initialize drawing context
-    #     draw = ImageDraw.Draw(id_image)
-
-    #     # Load the Roboto font
-    #     font = ImageFont.truetype(
-    #         r'./identity/static/fonts/Roboto/static/Roboto-Regular.ttf', 40
-    #     )
-
-    #     # Position of text and fields
-    #     photo_x, photo_y =  62, 78                  # Coordinates for the photo position (top-left corner)
-    #     photo_width, photo_height = 300, 400        # Photo size (width x height)
-
-    #     # Add the fields on the ID template
-    #     line_height = 50  # Line height for spacing between fields
-    #     x_offset = 40  # Horizontal offset for text
-    #     y_offset = photo_y  # Starting position for the fields below the photo
-
-    #     fields = {
-    #         # "Name": _id.name,
-    #         # "Sex": _id.sex,
-    #         "DOB": _id.birthdate,
-    #         "ID": _id.id,
-    #         "PCN": _id.pcn,
-    #         "Verified": _id.verified
-    #     }
+    @action(detail=True, methods=['POST'], url_path='enlist')
+    def sector_enlist(self, request, uin=None):
+        queryset = self.filter_queryset(self.get_queryset())
+        resident = get_object_or_404(queryset, uin=uin)
+        self.check_object_permissions(request, resident)
         
-    #     # Add each field text dynamically
-    #     for label, value in fields.items():
-    #         # Draw the label and value on the image
-    #         draw.text((photo_x + photo_width + x_offset, y_offset), f"{label}: {value}", fill="black", font=font)
-    #         y_offset += line_height  # Move to the next line
+        sectors = request.data.get("sector")
 
-    #     # Save the updated image
-    #     # id_image.show()
-    #     buffer = BytesIO()
-    #     id_image.save(buffer, format="PNG")
-    #     buffer.seek(0)
+        if not sectors:
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected sector, got None instead."
+            })
         
-    #     return HttpResponse(buffer, content_type="image/png")
+        if not isinstance(sectors, list):
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : f"sector should be a list, not type {type(sectors)}."
+            })
+        
+        if len(sectors) == 0:
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "sector should not be empty."
+            })
+
+        sector_list = [
+            get_object_or_404(ResidentSector, id=sector_id) for sector_id in sectors
+        ]
+        
+        resident.sector.add(*sector_list)
+
+        serializer = self.get_serializer(resident)
+        return Response(serializer.data)
+
+
+    @action(detail=True, methods=['POST'], url_path='delist')
+    def sector_delist(self, request, uin=None):
+        queryset = self.filter_queryset(self.get_queryset())
+        resident = get_object_or_404(queryset, uin=uin)
+        self.check_object_permissions(request, resident)
+        
+        sectors = request.data.get("sector")
+
+        if not sectors:
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected sector, got None instead."
+            })
+        
+        if not isinstance(sectors, list):
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : f"sector should be a list, not type {type(sectors)}."
+            })
+        
+        if len(sectors) == 0:
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "sector should not be empty."
+            })
+
+        sector_list = [
+            get_object_or_404(ResidentSector, id=sector_id) for sector_id in sectors
+        ]
+        
+        resident.sector.remove(*sector_list)
+
+        serializer = self.get_serializer(resident)
+        return Response(serializer.data)
 
 class SectorViewset(viewsets.ModelViewSet):
     queryset = ResidentSector.objects.all()
@@ -147,3 +155,4 @@ class SectorViewset(viewsets.ModelViewSet):
         obj = get_object_or_404(queryset, pk=self.kwargs["pk"])
         self.check_object_permissions(self.request, obj)
         return obj
+    

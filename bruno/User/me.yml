@@ -1,0 +1,96 @@
+info:
+  name: me
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:8000/api/users/me
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "200"
+    request:
+      url: http://localhost:8000/api/users/me
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Mon, 04 May 2026 06:36:51 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, Cookie, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "71"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "id": 2,
+            "username": "james",
+            "first_name": "",
+            "last_name": "",
+            "groups": [
+              {
+                "id": 1,
+                "name": "General Services"
+              }
+            ]
+          }
+  - name: 401 Missing credentials
+    request:
+      url: http://localhost:8000/api/users/me
+      method: GET
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: date
+          value: Fri, 08 May 2026 05:49:00 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: www-authenticate
+          value: Bearer realm="api"
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "58"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "detail": "Authentication credentials were not provided."
+          }
