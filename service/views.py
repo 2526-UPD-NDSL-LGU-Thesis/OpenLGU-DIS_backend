@@ -1,7 +1,6 @@
 from django.http import HttpRequest
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view, permission_classes
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -83,7 +82,6 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
         serializer.save(user=user, claimed_by=user)
 
 
-@csrf_exempt
 @api_view(["POST"])
 # @permission_classes([IsAuthenticated]) TODO re-place
 def claim_service(request : HttpRequest, service_id : str) -> Response :
