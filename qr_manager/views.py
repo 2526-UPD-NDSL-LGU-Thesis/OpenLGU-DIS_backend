@@ -10,7 +10,8 @@ from rest_framework import status
 
 from residents.models import Resident
 from .utils import read_qr, read_qr_image
-from .classes import QRTypes, DRFErrors
+from .classes import QRTypes
+from .exceptions import DRFErrors
 
 
 @api_view(['POST'])

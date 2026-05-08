@@ -15,9 +15,3 @@ class QRTypes(StrEnum):
     PhilSysPhysicalQR   = auto()
     eGovPHBackQR        = auto()
     OpenLGUQR           = auto()
-
-
-class DRFErrors(StrEnum):
-    InvalidPOSTBody        = auto()
-    QRVerificationFailed   = auto()
-    DjangoUserDoesNotExist = auto()
