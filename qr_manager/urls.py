@@ -6,6 +6,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('qr/', views.decrypt_qr),
-    path('qr/image/', views.decrypt_qr_image)
+    path('verify/qr/', views.decrypt_qr),
+    path('verify/qr/image/', views.decrypt_qr_image)
 ]
