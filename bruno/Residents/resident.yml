@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8000/
+  url: http://localhost:8000/api/ids/3481217724/
   auth: inherit
 
 settings:
