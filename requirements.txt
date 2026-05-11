@@ -16,3 +16,4 @@ pydantic
 pynacl
 python-stdnum
 pyzbar
+strenum
