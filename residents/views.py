@@ -7,7 +7,9 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
+
+from qr_manager import read_qr
 
 from .models import Resident, ResidentSector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
@@ -73,11 +75,41 @@ class ResidentViewSet(mixins.CreateModelMixin,
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['POST'], url_path='enlist')
-    def sector_enlist(self, request, uin=None):
-        queryset = self.filter_queryset(self.get_queryset())
-        resident = get_object_or_404(queryset, uin=uin)
-        self.check_object_permissions(request, resident)
+    @action(detail=False, methods=['POST'], url_path='enlist')
+    def sector_enlist(self, request):
+        # queryset = self.filter_queryset(self.get_queryset())
+        # resident = get_object_or_404(queryset, uin=uin)
+        # self.check_object_permissions(request, resident)
+
+        qr = request.data.get("qr")
+
+        if not qr:
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected qr, got None instead."
+            })
+        
+        try:
+            _, payload = read_qr(qr).values()
+        except Exception as err:
+            return Response(
+                {
+                    "errpr" : DRFErrors.QRReaderFailed,
+                    "details"   : f"Failed to read QR: {err}"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user_uin = payload[169][75]
+        try:
+            resident = Resident.objects.get(uin=user_uin)
+        except Resident.DoesNotExist:
+            return Response(
+                {
+                    "details" : "Resident does not exist." 
+                },
+                status=status.HTTP_400_BAD_REQUEST
+        )
         
         sectors = request.data.get("sector")
 
@@ -109,11 +141,41 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return Response(serializer.data)
 
 
-    @action(detail=True, methods=['POST'], url_path='delist')
-    def sector_delist(self, request, uin=None):
-        queryset = self.filter_queryset(self.get_queryset())
-        resident = get_object_or_404(queryset, uin=uin)
-        self.check_object_permissions(request, resident)
+    @action(detail=False, methods=['POST'], url_path='delist')
+    def sector_delist(self, request):
+        # queryset = self.filter_queryset(self.get_queryset())
+        # resident = get_object_or_404(queryset, uin=uin)
+        # self.check_object_permissions(request, resident)
+
+        qr = request.data.get("qr")
+
+        if not qr:
+            return Response({
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected qr, got None instead."
+            })
+        
+        try:
+            _, payload = read_qr(qr).values()
+        except Exception as err:
+            return Response(
+                {
+                    "errpr" : DRFErrors.QRReaderFailed,
+                    "details"   : f"Failed to read QR: {err}"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user_uin = payload[169][75]
+        try:
+            resident = Resident.objects.get(uin=user_uin)
+        except Resident.DoesNotExist:
+            return Response(
+                {
+                    "details" : "Resident does not exist." 
+                },
+                status=status.HTTP_400_BAD_REQUEST
+        )
         
         sectors = request.data.get("sector")
 

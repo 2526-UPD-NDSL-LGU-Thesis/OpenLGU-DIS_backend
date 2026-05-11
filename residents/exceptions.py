@@ -12,3 +12,4 @@ from enum import auto
 
 class DRFErrors(StrEnum):
     InvalidPOSTBody        = auto()
+    QRReaderFailed         = auto()
