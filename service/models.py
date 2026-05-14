@@ -16,6 +16,22 @@ from .generator import generate_id
 # pylint: disable=missing-function-docstring
 
 
+class ClaimGroup(models.Model):
+    name = models.CharField(max_length=80)
+
+
+class ServiceAssignment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='service_assignments')
+    
+    groups = models.ManyToManyField(ClaimGroup)
+    
+    last_update = models.DateTimeField(auto_now_add=True)
+    
+    assigned_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL,
+                                    related_name='assigned_service_assignments')
+
+
 class Service(models.Model):
     class StockChoices(models.TextChoices):
         LIMITED = "limited", "Limited"
@@ -205,7 +221,7 @@ class Service(models.Model):
                 return False, { "error" : f"Failed to save service claim: {err}"}
 
 
-class ServiceClaim(models.Model):
+class Claim(models.Model):
     id = models.BigAutoField(primary_key=True)
     transaction_id = models.CharField(unique=True, db_index=True, editable=False)
 

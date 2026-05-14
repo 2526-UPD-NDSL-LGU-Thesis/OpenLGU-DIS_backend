@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Resident, ResidentSector
-from service.models import ServiceClaim
+from service.models import Claim
 
 
 @admin.register(ResidentSector)
@@ -15,7 +15,7 @@ class SectorAdmin(admin.ModelAdmin):
 
 
 class ResidentClaimInline(admin.TabularInline):
-    model = ServiceClaim
+    model = Claim
     extra = 0
     readonly_fields = ("service", "claimed_at")
     can_delete = False

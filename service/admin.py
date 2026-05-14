@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from .models import (
-    Service, ServiceClaim,
+    Service, Claim, ClaimGroup, ServiceAssignment
 )
 
 
@@ -38,7 +38,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class ServiceClaimInline(admin.TabularInline):
-    model = ServiceClaim
+    model = Claim
     extra = 0
     readonly_fields = ("user", "claimed_at")
     can_delete = False
@@ -55,7 +55,7 @@ class ServiceAdmin(admin.ModelAdmin):
     inlines = [ServiceClaimInline]
 
 
-@admin.register(ServiceClaim)
+@admin.register(Claim)
 class ServiceClaimAdmin(admin.ModelAdmin):
     list_display = ("transaction_id", "user", "service", "amount", "claimed_at", "claimed_by")
 
@@ -64,3 +64,34 @@ class ServiceClaimAdmin(admin.ModelAdmin):
     search_fields = ("transaction_id", "user__uin", "user__pcn",)
 
     autocomplete_fields = ("user", "service")
+
+
+@admin.register(ClaimGroup)
+class ClaimGroupAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+    search_fields = ("name",)
+
+
+@admin.register(ServiceAssignment)
+class ServiceAssignmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "assigned_by",
+        "last_update",
+    )
+
+    list_filter = (
+        "last_update",
+        "groups",
+    )
+
+    search_fields = (
+        "user__username",
+        "user__email",
+        "assigned_by__username",
+    )
+
+    filter_horizontal = ("groups",)
+
+    readonly_fields = ("last_update",)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Service, ServiceClaim
+from .models import Service, Claim
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -10,5 +10,5 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 class ServiceClaimSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ServiceClaim
+        model = Claim
         exclude = ["id"]

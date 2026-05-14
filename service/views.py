@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
-from .models import Service, ServiceClaim
+from .models import Service, Claim
 from .permissions import CanAccessServiceClaim
 from .serializers import ServiceSerializer, ServiceClaimSerializer
 from residents.models import Resident
@@ -50,19 +50,19 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
 @permission_classes([CanAccessServiceClaim, IsAuthenticated])
 class ServiceClaimViewSet(viewsets.ModelViewSet):
-    queryset = ServiceClaim.objects.all()
+    queryset = Claim.objects.all()
     serializer_class = ServiceClaimSerializer
 
     def get_queryset(self):
         user = self.request.user
 
         if not user.is_authenticated:
-            return ServiceClaim.objects.none()
+            return Claim.objects.none()
         
         if user.is_superuser:
-            return ServiceClaim.objects.all()
+            return Claim.objects.all()
 
-        return ServiceClaim.objects.filter(
+        return Claim.objects.filter(
             claimed_by=user
         ).distinct()
 
