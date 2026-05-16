@@ -1,11 +1,11 @@
 info:
   name: me
   type: http
-  seq: 1
+  seq: 2
 
 http:
   method: GET
-  url: http://localhost:8000/api/users/me
+  url: http://localhost:8000/api/users/me/
   auth: inherit
 
 settings:
@@ -15,9 +15,9 @@ settings:
   maxRedirects: 5
 
 examples:
-  - name: "200"
+  - name: 200 james
     request:
-      url: http://localhost:8000/api/users/me
+      url: http://localhost:8000/api/users/me/
       method: GET
     response:
       status: 200
@@ -47,20 +47,42 @@ examples:
         type: json
         data: |-
           {
-            "id": 2,
+            "id": 14,
             "username": "james",
             "first_name": "",
             "last_name": "",
             "groups": [
               {
-                "id": 1,
-                "name": "General Services"
+                "name": "Service Claim Admin"
               }
-            ]
+            ],
+            "assignment": {
+              "groups": [
+                {
+                  "name": "Social Welfare",
+                  "description": null
+                },
+                {
+                  "name": "Service and Outreach Unit",
+                  "description": null
+                },
+                {
+                  "name": "Public Service",
+                  "description": null
+                },
+                {
+                  "name": "Citizen Support",
+                  "description": null
+                }
+              ],
+              "last_update": "2026-05-16T16:54:15.144136+08:00",
+              "user": 14,
+              "assigned_by": null
+            }
           }
   - name: 401 Missing credentials
     request:
-      url: http://localhost:8000/api/users/me
+      url: http://localhost:8000/api/users/me/
       method: GET
     response:
       status: 401

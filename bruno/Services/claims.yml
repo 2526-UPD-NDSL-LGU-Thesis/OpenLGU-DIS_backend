@@ -1,0 +1,578 @@
+info:
+  name: claims
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:8000/api/claims/
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "200"
+    request:
+      url: http://localhost:8000/api/claims/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 13:27:58 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, POST, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "8383"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "user": {
+                "uin": "5855177496",
+                "pcn": "4725769857"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "84668806133708376324",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:24.300517+08:00",
+              "notes": null,
+              "service": "SERVICE33894964"
+            },
+            {
+              "user": {
+                "uin": "7980938715",
+                "pcn": "5106401415"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "72817157064566471841",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:23.705822+08:00",
+              "notes": null,
+              "service": "SERVICE57206417"
+            },
+            {
+              "user": {
+                "uin": "9396922164",
+                "pcn": "4765815211"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "93908715497126320946",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:23.641211+08:00",
+              "notes": null,
+              "service": "SERVICE57206417"
+            },
+            {
+              "user": {
+                "uin": "2339340140",
+                "pcn": "0368408632"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "18694955849369812736",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:23.441862+08:00",
+              "notes": null,
+              "service": "SERVICE70245504"
+            },
+            {
+              "user": {
+                "uin": "7980938715",
+                "pcn": "5106401415"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "57339691159702959534",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:23.341238+08:00",
+              "notes": null,
+              "service": "SERVICE87748446"
+            },
+            {
+              "user": {
+                "uin": "7318398694",
+                "pcn": "4983589928"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "61356996934868473011",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:23.257112+08:00",
+              "notes": null,
+              "service": "SERVICE38960863"
+            },
+            {
+              "user": {
+                "uin": "5071154274",
+                "pcn": "8102094466"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "47392703964854102057",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:23.081523+08:00",
+              "notes": null,
+              "service": "SERVICE38960863"
+            },
+            {
+              "user": {
+                "uin": "8493719273",
+                "pcn": "5395324083"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "22337156556320976281",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:22.615023+08:00",
+              "notes": null,
+              "service": "SERVICE39922186"
+            },
+            {
+              "user": {
+                "uin": "4198152037",
+                "pcn": "0637040843"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "52263971625698453052",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:22.543627+08:00",
+              "notes": null,
+              "service": "SERVICE39922186"
+            },
+            {
+              "user": {
+                "uin": "2235832917",
+                "pcn": "8027167423"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "31418524591991057762",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:22.315256+08:00",
+              "notes": null,
+              "service": "SERVICE92326883"
+            },
+            {
+              "user": {
+                "uin": "8182762375",
+                "pcn": "9198499721"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "45652596182524271918",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:22.178505+08:00",
+              "notes": null,
+              "service": "SERVICE63123342"
+            },
+            {
+              "user": {
+                "uin": "3919034308",
+                "pcn": "2007934040"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "88535404342397959714",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:21.574428+08:00",
+              "notes": null,
+              "service": "SERVICE72838998"
+            },
+            {
+              "user": {
+                "uin": "7549122319",
+                "pcn": "6974783014"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "42801907496336925038",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:21.416939+08:00",
+              "notes": null,
+              "service": "SERVICE72838998"
+            },
+            {
+              "user": {
+                "uin": "2899609547",
+                "pcn": "6769981241"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "93030267362479617780",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.693365+08:00",
+              "notes": null,
+              "service": "SERVICE36909436"
+            },
+            {
+              "user": {
+                "uin": "3271633535",
+                "pcn": "3077794104"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "47007980096211062296",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.304114+08:00",
+              "notes": null,
+              "service": "SERVICE61960073"
+            },
+            {
+              "user": {
+                "uin": "9300157053",
+                "pcn": "1475842969"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "19702797228544771526",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.203170+08:00",
+              "notes": null,
+              "service": "SERVICE69208853"
+            },
+            {
+              "user": {
+                "uin": "4257379881",
+                "pcn": "1184187181"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "45783161802809411155",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.109486+08:00",
+              "notes": null,
+              "service": "SERVICE69208853"
+            },
+            {
+              "user": {
+                "uin": "6933561713",
+                "pcn": "9722473847"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "63410271814335628686",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.060682+08:00",
+              "notes": null,
+              "service": "SERVICE69208853"
+            },
+            {
+              "user": {
+                "uin": "5071154274",
+                "pcn": "8102094466"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "33671240789885879358",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.044123+08:00",
+              "notes": null,
+              "service": "SERVICE69208853"
+            },
+            {
+              "user": {
+                "uin": "7318398694",
+                "pcn": "4983589928"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "20695493952932438133",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:20.029311+08:00",
+              "notes": null,
+              "service": "SERVICE65203476"
+            },
+            {
+              "user": {
+                "uin": "9091362547",
+                "pcn": "9890802689"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "62403597377367520717",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:19.861228+08:00",
+              "notes": null,
+              "service": "SERVICE65203476"
+            },
+            {
+              "user": {
+                "uin": "8493719273",
+                "pcn": "5395324083"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "80118749338447047282",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:19.475474+08:00",
+              "notes": null,
+              "service": "SERVICE75680696"
+            },
+            {
+              "user": {
+                "uin": "8753585196",
+                "pcn": "5534494581"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "17843026869747045143",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:19.058736+08:00",
+              "notes": null,
+              "service": "SERVICE11951078"
+            },
+            {
+              "user": {
+                "uin": "2907267785",
+                "pcn": "3497049394"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "16509656802525129315",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:18.999335+08:00",
+              "notes": null,
+              "service": "SERVICE11951078"
+            },
+            {
+              "user": {
+                "uin": "4294459151",
+                "pcn": "9597794868"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "99731045956649111591",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:18.947385+08:00",
+              "notes": null,
+              "service": "SERVICE82582796"
+            },
+            {
+              "user": {
+                "uin": "3521243173",
+                "pcn": "2310908879"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "63959593895409122207",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:18.513190+08:00",
+              "notes": null,
+              "service": "SERVICE11192022"
+            },
+            {
+              "user": {
+                "uin": "9300157053",
+                "pcn": "1475842969"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "76924894336833336253",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:17.414690+08:00",
+              "notes": null,
+              "service": "SERVICE87991941"
+            },
+            {
+              "user": {
+                "uin": "7100969275",
+                "pcn": "2683838743"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "28575878204130489946",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:16.239474+08:00",
+              "notes": null,
+              "service": "SERVICE84063440"
+            },
+            {
+              "user": {
+                "uin": "8182762375",
+                "pcn": "9198499721"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "81545243126337741827",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:16.039285+08:00",
+              "notes": null,
+              "service": "SERVICE70206532"
+            },
+            {
+              "user": {
+                "uin": "2897550949",
+                "pcn": "0508683690"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "87169261626257849419",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.666060+08:00",
+              "notes": null,
+              "service": "SERVICE22260553"
+            },
+            {
+              "user": {
+                "uin": "9300157053",
+                "pcn": "1475842969"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "15253742508914023733",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.331661+08:00",
+              "notes": null,
+              "service": "SERVICE75029528"
+            },
+            {
+              "user": {
+                "uin": "3781986118",
+                "pcn": "6526590053"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "96506695939760486767",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.315936+08:00",
+              "notes": null,
+              "service": "SERVICE75029528"
+            },
+            {
+              "user": {
+                "uin": "5081757982",
+                "pcn": "6326479206"
+              },
+              "claimed_by": {
+                "username": "james",
+                "first_name": "",
+                "last_name": ""
+              },
+              "transaction_id": "17129199273857179670",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.278813+08:00",
+              "notes": null,
+              "service": "SERVICE62110026"
+            }
+          ]

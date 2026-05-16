@@ -1,11 +1,11 @@
 info:
   name: sectors
   type: http
-  seq: 3
+  seq: 2
 
 http:
   method: GET
-  url: http://localhost:8000/api/sectors
+  url: http://localhost:8000/api/sectors/
   auth: inherit
 
 settings:
@@ -17,7 +17,7 @@ settings:
 examples:
   - name: "200"
     request:
-      url: http://localhost:8000/api/sectors
+      url: http://localhost:8000/api/sectors/
       method: GET
     response:
       status: 200
@@ -48,58 +48,58 @@ examples:
         data: |-
           [
             {
-              "id": "SECTOR5664",
-              "name": "Teacher",
-              "description": null
-            },
-            {
-              "id": "SECTOR7751",
-              "name": "Health Worker",
-              "description": null
-            },
-            {
-              "id": "SECTOR1763",
-              "name": "Government Worker",
-              "description": null
-            },
-            {
-              "id": "SECTOR9899",
-              "name": "Student",
-              "description": null
-            },
-            {
-              "id": "SECTOR1085",
-              "name": "Single Parent",
-              "description": null
-            },
-            {
-              "id": "SECTOR9628",
-              "name": "Senior Citizen",
-              "description": null
-            },
-            {
-              "id": "SECTOR8374",
-              "name": "Small Businesses",
-              "description": null
-            },
-            {
-              "id": "SECTOR7639",
+              "id": "SECTOR8883",
               "name": "Resident",
               "description": null
             },
             {
-              "id": "SECTOR3389",
+              "id": "SECTOR8871",
+              "name": "Senior Citizen",
+              "description": null
+            },
+            {
+              "id": "SECTOR6231",
+              "name": "Merchant",
+              "description": null
+            },
+            {
+              "id": "SECTOR7533",
+              "name": "Student",
+              "description": null
+            },
+            {
+              "id": "SECTOR4013",
+              "name": "4Ps",
+              "description": null
+            },
+            {
+              "id": "SECTOR9439",
+              "name": "Single Parent",
+              "description": null
+            },
+            {
+              "id": "SECTOR7624",
+              "name": "PWD",
+              "description": null
+            },
+            {
+              "id": "SECTOR2321",
+              "name": "Farmer",
+              "description": null
+            },
+            {
+              "id": "SECTOR5709",
+              "name": "OFW",
+              "description": null
+            },
+            {
+              "id": "SECTOR4300",
+              "name": "LGBTQIA+",
+              "description": null
+            },
+            {
+              "id": "SECTOR1141",
               "name": "Jeepney Driver",
-              "description": null
-            },
-            {
-              "id": "SECTOR9139",
-              "name": "Bus Driver",
-              "description": null
-            },
-            {
-              "id": "SECTOR6271",
-              "name": "Pantawid Pamilyang Pilipino Program (4Ps)",
               "description": null
             }
           ]

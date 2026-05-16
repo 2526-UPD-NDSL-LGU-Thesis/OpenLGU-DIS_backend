@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8000/api/ids/3481217724/
+  url: http://localhost:8000/api/ids/9937707313/
   auth: inherit
 
 settings:
@@ -13,3 +13,125 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+examples:
+  - name: 200 UIN
+    request:
+      url: http://localhost:8000/api/ids/9937707313/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 11:42:09 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "148"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "pcn": "0179112660",
+            "uin": "9937707313",
+            "issued_at": "2026-05-16",
+            "active": true,
+            "email": null,
+            "phone_number": null,
+            "sector": [
+              "SECTOR5709",
+              "SECTOR7533"
+            ]
+          }
+  - name: 200 PCN
+    request:
+      url: http://localhost:8000/api/ids/pcn/0179112660/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 11:42:33 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "148"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "pcn": "0179112660",
+            "uin": "9937707313",
+            "issued_at": "2026-05-16",
+            "active": true,
+            "email": null,
+            "phone_number": null,
+            "sector": [
+              "SECTOR5709",
+              "SECTOR7533"
+            ]
+          }
+  - name: 405 GET list
+    request:
+      url: http://localhost:8000/api/ids/
+      method: GET
+    response:
+      status: 405
+      statusText: Method Not Allowed
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 11:41:19 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "40"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "detail": "Method \"GET\" not allowed."
+          }

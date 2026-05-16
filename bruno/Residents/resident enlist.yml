@@ -1,7 +1,7 @@
 info:
   name: resident enlist
   type: http
-  seq: 2
+  seq: 3
 
 http:
   method: POST
@@ -84,6 +84,49 @@ examples:
               "SECTOR9628",
               "SECTOR9899"
             ]
+          }
+  - name: 403 Missing Permissions
+    request:
+      url: http://localhost:8000/api/ids/enlist/
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BFOXN*TS0BIP$F%T4KOH-ZHC-5TJO+JAFBOJGTOZL%LP% C$8DMEDE8C0/D/+PN R6H0R23Q0557TRVMPPF67T5 2BCNJ1TN%2M55XFTLFN:Z247TS*SKTCY73X63PK3 QTSNJ*4LD-4SYKFFRTJ6A9WVQUR80OBGMUJUI3+J46H0LJ42K66BO%IS732$0EL.CYS2R8TSZ2CD3/2CGPKLE4QAMK$TQ%J15A8.4JQ3JJSYAC9*C  C0Q2UIVHWGPH2T58U9IJBEP*O-RO0DP9ZI:.2E8CVJCI.C:/GW90746%J5N837NM4Y0/AODCO/QQ7BQ*0P.SID:9SQPWP9BSDRVJY5D8Y3$8NVTSSL7+4JS18DNP9MQH2NCSOQN85.CGXU*I0I:PN-03OR/ZJ/+VTDA$JMPJ7RLJQL5SWIR0O$WCERFTKU0WHZ2F PRMPKAR5UGNXLNXXD%V53%6NVL-H8WBO3+2$CUSUM92G37Q+CGNWEDE8%1ODOU3VO.V3 2NWNVBDUEX04$FSFWD$I13Q6-6A46RF65:6UH6UHUEG9%Y15%E1:UTIP$IEP4VN96YT3HT2O7G*2S+ZFHYKIIM-9N+ B-2NNKPJ4I99DDKE59D-SHJGR6O915QIX6 OB/PM6AT6715GN9Z39ZMZ6VMDA0QM05CMJMT5KMJJM20TA100",
+            "sector" : [
+              "SECTOR8374"
+            ]
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 12:01:36 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "63"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "detail": "You do not have permission to perform this action."
           }
   - name: 404 Invalid sector
     request:

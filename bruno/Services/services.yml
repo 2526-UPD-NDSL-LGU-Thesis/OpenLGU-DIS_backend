@@ -1,7 +1,7 @@
 info:
   name: services
   type: http
-  seq: 6
+  seq: 1
 
 http:
   method: GET
@@ -15,7 +15,7 @@ settings:
   maxRedirects: 5
 
 examples:
-  - name: Success
+  - name: "200"
     request:
       url: http://localhost:8000/api/services/
       method: GET
@@ -48,9 +48,91 @@ examples:
         data: |-
           [
             {
-              "id": "SERVICE23903124",
-              "name": "Bagong Residente",
-              "description": "",
+              "id": "SERVICE62110026",
+              "name": "Service_0",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 997,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                2,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE75029528",
+              "name": "Service_1",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 88,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
+                2,
+                3
+              ]
+            },
+            {
+              "id": "SERVICE64197246",
+              "name": "Service_13",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                2,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE71950826",
+              "name": "Service_14",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR7624",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                4,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE23497916",
+              "name": "Service_17",
+              "description": null,
               "max_claims_per_user": 1,
               "claim_type": "onetime",
               "refresh_interval": null,
@@ -58,7 +140,207 @@ examples:
               "stocks": null,
               "active": true,
               "recipient_sectors": [
-                "SECTOR7639"
+                "SECTOR1141",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR7624"
+              ],
+              "allowed_groups": [
+                2,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE35487492",
+              "name": "Service_20",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 200,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4013",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE69208853",
+              "name": "Service_24",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 994,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR7624",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE61021194",
+              "name": "Service_29",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 95,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR7624",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE25596053",
+              "name": "Service_32",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 200,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE63123342",
+              "name": "Service_36",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 99,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR5709",
+                "SECTOR7624",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                2,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE20637938",
+              "name": "Service_37",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE57206417",
+              "name": "Service_47",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR7624"
+              ],
+              "allowed_groups": [
+                2,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE62248021",
+              "name": "Service_48",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE75029528",
+              "name": "Service_1",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 88,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
+                2,
+                3
+              ]
+            },
+            {
+              "id": "SERVICE78294698",
+              "name": "Service_7",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR8871",
+                "SECTOR8883"
               ],
               "allowed_groups": [
                 1,
@@ -66,32 +348,1965 @@ examples:
               ]
             },
             {
-              "id": "SERVICE22048350",
-              "name": "Fortune 500",
-              "description": "",
+              "id": "SERVICE30131603",
+              "name": "Service_8",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 297,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                3
+              ]
+            },
+            {
+              "id": "SERVICE64197246",
+              "name": "Service_13",
+              "description": null,
               "max_claims_per_user": 1,
               "claim_type": "onetime",
               "refresh_interval": null,
               "stocks_type": "limited",
-              "stocks": 500,
+              "stocks": 98,
               "active": true,
               "recipient_sectors": [
-                "SECTOR1085",
-                "SECTOR1763",
-                "SECTOR3389",
-                "SECTOR5664",
-                "SECTOR6271",
-                "SECTOR7639",
-                "SECTOR7751",
-                "SECTOR8374",
-                "SECTOR9139",
-                "SECTOR9628",
-                "SECTOR9899"
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                2,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE11951078",
+              "name": "Service_21",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 273,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR7624",
+                "SECTOR9439"
               ],
               "allowed_groups": [
                 1,
+                3,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE65203476",
+              "name": "Service_23",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE87357220",
+              "name": "Service_28",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 94,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE72838998",
+              "name": "Service_31",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE50729717",
+              "name": "Service_33",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR7624",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                3
+              ]
+            },
+            {
+              "id": "SERVICE56832944",
+              "name": "Service_34",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 198,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE38960863",
+              "name": "Service_43",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 90,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                3
+              ]
+            },
+            {
+              "id": "SERVICE90362561",
+              "name": "Service_46",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE33894964",
+              "name": "Service_49",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 178,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE84063440",
+              "name": "Service_5",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE95732180",
+              "name": "Service_6",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR7533"
+              ],
+              "allowed_groups": [
+                5
+              ]
+            },
+            {
+              "id": "SERVICE14617764",
+              "name": "Service_10",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR8871",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE87991941",
+              "name": "Service_11",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "limited",
+              "stocks": 182,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE64197246",
+              "name": "Service_13",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                2,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE23497916",
+              "name": "Service_17",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR7624"
+              ],
+              "allowed_groups": [
+                2,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE11192022",
+              "name": "Service_18",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 481,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR5709",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE75680696",
+              "name": "Service_22",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR5709",
+                "SECTOR8871",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE65203476",
+              "name": "Service_23",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE61960073",
+              "name": "Service_25",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                1,
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE87357220",
+              "name": "Service_28",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 94,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE92326883",
+              "name": "Service_38",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                5
+              ]
+            },
+            {
+              "id": "SERVICE39922186",
+              "name": "Service_39",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 493,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE54717180",
+              "name": "Service_41",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE25907181",
+              "name": "Service_42",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE87748446",
+              "name": "Service_44",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 998,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5
+              ]
+            },
+            {
+              "id": "SERVICE70245504",
+              "name": "Service_45",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR5709",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE90362561",
+              "name": "Service_46",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE57206417",
+              "name": "Service_47",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR7624"
+              ],
+              "allowed_groups": [
+                2,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE22260553",
+              "name": "Service_2",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 982,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR5709"
+              ],
+              "allowed_groups": [
+                4,
+                6,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE70206532",
+              "name": "Service_4",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 195,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4013",
+                "SECTOR5709",
+                "SECTOR7624",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                7
+              ]
+            },
+            {
+              "id": "SERVICE91604474",
+              "name": "Service_9",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 993,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE14617764",
+              "name": "Service_10",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR8871",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE82582796",
+              "name": "Service_19",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR7533",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                6,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE11951078",
+              "name": "Service_21",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 273,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR7624",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE75680696",
+              "name": "Service_22",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR5709",
+                "SECTOR8871",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE61960073",
+              "name": "Service_25",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                1,
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE36909436",
+              "name": "Service_27",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 489,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR7624",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1,
+                4,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE20637938",
+              "name": "Service_37",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE54717180",
+              "name": "Service_41",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE33894964",
+              "name": "Service_49",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 178,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                7
+              ]
+            }
+          ]
+  - name: 200 active
+    request:
+      url: http://localhost:8000/api/services/active/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 13:16:06 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "13774"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "id": "SERVICE62110026",
+              "name": "Service_0",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 997,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                2,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE75029528",
+              "name": "Service_1",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 88,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
                 2,
                 3
               ]
+            },
+            {
+              "id": "SERVICE22260553",
+              "name": "Service_2",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 982,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR5709"
+              ],
+              "allowed_groups": [
+                4,
+                6,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE88230258",
+              "name": "Service_3",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE70206532",
+              "name": "Service_4",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 195,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4013",
+                "SECTOR5709",
+                "SECTOR7624",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                7
+              ]
+            },
+            {
+              "id": "SERVICE84063440",
+              "name": "Service_5",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE95732180",
+              "name": "Service_6",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR7533"
+              ],
+              "allowed_groups": [
+                5
+              ]
+            },
+            {
+              "id": "SERVICE78294698",
+              "name": "Service_7",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3
+              ]
+            },
+            {
+              "id": "SERVICE30131603",
+              "name": "Service_8",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 297,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                3
+              ]
+            },
+            {
+              "id": "SERVICE91604474",
+              "name": "Service_9",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 993,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE14617764",
+              "name": "Service_10",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR8871",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE87991941",
+              "name": "Service_11",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "limited",
+              "stocks": 182,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE42435073",
+              "name": "Service_12",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR5709",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE64197246",
+              "name": "Service_13",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                2,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE71950826",
+              "name": "Service_14",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR7624",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                4,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE47930286",
+              "name": "Service_15",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1,
+                4
+              ]
+            },
+            {
+              "id": "SERVICE31586057",
+              "name": "Service_16",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "limited",
+              "stocks": 195,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231",
+                "SECTOR7624",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4
+              ]
+            },
+            {
+              "id": "SERVICE23497916",
+              "name": "Service_17",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR7624"
+              ],
+              "allowed_groups": [
+                2,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE11192022",
+              "name": "Service_18",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 481,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4013",
+                "SECTOR5709",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE82582796",
+              "name": "Service_19",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR7533",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                6,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE35487492",
+              "name": "Service_20",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 200,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR4013",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE11951078",
+              "name": "Service_21",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 273,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR7624",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE75680696",
+              "name": "Service_22",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR5709",
+                "SECTOR8871",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE65203476",
+              "name": "Service_23",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE69208853",
+              "name": "Service_24",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 994,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR7624",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE61960073",
+              "name": "Service_25",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                1,
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE39676096",
+              "name": "Service_26",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 1000,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR7533",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1
+              ]
+            },
+            {
+              "id": "SERVICE36909436",
+              "name": "Service_27",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 489,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR7533",
+                "SECTOR7624",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1,
+                4,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE87357220",
+              "name": "Service_28",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 94,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE61021194",
+              "name": "Service_29",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 95,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR7624",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE60287961",
+              "name": "Service_30",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "limited",
+              "stocks": 90,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR5709",
+                "SECTOR7533",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                4
+              ]
+            },
+            {
+              "id": "SERVICE72838998",
+              "name": "Service_31",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE25596053",
+              "name": "Service_32",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 200,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
+                2
+              ]
+            },
+            {
+              "id": "SERVICE50729717",
+              "name": "Service_33",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR7624",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                3
+              ]
+            },
+            {
+              "id": "SERVICE56832944",
+              "name": "Service_34",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 198,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE84400746",
+              "name": "Service_35",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 491,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR2321",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1
+              ]
+            },
+            {
+              "id": "SERVICE63123342",
+              "name": "Service_36",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 99,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR5709",
+                "SECTOR7624",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                2,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE20637938",
+              "name": "Service_37",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR8883",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE92326883",
+              "name": "Service_38",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231"
+              ],
+              "allowed_groups": [
+                5
+              ]
+            },
+            {
+              "id": "SERVICE39922186",
+              "name": "Service_39",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 493,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE24606034",
+              "name": "Service_40",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR4300",
+                "SECTOR8871"
+              ],
+              "allowed_groups": [
+                1
+              ]
+            },
+            {
+              "id": "SERVICE54717180",
+              "name": "Service_41",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                5,
+                7
+              ]
+            },
+            {
+              "id": "SERVICE25907181",
+              "name": "Service_42",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300"
+              ],
+              "allowed_groups": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE38960863",
+              "name": "Service_43",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 90,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4300",
+                "SECTOR6231",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                3
+              ]
+            },
+            {
+              "id": "SERVICE87748446",
+              "name": "Service_44",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 998,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                5
+              ]
+            },
+            {
+              "id": "SERVICE70245504",
+              "name": "Service_45",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR4013",
+                "SECTOR4300",
+                "SECTOR5709",
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                4,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE90362561",
+              "name": "Service_46",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "id": "SERVICE57206417",
+              "name": "Service_47",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR1141",
+                "SECTOR7624"
+              ],
+              "allowed_groups": [
+                2,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE62248021",
+              "name": "Service_48",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR9439"
+              ],
+              "allowed_groups": [
+                2,
+                6
+              ]
+            },
+            {
+              "id": "SERVICE33894964",
+              "name": "Service_49",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 178,
+              "active": true,
+              "recipient_sectors": [
+                "SECTOR2321",
+                "SECTOR5709",
+                "SECTOR6231",
+                "SECTOR8871",
+                "SECTOR8883"
+              ],
+              "allowed_groups": [
+                1,
+                3,
+                7
+              ]
+            }
+          ]
+  - name: 200 service claims
+    request:
+      url: http://localhost:8000/api/services/SERVICE62110026/claims/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 13:16:45 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "504"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "transaction_id": "17129199273857179670",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.278813+08:00",
+              "notes": null,
+              "user": 24,
+              "service": "SERVICE62110026",
+              "claimed_by": 14
+            },
+            {
+              "transaction_id": "45172284547674383894",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.260120+08:00",
+              "notes": null,
+              "user": 45,
+              "service": "SERVICE62110026",
+              "claimed_by": 8
+            },
+            {
+              "transaction_id": "57004058778359884521",
+              "amount": 1,
+              "claimed_at": "2026-05-16T16:54:15.236890+08:00",
+              "notes": null,
+              "user": 37,
+              "service": "SERVICE62110026",
+              "claimed_by": 18
             }
           ]
