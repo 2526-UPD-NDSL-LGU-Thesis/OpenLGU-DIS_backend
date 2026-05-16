@@ -9,6 +9,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = "__all__"
+#TODO: Sector Serializer and Groups Serializer
 
 
 class ClaimUserSerializer(serializers.ModelSerializer):
@@ -30,6 +31,7 @@ class ClaimSerializer(serializers.ModelSerializer):
     class Meta:
         model = Claim
         exclude = ["id"]
+#TODO: Service
 
 
 class GroupSerializer(serializers.ModelSerializer):
