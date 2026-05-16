@@ -125,7 +125,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
     
     authenticated_user = request.user
 
-    result, error = service.claim(
+    result, body = service.claim(
         resident=resident,
         amount=1,
         claimed_by=authenticated_user
@@ -133,12 +133,12 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
 
     if not result:
         return Response(
-            error,
+            body,
             status=status.HTTP_400_BAD_REQUEST
         )
 
     return Response(
-        { "status" : "Service claimed" },
+        body,
         status=status.HTTP_201_CREATED
     )
 

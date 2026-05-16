@@ -230,7 +230,7 @@ class Service(models.Model):
             status, error = service.can_claim(resident, claimed_by, amount)
 
             if not status:
-                return False, error
+                return False, { "error" : error }
 
             try:
                 _transaction = Claim.objects.create(
