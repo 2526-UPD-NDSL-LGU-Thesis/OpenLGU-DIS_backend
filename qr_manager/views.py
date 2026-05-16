@@ -5,6 +5,7 @@ API views for QR Manager app.
 
 from django.http import HttpRequest
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -15,6 +16,7 @@ from .exceptions import DRFErrors
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def decrypt_qr(request : HttpRequest) -> Response :
     data = request.data
 
@@ -61,6 +63,7 @@ def decrypt_qr(request : HttpRequest) -> Response :
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def decrypt_qr_image(request : HttpRequest) -> Response :
     data = request.data
     

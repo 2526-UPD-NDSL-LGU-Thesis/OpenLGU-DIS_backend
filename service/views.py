@@ -87,7 +87,7 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["POST"])
-# @permission_classes([IsAuthenticated]) TODO re-place
+@permission_classes([IsAuthenticated])
 def claim_service(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
@@ -144,7 +144,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
 
 
 @api_view(["POST"])
-# @permission_classes([IsAuthenticated]) TODO re-place
+@permission_classes([IsAuthenticated])
 def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
