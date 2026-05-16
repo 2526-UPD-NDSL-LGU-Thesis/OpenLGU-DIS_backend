@@ -138,7 +138,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
         )
 
     return Response(
-        body,
+        ClaimSerializer(body["body"]).data,
         status=status.HTTP_201_CREATED
     )
 
@@ -195,10 +195,8 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
             body,
             status=status.HTTP_400_BAD_REQUEST
         )
-    
-    #TODO: Return the object created
 
     return Response(
-        body,
+        ClaimSerializer(body["body"]).data,
         status=status.HTTP_201_CREATED
     )
