@@ -7,24 +7,38 @@ Serializers for REST Framework.
 # pylint: disable=missing-function-docstring
 
 
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group as BaseGroup
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from service.models import Group
+from service.serializers import AssignmentSerializer
 from .models import Resident, Sector
 
 
 class UserGroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Group
-        fields = ["id", "name"]
+        model = BaseGroup
+        fields = ["name"]
 
+
+class UserClaimingGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ["name"]
 
 class UserSerializer(serializers.ModelSerializer):
     groups = UserGroupSerializer(many=True, read_only=True)
+    assignment = serializers.SerializerMethodField()
     
     class Meta:
         model = User
-        fields = ["id", "username", "first_name", "last_name", "groups"]
+        fields = ["id", "username", "first_name", "last_name", "groups", "assignment"]
+
+    def get_assignment(self, obj):
+        if hasattr(obj, "official"):
+            return AssignmentSerializer(obj.official).data
+        return None
 
 
 class SectorSerializer(serializers.ModelSerializer):
