@@ -11,7 +11,7 @@ from rest_framework import mixins, viewsets, status
 
 from qr_manager import read_qr
 
-from .models import Resident, ResidentSector
+from .models import Resident, Sector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
 from .exceptions import DRFErrors
 
@@ -132,7 +132,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
             })
 
         sector_list = [
-            get_object_or_404(ResidentSector, id=sector_id) for sector_id in sectors
+            get_object_or_404(Sector, id=sector_id) for sector_id in sectors
         ]
         
         resident.sector.add(*sector_list)
@@ -198,7 +198,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
             })
 
         sector_list = [
-            get_object_or_404(ResidentSector, id=sector_id) for sector_id in sectors
+            get_object_or_404(Sector, id=sector_id) for sector_id in sectors
         ]
         
         resident.sector.remove(*sector_list)
@@ -207,7 +207,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return Response(serializer.data)
 
 class SectorViewset(viewsets.ModelViewSet):
-    queryset = ResidentSector.objects.all()
+    queryset = Sector.objects.all()
     serializer_class = SectorSerializer
 
     def get_object(self):

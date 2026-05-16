@@ -10,7 +10,7 @@ Serializers for REST Framework.
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 
-from .models import Resident, ResidentSector
+from .models import Resident, Sector
 
 
 class UserGroupSerializer(serializers.ModelSerializer):
@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SectorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ResidentSector
+        model = Sector
         fields = "__all__"
 
 

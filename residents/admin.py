@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Resident, ResidentSector
+from .models import Resident, Sector
 from service.models import Claim
 
 
-@admin.register(ResidentSector)
+@admin.register(Sector)
 class SectorAdmin(admin.ModelAdmin):
     list_display = (
         "id", "name", "description",
