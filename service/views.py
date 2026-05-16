@@ -8,7 +8,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from .models import Service, Claim
 from .permissions import CanAccessServiceClaim
-from .serializers import ServiceSerializer, ServiceClaimSerializer
+from .serializers import ServiceSerializer, ClaimSerializer
 from residents.models import Resident
 from qr_manager import read_qr, QRTypes
 
@@ -43,14 +43,14 @@ class ServiceViewSet(viewsets.ModelViewSet):
     def claims(self, request, pk=None):
         service = self.get_object()
         claims = service.claims.all()
-        serializer = ServiceClaimSerializer(claims, many=True)
+        serializer = ClaimSerializer(claims, many=True)
         return Response(serializer.data)
     
 
 @permission_classes([CanAccessServiceClaim, IsAuthenticated])
 class ServiceClaimViewSet(viewsets.ModelViewSet):
     queryset = Claim.objects.all()
-    serializer_class = ServiceClaimSerializer
+    serializer_class = ClaimSerializer
 
     def get_queryset(self):
         user = self.request.user
