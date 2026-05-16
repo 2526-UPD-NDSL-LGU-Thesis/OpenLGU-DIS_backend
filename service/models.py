@@ -35,6 +35,16 @@ class Assignment(models.Model):
     assigned_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL,
                                     related_name='authorized_by')
     
+    def clean(self) -> None:
+        if not self.user.groups.filter(
+            name__in=["Service Claim Admin", "Service Claim Employee"]
+        ).exists():
+            raise ValidationError({
+                "user" : "User does not have the required role to have an assignment."
+            })
+        
+        return super().clean()
+
     def __str__(self) -> str:
         return f"{self.user.username} Assignment"
 
