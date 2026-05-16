@@ -71,7 +71,7 @@ class ClaimAdmin(admin.ModelAdmin):
 
 
 @admin.register(Group)
-class GroupAdmin(admin.ModelAdmin):
+class ClaimingGroupAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
     search_fields = ("name",)
 
