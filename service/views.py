@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
-from .models import Service, Claim
+from .models import Service, Claim, Assignment
 from .permissions import CanAccessServiceClaim
 from .serializers import ServiceSerializer, ClaimSerializer
 from residents.models import Resident
@@ -22,10 +22,15 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
         if user.is_superuser:
             return Service.objects.all()
+    
+        assignment = Assignment.objects.filter(user=user).first()
 
-        return Service.objects.filter(
-            allowed_groups__in=user.groups.all()
-        ).distinct()
+        if assignment:
+            return Service.objects.filter(
+                allowed_groups__in=assignment.groups.all()
+            )
+        else:
+            return []
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
