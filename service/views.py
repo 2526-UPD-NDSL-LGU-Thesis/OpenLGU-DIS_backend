@@ -21,7 +21,6 @@ class ServiceViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         if user.is_superuser:
-            print("hello")
             return Service.objects.all()
 
         return Service.objects.filter(
