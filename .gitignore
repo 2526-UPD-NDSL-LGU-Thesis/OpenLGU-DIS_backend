@@ -221,5 +221,5 @@ __marimo__/
 # MOSIP keys
 uploads/
 residents/static/img/id-template.psd
-mosip/*.pem
-mosip/*.p12
+mosip/certs/*.pem
+mosip/certs/*.p12
