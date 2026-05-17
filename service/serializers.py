@@ -37,11 +37,17 @@ class ClaimSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
+        fields = "__all__"
+
+
+class AssignmentGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
         exclude = ["id"]
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
-    groups = GroupSerializer(many=True, read_only=True)
+    groups = AssignmentGroupSerializer(many=True, read_only=True)
 
     class Meta:
         model = Assignment

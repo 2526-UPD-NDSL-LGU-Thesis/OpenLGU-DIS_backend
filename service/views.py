@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
 from .models import Service, Claim, Assignment
+from .models import Group as AssignmentGroup
 from .permissions import HasServiceClaimRole
-from .serializers import ServiceSerializer, ClaimSerializer
+from .serializers import ServiceSerializer, ClaimSerializer, GroupSerializer
 from residents.models import Resident
 from qr_manager import read_qr, QRTypes
 
@@ -85,6 +86,17 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
         
         serializer.save(user=user, claimed_by=user)
 
+
+@permission_classes([HasServiceClaimRole])
+class ServiceGroupViewSet(viewsets.ModelViewSet):
+    queryset = AssignmentGroup.objects.all()
+    serializer_class = GroupSerializer
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 @api_view(["POST"])
 @permission_classes([HasServiceClaimRole])

@@ -1,0 +1,107 @@
+info:
+  name: new service
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8000/api/services/
+  body:
+    type: json
+    data: |-
+      {
+        "name" : "test",
+        "verbose_name" : "",
+        "description" : "",
+        "max_claims_per_user" : 1,
+        "claim_type" : "periodic",
+        "refresh_interval" : "weekly",
+        "stocks_type" : "unlimited",
+        "stocks" : 1,
+        "active" : true,
+        "recipient_sectors" : [
+          "SECTOR8883"
+        ],
+        "allowed_groups" : [
+          1,2,3
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "201"
+    request:
+      url: http://localhost:8000/api/services/
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name" : "test",
+            "verbose_name" : "",
+            "description" : "",
+            "max_claims_per_user" : 1,
+            "claim_type" : "periodic",
+            "refresh_interval" : "weekly",
+            "stocks_type" : "unlimited",
+            "stocks" : 1,
+            "active" : true,
+            "recipient_sectors" : [
+              "SECTOR8883"
+            ],
+            "allowed_groups" : [
+              1,2,3
+            ]
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: date
+          value: Sun, 17 May 2026 16:09:01 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, POST, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "242"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "id": "SERVICE62055198",
+            "name": "test",
+            "description": "",
+            "max_claims_per_user": 1,
+            "claim_type": "periodic",
+            "refresh_interval": "weekly",
+            "stocks_type": "unlimited",
+            "stocks": 1,
+            "active": true,
+            "recipient_sectors": [
+              "SECTOR8883"
+            ],
+            "allowed_groups": [
+              1,
+              2,
+              3
+            ]
+          }

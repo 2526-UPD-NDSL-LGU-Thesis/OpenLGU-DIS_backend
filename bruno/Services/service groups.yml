@@ -1,0 +1,85 @@
+info:
+  name: service groups
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: http://localhost:8000/api/servicegroups/
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "200"
+    request:
+      url: http://localhost:8000/api/servicegroups/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 17 May 2026 16:34:46 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, POST, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "384"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "id": 1,
+              "name": "Merchants",
+              "description": null
+            },
+            {
+              "id": 2,
+              "name": "Social Welfare",
+              "description": null
+            },
+            {
+              "id": 3,
+              "name": "Service and Outreach Unit",
+              "description": null
+            },
+            {
+              "id": 4,
+              "name": "Service Delivery Team",
+              "description": null
+            },
+            {
+              "id": 5,
+              "name": "Public Service",
+              "description": null
+            },
+            {
+              "id": 6,
+              "name": "Community Assitance",
+              "description": null
+            },
+            {
+              "id": 7,
+              "name": "Citizen Support",
+              "description": null
+            }
+          ]
