@@ -102,6 +102,20 @@ class MOSIPAPITestCase(APITestCase):
         response = mosip_views.ping(request)
         
         assert response.status_code==200
+    
+    def test_client_auth_via_demographics(self):
+        response = self.client.post(
+            "/api/auth/demo/",
+            {
+                "uid" : sample_data["individual_id"],
+                "name" : sample_data["name"][0]["value"]
+            },
+            format="json"
+        )
+
+        print(response.__dict__)
+
+        self.assertEqual(response.status_code, 200)
 
     # def test_auth_via_demographics(self):
     #     request = self.factory.post(
