@@ -3,20 +3,23 @@ API views for MOSIP app.
 """
 
 from django.http import HttpRequest
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from .models import (
     MOSIPKYCResponse, MOSIPAuthResponse, MOSIPGenOTPResponse
 )
 
+
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def auth_via_demographics(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
@@ -33,6 +36,7 @@ def auth_via_demographics(request : HttpRequest) -> Response :
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def auth_start_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
@@ -49,6 +53,7 @@ def auth_start_otp(request : HttpRequest) -> Response :
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def auth_via_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
@@ -68,6 +73,7 @@ def auth_via_otp(request : HttpRequest) -> Response :
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def kyc_via_demographics(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
@@ -84,6 +90,7 @@ def kyc_via_demographics(request : HttpRequest) -> Response :
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def kyc_start_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
@@ -100,6 +107,7 @@ def kyc_start_otp(request : HttpRequest) -> Response :
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def kyc_via_otp(request : HttpRequest) -> Response :
     data = request.data
     uid = data.pop("uid")
@@ -118,8 +126,8 @@ def kyc_via_otp(request : HttpRequest) -> Response :
     )
 
 
-@csrf_exempt
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def ping(_) -> Response :
     return Response({ "message": "pong" }, status=status.HTTP_200_OK)
 
