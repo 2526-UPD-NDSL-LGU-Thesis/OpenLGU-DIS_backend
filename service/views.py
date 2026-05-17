@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
 from .models import Service, Claim, Assignment
-from .permissions import CanAccessServiceClaim
+from .permissions import HasServiceClaimRole
 from .serializers import ServiceSerializer, ClaimSerializer
 from residents.models import Resident
 from qr_manager import read_qr, QRTypes
@@ -52,7 +52,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
 
-@permission_classes([CanAccessServiceClaim, IsAuthenticated])
+@permission_classes([HasServiceClaimRole])
 class ServiceClaimViewSet(viewsets.ModelViewSet):
     queryset = Claim.objects.all()
     serializer_class = ClaimSerializer
@@ -87,7 +87,7 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([HasServiceClaimRole])
 def claim_service(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
@@ -144,7 +144,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([HasServiceClaimRole])
 def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     b45_qr = data.pop("qr")
