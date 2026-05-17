@@ -287,4 +287,5 @@ DEFAULT_LANGUAGE_ISO = 'eng'
 VERSION = 1.0
 
 # Config Files
-CONFIG_MOSIP_SETTINGS = r'./mosip/mosip_config.toml'
+# CONFIG_MOSIP_SETTINGS = r'./mosip/mosip_config.toml'
+CONFIG_MOSIP_SETTINGS = r'./mosip/piidtl_config.toml'
