@@ -29,6 +29,26 @@ def parse_id_details(payload, qr_type : QRTypes):
         cwt = payload
         claim169 = cwt[169]
 
+        try:
+            claim169[9]
+        except:
+            claim169[9] = None
+
+        try:
+            claim169[14]
+        except:
+            claim169[14] = None
+
+        try:
+            claim169[16]
+        except:
+            claim169[16] = None
+
+        try:
+            claim169[18]
+        except:
+            claim169[18] = None
+
         return {
             "issuer"     : cwt[1], 
             "issued_at"  : cwt[2],
