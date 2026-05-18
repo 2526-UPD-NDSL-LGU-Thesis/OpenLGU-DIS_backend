@@ -51,7 +51,7 @@ class Resident(models.Model):
     sector = models.ManyToManyField(Sector, related_name="sectors")
 
     issued_at = models.DateField(auto_now_add=True)
-    proof_of_residence = models.FileField(upload_to=proof_upload_to)
+    proof_of_residence = models.FileField(upload_to=proof_upload_to, blank=True, null=True)
 
     active = models.BooleanField(default=True)
 
@@ -59,7 +59,7 @@ class Resident(models.Model):
 
     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
-    profile_image = models.ImageField(upload_to=image_upload_to)
+    profile_image = models.ImageField(upload_to=image_upload_to, blank=True, null=True)
 
     def __str__(self) -> str :
         return str(self.uin)

@@ -176,7 +176,7 @@ def read_qr_image(b64_image : str) -> Dict :
 def generate_qr(**kwargs) :
     required_headers = [
         "first_name", "last_name", "gender", "birthdate", "address",
-        "phone", "face", "pcn", "uin"
+        "phone", "pcn", "uin"
     ]
 
     missing = [header for header in required_headers if header not in kwargs]
@@ -215,7 +215,7 @@ def generate_qr(**kwargs) :
         # 24-29 : unassigned
         # 50-59 : fingers
         # 60-61 : eyes
-        62 : kwargs["face"],
+        # 62 : kwargs["face"],
         # 63-64 : palms
         # 65 : voice
         # 66-74 : unassigned (for future biometrics)
@@ -229,7 +229,7 @@ def generate_qr(**kwargs) :
         169 : claim169
     }
 
-    cbor_cwt = cbor2.dump(cwt)
+    cbor_cwt = cbor2.dumps(cwt)
 
     signed_message = pycose_sign_message(cbor_cwt)
 

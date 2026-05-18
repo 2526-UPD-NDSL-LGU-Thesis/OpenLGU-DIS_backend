@@ -2,7 +2,10 @@
 Django views for `identity` app.
 '''
 
+from pathlib import Path
+
 from django.contrib.auth.models import User, Group
+from django.core.files import File
 from django.db import transaction
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
@@ -16,6 +19,10 @@ from qr_manager.utils import read_qr, generate_qr, to_base64_image
 from .models import Resident, Sector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
 from .exceptions import DRFErrors
+
+
+POR_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\proof.pdf")
+IMG_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\citizen_3_compressed.jpg")
 
 
 def profile(request, lgu_id=None) -> HttpResponse :
@@ -75,10 +82,8 @@ class ResidentViewSet(mixins.CreateModelMixin,
         try:
             resident = Resident.objects.create(
                 pcn=data["pcn"],
-                proof_of_residence=request.FILES.get("proof_of_residence"),
-                profile_image=request.FILES.get("profile_image"),
-                email=data.get("email"),
-                phone_number=data.get("phone_number")
+                # proof_of_residence=request.FILES.get("proof_of_residence"),
+                # profile_image=request.FILES.get("profile_image"),
             )
             data["uin"] = resident.uin
         except Exception as err:
@@ -88,7 +93,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
             )
 
         try:
-            image = generate_qr(data)
+            image = generate_qr(**data)
             image_str = to_base64_image(image)
         except Exception as err:
             return Response(
