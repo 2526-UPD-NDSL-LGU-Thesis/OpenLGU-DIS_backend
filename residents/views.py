@@ -3,6 +3,7 @@ Django views for `identity` app.
 '''
 
 from django.contrib.auth.models import User, Group
+from django.db import transaction
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from rest_framework.decorators import action
@@ -10,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 
 from residents.models import Resident
-from qr_manager.utils import read_qr, generate_qr
+from qr_manager.utils import read_qr, generate_qr, to_base64_image
 
 from .models import Resident, Sector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
@@ -67,23 +68,40 @@ class ResidentViewSet(mixins.CreateModelMixin,
         self.check_object_permissions(self.request, obj)
         return obj
     
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
+        data = request.data.get("id_details")
 
         try:
             resident = Resident.objects.create(
-                pcn=data["pcn"]
+                pcn=data["pcn"],
+                proof_of_residence=request.FILES.get("proof_of_residence"),
+                profile_image=request.FILES.get("profile_image"),
+                email=data.get("email"),
+                phone_number=data.get("phone_number")
             )
-        except:
-            pass
+            data["uin"] = resident.uin
+        except Exception as err:
+            return Response(
+                { "details" : f"Encountered an error registering Resident: {err}" },
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             image = generate_qr(data)
+            image_str = to_base64_image(image)
         except Exception as err:
             return Response(
                 { "details" : f"Encountered an error generating QR: {err}" },
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+        return Response(
+            {
+                "id_details" : data,
+                "qr" : image_str
+            }
+        )
     
     @action(detail=False, methods=['GET'], url_path=r"pcn/(?P<pcn>[^/.]+)")
     def by_pcn(self, request, pcn=None):

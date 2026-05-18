@@ -242,4 +242,8 @@ def generate_qr(**kwargs) :
     qr.make(fit=True)
     image = qr.make_image(fill_color="black", back_color="white")
 
-    return image
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    image_bytes = buffer.getvalue()
+
+    return image_bytes
