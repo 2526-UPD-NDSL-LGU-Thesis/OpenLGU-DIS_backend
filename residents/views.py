@@ -9,7 +9,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 
-from qr_manager import read_qr
+from residents.models import Resident
+from qr_manager.utils import read_qr, generate_qr
 
 from .models import Resident, Sector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
@@ -65,6 +66,24 @@ class ResidentViewSet(mixins.CreateModelMixin,
         obj = get_object_or_404(queryset, uin=self.kwargs["uin"])
         self.check_object_permissions(self.request, obj)
         return obj
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        try:
+            resident = Resident.objects.create(
+                pcn=data["pcn"]
+            )
+        except:
+            pass
+
+        try:
+            image = generate_qr(data)
+        except Exception as err:
+            return Response(
+                { "details" : f"Encountered an error generating QR: {err}" },
+                status=status.HTTP_400_BAD_REQUEST
+            )
     
     @action(detail=False, methods=['GET'], url_path=r"pcn/(?P<pcn>[^/.]+)")
     def by_pcn(self, request, pcn=None):
