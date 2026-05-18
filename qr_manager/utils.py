@@ -24,7 +24,62 @@ def to_base64_image(image_bytes : bytes) -> str :
     return base64.b64encode(image_bytes).decode()
 
 
+def parse_id_details(payload, qr_type : QRTypes):
+    if qr_type == QRTypes.OpenLGUQR:
+        cwt = payload
+        claim169 = cwt[169]
+
+        return {
+            "issuer"     : cwt[1], 
+            "issued_at"  : cwt[2],
+            "pcn"        : claim169[1],
+            "version"    : claim169[2],
+            "first_name" : claim169[4],
+            "middle_name": claim169[5],
+            "last_name"  : claim169[6],
+            "suffix_name": claim169[7],
+            "dob"        : claim169[8],
+            "pob"        : claim169[9],
+            "gender"     : ( 
+                "Male" if claim169[10] == 1
+                else "Female" if claim169[10] == 2
+                else "Others"
+            ),
+            "marital_status" : claim169[14],
+            "blood_type"     : claim169[16],
+            "best_fingers"   : claim169[18],
+            "face"           : claim169[62],
+            "uin"            : claim169[75]
+        }
+    
+    if qr_type == QRTypes.PhilSysTemporaryQR:
+        cwt = payload
+        claim169 = cwt[169]
+        biographic = claim169["sb"]
+
+        return {
+            "issuer_country"    : cwt[1], 
+            "issued_at_unix"    : cwt[6],
+            "confirmation"      : cwt[8],
+            "issued_at"         : claim169["d"],
+            "issuer"            : claim169["i"],
+            "gender"            : biographic["s"],
+            "best_fingers"      : biographic["BF"].strip("[]").split(","),
+            "first_name"        : biographic["fn"],
+            "last_name"         : biographic["ln"],
+            "middle_name"       : biographic["mn"],
+            "suffix_name"       : biographic["sf"],
+            "dob"               : biographic["DOB"],
+            "pcn"               : biographic["PCN"],
+            "pob"               : biographic["POB"],
+            "img"               : claim169["img"]
+        }
+        
+
+
+
 def read_qr(qr_code : str) -> Dict :
+
     """Decodes information from supported QR codes.
 
     Args:
@@ -63,8 +118,8 @@ def read_qr(qr_code : str) -> Dict :
             pass
 
         return {
-            "type"    : QRTypes.PhilSysTemporaryQR,
-            "content" :  payload
+            "type"       : QRTypes.PhilSysTemporaryQR,
+            "id_details" :  parse_id_details(payload, QRTypes.PhilSysTemporaryQR)
         }
     else:
         try:
@@ -88,8 +143,8 @@ def read_qr(qr_code : str) -> Dict :
             pass
         
         return {
-            "type"    : QRTypes.OpenLGUQR,
-            "content" : payload
+            "type"       : QRTypes.OpenLGUQR,
+            "id_details" : parse_id_details(payload, QRTypes.OpenLGUQR)
         }
 
 

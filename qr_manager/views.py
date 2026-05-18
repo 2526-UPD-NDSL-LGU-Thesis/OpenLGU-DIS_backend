@@ -43,11 +43,11 @@ def decrypt_qr(request : HttpRequest) -> Response :
         )
 
     if type == QRTypes.OpenLGUQR:
-        if not Resident.objects.filter(uin=payload[169][75]).exists():
+        if not Resident.objects.filter(uin=payload["uin"]).exists():
             return Response(
                 {
                     "error"   : DRFErrors.DjangoUserDoesNotExist,
-                    "details" : f"User {payload[169][75]} does not exist." 
+                    "details" : f"User {payload["uin"]} does not exist." 
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
