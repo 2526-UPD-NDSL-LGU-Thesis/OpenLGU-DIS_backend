@@ -29,7 +29,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         if assignment:
             return Service.objects.filter(
                 allowed_groups__in=assignment.groups.all()
-            )
+            ).distinct()
         else:
             return []
 
