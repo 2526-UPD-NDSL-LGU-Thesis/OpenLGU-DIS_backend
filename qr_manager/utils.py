@@ -3,8 +3,7 @@ Parsing library for QRs.
 """
 
 
-from typing import Dict
-from pycose.messages.sign1message import Sign1Message
+from typing import Any, Dict
 from pyzbar import pyzbar
 from io import BytesIO
 from PIL import Image
@@ -12,160 +11,112 @@ from datetime import datetime
 import base45
 import base64
 import cbor2
+import json
 import qrcode
 import zlib
 
 
-from .main import pycose_sign_message, pycose_verify_message
+from .main import pycose_sign_message
 from .classes import QRTypes
+from .decoders import (
+    decode_philsys_temporary_qr, decode_philsys_physical_qr,
+    decode_egovph_front_qr, decode_egovph_back_qr,
+    decode_openlgu_qr
+)
 
 
-def to_base64_image(image_bytes : bytes) -> str :
+def _to_base64_image(image_bytes : bytes) -> str :
     return base64.b64encode(image_bytes).decode()
 
 
-def parse_id_details(payload, qr_type : QRTypes):
-    if qr_type == QRTypes.OpenLGUQR:
-        cwt = payload
-        claim169 = cwt[169]
+def _detect_json_schema(qr_code : str) -> QRTypes :
+    try:
+        payload = json.loads(qr_code)
+    except Exception as err:
+        raise ValueError("QR code is not a valid JSON object.") from err
 
-        try:
-            claim169[9]
-        except:
-            claim169[9] = None
-
-        try:
-            claim169[14]
-        except:
-            claim169[14] = None
-
-        try:
-            claim169[16]
-        except:
-            claim169[16] = None
-
-        try:
-            claim169[18]
-        except:
-            claim169[18] = None
-
-        return {
-            "issuer"     : cwt[1], 
-            "issued_at"  : cwt[2],
-            "pcn"        : claim169[1],
-            "version"    : claim169[2],
-            "first_name" : claim169[4],
-            "middle_name": claim169[5],
-            "last_name"  : claim169[6],
-            "suffix_name": claim169[7],
-            "dob"        : claim169[8],
-            "pob"        : claim169[9],
-            "gender"     : ( 
-                "Male" if claim169[10] == 1
-                else "Female" if claim169[10] == 2
-                else "Others"
-            ),
-            "marital_status" : claim169[14],
-            "blood_type"     : claim169[16],
-            "best_fingers"   : claim169[18],
-            "face"           : claim169[62],
-            "uin"            : claim169[75]
-        }
+    if all(key in payload for key in [
+        "p", "v", "z"
+    ]):
+        return QRTypes.eGovPHBackQR
     
-    if qr_type == QRTypes.PhilSysTemporaryQR:
-        cwt = payload
-        claim169 = cwt[169]
-        biographic = claim169["sb"]
+    if all(key in payload for key in [
+        "DateIssued", "Issuer", "alg", "signature", "subject"
+    ]):
+        return QRTypes.PhilSysPhysicalQR
 
-        return {
-            "issuer_country"    : cwt[1], 
-            "issued_at_unix"    : cwt[6],
-            "confirmation"      : cwt[8],
-            "issued_at"         : claim169["d"],
-            "issuer"            : claim169["i"],
-            "gender"            : biographic["s"],
-            "best_fingers"      : biographic["BF"].strip("[]").split(","),
-            "first_name"        : biographic["fn"],
-            "last_name"         : biographic["ln"],
-            "middle_name"       : biographic["mn"],
-            "suffix_name"       : biographic["sf"],
-            "dob"               : biographic["DOB"],
-            "pcn"               : biographic["PCN"],
-            "pob"               : biographic["POB"],
-            "img"               : claim169["img"]
-        }
-        
+    raise ValueError("QR code is not a supported JSON-encoded format.")
 
 
+def _check_claim169_cwt(qr_code : str) -> bool :
+    try:
+        raw = base45.b45decode(qr_code)
 
-def read_qr(qr_code : str) -> Dict :
+        try:
+            raw = zlib.decompress(raw)
+        except zlib.error:
+            pass
+    
+        obj = cbor2.loads(raw)
 
-    """Decodes information from supported QR codes.
+        return True
+    except Exception:
+        return False
+
+
+def detect_qr_type(qr_code : str) -> QRTypes :
+    if qr_code.startswith("PH1:"):
+        return QRTypes.PhilSysTemporaryQR
+    
+    if len(qr_code) == 16 and qr_code.isdigit:
+        return QRTypes.eGovPHFrontQR
+    
+    if qr_code.startswith("{"):
+        return _detect_json_schema(qr_code)
+    
+    if _check_claim169_cwt(qr_code):
+        return QRTypes.OpenLGUQR
+    
+    raise ValueError("QR code is not a supported QR code format.")
+
+
+def read_qr(qr_code : str) -> Dict[str, Any] :
+    """Returns information from supported QR codes.
 
     Args:
         qr_code (str): Base45-string of the QR code.
 
-    Raises:
-        ValueError: Invalid base45 string.
-        ValueError: Invalid Sign1Message object.
-        ValueError: Invalid CBOR object.
-
     Returns:
-        Dict: Type of QR code and payload.
+        Dict: Type of QR code and a standardized payload.
     """
-    #TODO: Handle eGovPH QRs
-    if qr_code[:4] == "PH1:":
-        prefix, content = qr_code[:4], qr_code[4:]
+    qr_code = qr_code.strip()
 
-        try:
-            b45_qr = base45.b45decode(content)
-        except Exception as err:
-            raise ValueError("QR code is not a valid base45 encoding.") from err
+    qr_type = detect_qr_type(qr_code)
 
-        try:
-            signed_msg = Sign1Message.decode(b45_qr)
-        except Exception as err:
-            raise ValueError("Message is not a valid Sign1Message.") from err
+    id_details = None
+    match qr_type:
+        case QRTypes.PhilSysPhysicalQR:
+            id_details = decode_philsys_physical_qr(qr_code)
         
-        try:
-            payload = cbor2.loads(signed_msg.payload)
-        except Exception as err:
-            raise ValueError("Payload is not a valid CBOR object.") from err
-
-        try:
-            payload[169]['img'] = to_base64_image(payload[169]['img'])
-        except KeyError:
-            pass
-
-        return {
-            "type"       : QRTypes.PhilSysTemporaryQR,
-            "id_details" :  parse_id_details(payload, QRTypes.PhilSysTemporaryQR)
-        }
-    else:
-        try:
-            b45_qr = base45.b45decode(qr_code)
-        except Exception as err:
-            raise ValueError("QR code is not a valid base45 encoding.") from err
-
-        try:
-            decompressed_qr = zlib.decompress(b45_qr)
-        except Exception as err:
-            raise ValueError("Content is not decompressed using zlib.") from err
-
-        try:
-            payload = pycose_verify_message(decompressed_qr)
-        except Exception as err:
-            raise ValueError(f"Failed to verify QR code: {err}") from err
-
-        try: 
-            payload[169][62] = to_base64_image(payload[169][62])
-        except KeyError:
-            pass
+        case QRTypes.PhilSysTemporaryQR:
+            id_details = decode_philsys_temporary_qr(qr_code)
         
-        return {
-            "type"       : QRTypes.OpenLGUQR,
-            "id_details" : parse_id_details(payload, QRTypes.OpenLGUQR)
-        }
+        case QRTypes.eGovPHFrontQR:
+            id_details = decode_egovph_front_qr(qr_code)
+
+        case QRTypes.eGovPHBackQR:
+            id_details = decode_egovph_back_qr(qr_code)
+
+        case QRTypes.OpenLGUQR:
+            id_details = decode_openlgu_qr(qr_code)
+
+        case _:
+            raise ValueError(f"Current implementation does not have a decoder for {qr_type}.")
+    
+    return {
+        "qr_type" : qr_type,
+        "id_details" : id_details
+    }
 
 
 def read_qr_image(b64_image : str) -> Dict :
@@ -192,6 +143,7 @@ def read_qr_image(b64_image : str) -> Dict :
         return read_qr(qr_code)
     except Exception as err:
         raise ValueError(f"{err}") from err
+
 
 def generate_qr(**kwargs) :
     required_headers = [
@@ -244,7 +196,7 @@ def generate_qr(**kwargs) :
     }
     
     cwt = {
-        1   : "OpenLGU",
+        1   : "ndsl.openlgu.com.ph/",
         2   : str(int(datetime.now().timestamp())),
         169 : claim169
     }

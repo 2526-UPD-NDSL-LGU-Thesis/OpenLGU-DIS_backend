@@ -12,9 +12,10 @@ from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
+import base64
 
 from residents.models import Resident
-from qr_manager.utils import read_qr, generate_qr, to_base64_image
+from qr_manager.utils import read_qr, generate_qr
 
 from .models import Resident, Sector
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
@@ -23,6 +24,10 @@ from .exceptions import DRFErrors
 
 POR_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\proof.pdf")
 IMG_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\citizen_3_compressed.jpg")
+
+
+def _to_base64_image(image_bytes : bytes) -> str :
+    return base64.b64encode(image_bytes).decode()
 
 
 def profile(request, lgu_id=None) -> HttpResponse :
@@ -94,7 +99,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
 
         try:
             image = generate_qr(**data)
-            image_str = to_base64_image(image)
+            image_str = _to_base64_image(image)
         except Exception as err:
             return Response(
                 { "details" : f"Encountered an error generating QR: {err}" },
