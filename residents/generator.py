@@ -199,7 +199,7 @@ def is_valid(uid : str, length : int) -> bool :
     return True
 
 
-def generate_uid(id_length : int = 10) -> str :
+def generate_uid(id_length : int = 12) -> str :
     """Generate a UIN based on MOSIP's UIN Generation Filters.
 
     MOSIP UIN Generation Logic:
@@ -228,6 +228,7 @@ def generate_uid(id_length : int = 10) -> str :
         uid = candidate + verhoeff.calc_check_digit(candidate)
         if is_valid(uid, id_length):
             return uid
+
 
 def generate_id(id_length : int = 8) -> str :
     """Generate a simple ID where the first number should not be a 0."""

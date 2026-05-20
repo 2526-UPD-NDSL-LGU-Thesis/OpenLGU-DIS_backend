@@ -220,6 +220,7 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'uploads')
 # Default Configurations
 DEFAULT_LANGUAGE_ISO = 'eng'
 DEFAULT_COUNTRY_ISO = "PH"
+UIN_LENGTH = 12
 VERSION = "1.2.1"
 
 # Config Files

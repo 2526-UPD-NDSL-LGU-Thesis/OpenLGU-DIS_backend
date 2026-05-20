@@ -3,6 +3,7 @@ Django model for Resident database.
 """
 
 from django.db import models, IntegrityError, transaction
+from django.conf import settings
 import uuid
 import os
 
@@ -67,7 +68,7 @@ class Resident(models.Model):
     def save(self, *args, **kwargs) -> None :
         if not self.uin:
             for _ in range(10):
-                self.uin = generate_uid(10)
+                self.uin = generate_uid(settings.UIN_LENGTH)
                 try:
                     with transaction.atomic():
                         return super().save(*args, **kwargs)
