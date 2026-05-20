@@ -219,8 +219,10 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'uploads')
 
 # Default Configurations
 DEFAULT_LANGUAGE_ISO = 'eng'
-VERSION = 1.0
+DEFAULT_COUNTRY_ISO = "PH"
+VERSION = "1.2.1"
 
 # Config Files
 # CONFIG_MOSIP_SETTINGS = r'./mosip/mosip_config.toml'
 CONFIG_MOSIP_SETTINGS = r'./mosip/piidtl_config.toml'
+LANDMARKER_MODEL = r'./qr_manager/models/face_landmarker.task'
