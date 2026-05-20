@@ -12,12 +12,15 @@ from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
+from PIL import Image
+from io import BytesIO
 import base64
 
 from residents.models import Resident
 from qr_manager.utils import read_qr, generate_qr
 
 from .models import Resident, Sector
+from .generator import generate_uid
 from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
 from .exceptions import DRFErrors
 
@@ -82,21 +85,21 @@ class ResidentViewSet(mixins.CreateModelMixin,
     
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        data = request.data.get("id_details")
+        data = {
+            **request.POST.dict(),
+            **request.FILES.dict()
+        }
 
-        try:
-            resident = Resident.objects.create(
-                pcn=data["pcn"],
-                # proof_of_residence=request.FILES.get("proof_of_residence"),
-                # profile_image=request.FILES.get("profile_image"),
-            )
-            data["uin"] = resident.uin
-        except Exception as err:
-            return Response(
-                { "details" : f"Encountered an error registering Resident: {err}" },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        while True:
+            temporary_uin = generate_uid()
+            if not Resident.objects.filter(uin=temporary_uin).exists():
+                break
+        data["uin"] = temporary_uin
+        
+        face_image = data.get("profile_image")
+        if face_image:
+            data["face_image"] = base64.b64encode(face_image.read()).decode()
+        
         try:
             image = generate_qr(**data)
             image_str = _to_base64_image(image)
@@ -106,6 +109,22 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        try:
+            resident = Resident.objects.create(
+                pcn=data.get("pcn"),
+                uin=temporary_uin,
+                proof_of_residence=data.get("proof_of_residence"),
+                profile_image=data.get("profile_image"),
+            )
+            data["uin"] = resident.uin
+        except Exception as err:
+            return Response(
+                { "details" : f"Encountered an error registering Resident: {err}" },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        data.pop("proof_of_residence")
+        data.pop("profile_image")
         return Response(
             {
                 "id_details" : data,
@@ -262,4 +281,3 @@ class SectorViewset(viewsets.ModelViewSet):
         obj = get_object_or_404(queryset, pk=self.kwargs["pk"])
         self.check_object_permissions(self.request, obj)
         return obj
-    

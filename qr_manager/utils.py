@@ -137,15 +137,17 @@ def crop_face_image_by_landmarks(landmarker, image_bytes : bytes,
     return buffer.getvalue()
 
 
-def process_image(image_bytes : bytes) -> bytes :
+def process_image(image_bytes : str) -> bytes :
     """Process image for QR code embedding.
 
     Args:
-        image_bytes (bytes): Face image bytes.
+        image_bytes (str): Face image bytes in str.
 
     Returns:
         bytes: Processed face image in WEBP bytes.
     """
+    image_bytes = base64.b64decode(image_bytes)
+
     try:
         landmarker = mp_landmarker.get_detector()
         image_bytes = crop_face_image_by_landmarks(landmarker, image_bytes)
@@ -268,7 +270,7 @@ def generate_qr(version : str = settings.VERSION, language : str = settings.DEFA
         bytes: QR code image in raw bytes.
     """
     required_headers = [
-        "pcn", "version", "date_of_birth", "address", "face_image", "uin"
+        "pcn", "date_of_birth", "address", "face_image", "uin"
     ]
 
     name_headers = [
@@ -304,13 +306,19 @@ def generate_qr(version : str = settings.VERSION, language : str = settings.DEFA
         9  : (
             1 if kwargs.get("gender") == "Male"
             else 2 if kwargs.get("gender") == "Female"
-            else 3
+            else 3 if kwargs.get("gender") == "Others"
+            else None
         ),
         10 : kwargs.get("address"),
         11 : kwargs.get("email_id"),
         12 : kwargs.get("phone_number"),
         13 : kwargs.get("nationality"),
-        14 : kwargs.get("marital_status"),
+        14 : (
+            1 if kwargs.get("marital_status") == "Unmarried"
+            else 2 if kwargs.get("marital_status") == "Married"
+            else 3 if kwargs.get("marital_status") == "Divorced"
+            else None
+        ),
         # 15 : kwargs.get("guardian"),
         # 16 : image depreciated
         # 17 : image type depreciated
