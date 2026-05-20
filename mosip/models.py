@@ -27,7 +27,8 @@ from .authenticator import MOSIPAuthManager
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
-    
+
+
 manager = MOSIPAuthManager()
 
 

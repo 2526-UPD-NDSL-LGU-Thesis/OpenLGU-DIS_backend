@@ -34,7 +34,7 @@ class QRDetails:
     pcn : Optional[str] = None
     uin : Optional[str] = None
     egov_digital_id : Optional[str] = None
-    
+
     version : Optional[str] = None
     language : Optional[str] = None
 

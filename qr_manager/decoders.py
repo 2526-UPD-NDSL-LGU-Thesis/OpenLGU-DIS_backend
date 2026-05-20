@@ -383,7 +383,7 @@ def decode_openlgu_qr(qr_code : str) -> Dict :
     # binary_image = None
     # binary_image_format = None
     best_fingers = None
-    # fuln_lame_secondary = None
+    # full_name_secondary = None
     # language_secondary = None
     # location_code = None
     # legal_status = None
@@ -405,7 +405,7 @@ def decode_openlgu_qr(qr_code : str) -> Dict :
     # right_palm_print = None
     # left_palm_print = None
     # voice = None
-    # 66 - 74 : For future - For Biometrics Data attributes\
+    # 66 - 74 : For future - For Biometrics Data attributes
     # 75 - 99 : For future - For any other data
     uin = None
     
@@ -518,7 +518,7 @@ def decode_openlgu_qr(qr_code : str) -> Dict :
             best_fingers = token_claim169.get(18)
             used_claim169_keys.add(18)
 
-            # fuln_lame_secondary = token_claim169.get(19)
+            # full_name_secondary = token_claim169.get(19)
             # used_claim169_keys.add(19)
 
             #TODO: perform ISO 639-3 languange code check
