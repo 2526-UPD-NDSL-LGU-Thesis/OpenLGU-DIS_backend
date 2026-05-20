@@ -38,7 +38,7 @@ class MOSIPAuthManager:
             if self._authenticator:
                 return self._authenticator
             else:
-                raise RuntimeError("Authenticator not initialized.")
+                raise RuntimeError("MOSIP Authenticator failed to initialize.")
         
         try:
             config = Dynaconf(settings_files=[settings.CONFIG_MOSIP_SETTINGS], environments=False)
