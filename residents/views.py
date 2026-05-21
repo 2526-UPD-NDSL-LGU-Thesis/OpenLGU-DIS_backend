@@ -123,11 +123,9 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        data.pop("proof_of_residence")
-        data.pop("profile_image")
         return Response(
             {
-                "id_details" : data,
+                "uin" : data.get("uin"),
                 "qr" : image_str
             }
         )

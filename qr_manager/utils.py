@@ -277,7 +277,11 @@ def generate_qr(version : str = settings.VERSION, language : str = settings.DEFA
         "first_name", "last_name", "middle_name", "suffix_name"
     ]
 
-    missing = [header for header in required_headers if header not in kwargs]
+    missing = [
+        header
+        for header in required_headers
+        if not kwargs.get(header)
+    ]
 
     if not any([
         all(header in kwargs for header in name_headers),
