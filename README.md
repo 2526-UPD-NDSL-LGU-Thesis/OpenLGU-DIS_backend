@@ -22,7 +22,7 @@ pip install -r requirements.txt
 If you encounter an error downloading the zlib library, do these:
 ```bash
 sudo apt update
-sudo apt install zlib1g-dev libzbar0
+sudo apt install zlib1g-dev libzbar0 libgl1
 ```
 Initialize the django project.
 ```bash
