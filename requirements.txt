@@ -13,6 +13,7 @@ numpy
 opencv-python-headless
 pillow
 qrcode
+pycose
 pydantic
 pynacl
 python-stdnum
