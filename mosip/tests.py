@@ -19,13 +19,23 @@ from . import views as mosip_views
 # pylint: disable=trailing-whitespace
 
 
+# sample_data = {
+#     "name": [{
+#         "language": "eng",
+#         "value": "James Rodrigious"  
+#     }],
+#     "dob": "1992/04/29",
+#     "individual_id": "2047631038",
+#     "individual_id_type": "UIN",
+# }
+
 sample_data = {
-    "name": [{
-        "language": "eng",
-        "value": "James Rodrigious"  
+    "name" : [{
+        "language" : "eng",
+        "value" : "Mañuel Luis y Molina Quezon"
     }],
-    "dob": "1992/04/29",
-    "individual_id": "2047631038",
+    "dob" : "1878/08/19",
+    "individual_id": "2092578314",
     "individual_id_type": "UIN",
 }
 
@@ -196,6 +206,17 @@ class MOSIPAPITestCase(APITestCase):
     #     response = mosip_views.kyc_via_demographics(request)
 
     #     assert response.status_code==200
+    def test_client_kyc_via_demographics(self):
+        response = self.client.post(
+            "/api/kyc/demo/",
+            {
+                "uid" : sample_data["individual_id"],
+                "name" : sample_data["name"][0]["value"]
+            },
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 200)
 
     # def test_kyc_start_otp(self):
     #     self.client.login(username="testuser", password="password123")
