@@ -261,9 +261,7 @@ def read_qr_image(b64_image : str) -> Dict :
         raise ValueError(f"{err}") from err
 
 
-def generate_qr(version : str = settings.VERSION, language : str = settings.DEFAULT_LANGUAGE_ISO,
-                issuing_country : str = settings.DEFAULT_COUNTRY_ISO,
-                **kwargs) -> bytes :
+def generate_qr(**kwargs) -> bytes :
     """Generate QR code based on MOSIP Claim 169 version 1.2.1.
 
     Returns:
@@ -300,8 +298,8 @@ def generate_qr(version : str = settings.VERSION, language : str = settings.DEFA
 
     claim169 = {
         1  : kwargs.get("pcn"),
-        2  : kwargs.get("version", version),
-        3  : kwargs.get("language", language),
+        2  : kwargs.get("version", settings.VERSION),
+        3  : kwargs.get("language", settings.DEFAULT_LANGUAGE_ISO),
         4  : kwargs.get("full_name"),
         5  : kwargs.get("first_name"),
         6  : kwargs.get("middle_name"),
@@ -331,7 +329,7 @@ def generate_qr(version : str = settings.VERSION, language : str = settings.DEFA
         # 20 : kwargs.get("language_secondary"),
         # 21 : kwargs.get("location_code"),
         # 22 : kwargs.get("legal_status"),
-        23 : kwargs.get("issuing_country", issuing_country),
+        23 : kwargs.get("issuing_country", settings.DEFAULT_COUNTRY_ISO),
         # 24-49 : For future - For Demographic Data attributes
         50 : kwargs.get("right_thumb"),
         51 : kwargs.get("right_pointer_finger"),
