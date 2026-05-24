@@ -19,10 +19,10 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
-If you encounter an error downloading the zlib library, do these:
+Install these system libraries:
 ```bash
 sudo apt update
-sudo apt install zlib1g-dev libzbar0 libgl1
+sudo apt install zlib1g-dev libzbar0 libgl1 libgles2-mesa-dev
 ```
 Initialize the django project.
 ```bash
