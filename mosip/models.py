@@ -246,7 +246,6 @@ class MOSIPUser(BaseModel):
         
         return cls(**mosip_user)
     
-    @property
     def flatten(self) -> Dict[str, str | None] :
         """Flatten User model for Claim169 QR generation."""
         data = self.model_dump()
