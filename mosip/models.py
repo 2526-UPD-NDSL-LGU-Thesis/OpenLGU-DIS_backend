@@ -254,7 +254,7 @@ class MOSIPUser(BaseModel):
             "full_name" : data.get("name", {}).get(settings.DEFAULT_LANGUAGE_ISO),
             "gender" : data.get("gender", {}).get(settings.DEFAULT_LANGUAGE_ISO),
             "date_of_birth" : data.get("dob"),
-            "address" : "\n".join(
+            "address" : ", ".join(
                 filter(None, [
                     data.get("location1", {}).get(settings.DEFAULT_LANGUAGE_ISO),
                     data.get("location2", {}).get(settings.DEFAULT_LANGUAGE_ISO),
