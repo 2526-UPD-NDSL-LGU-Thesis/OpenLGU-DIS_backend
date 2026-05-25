@@ -18,6 +18,7 @@ import base64
 
 from residents.models import Resident
 from qr_manager.utils import read_qr, generate_qr
+from mosip.models import MOSIPKYCResponse
 
 from .models import Resident, Sector
 from .generator import generate_uid
@@ -90,16 +91,54 @@ class ResidentViewSet(mixins.CreateModelMixin,
             **request.FILES.dict()
         }
 
+        # Fetch user details from MOSIP
+        uid = data.get("pcn")
+        name = data.get("full_name")
+        dob = data.get("date_of_birth")
+        gender = data.get("gender")
+        demographics = {
+            "uid" : uid,
+            "name" : name,
+            "dob" :  dob,
+            "gender" : gender,
+        }
+        required_fields = [
+            key for key, value in demographics.items()
+            if value is None
+        ]
+        if required_fields:
+            return Response(
+                {
+                    "error"   : DRFErrors.FormMissingValue,
+                    "details" : f"Missing values for: {', '.join(required_fields)}"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        mosip_response = MOSIPKYCResponse.from_demographics(uid=uid, name=name, dob=dob,
+                                                            gender=gender)
+
+        if mosip_response.errors:
+            return Response(
+                {
+                    "error" : DRFErrors.MOSIPAuthFailed,
+                    "details" : mosip_response.error_messages
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Generate temporary UIN
         while True:
             temporary_uin = generate_uid()
             if not Resident.objects.filter(uin=temporary_uin).exists():
                 break
         data["uin"] = temporary_uin
         
+        # Create a response-safe image
         face_image = data.get("profile_image")
         if face_image:
             data["face_image"] = base64.b64encode(face_image.read()).decode()
         
+        # Create QR
         try:
             image = generate_qr(**data)
             image_str = _to_base64_image(image)
@@ -109,6 +148,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        # Register Resident
         try:
             resident = Resident.objects.create(
                 pcn=data.get("pcn"),
@@ -158,7 +198,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         except Exception as err:
             return Response(
                 {
-                    "errpr" : DRFErrors.QRReaderFailed,
+                    "error" : DRFErrors.QRReaderFailed,
                     "details"   : f"Failed to read QR: {err}"
                 },
                 status=status.HTTP_400_BAD_REQUEST

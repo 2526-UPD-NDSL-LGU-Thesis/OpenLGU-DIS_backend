@@ -11,5 +11,7 @@ from enum import auto
 
 
 class DRFErrors(StrEnum):
-    InvalidPOSTBody        = auto()
-    QRReaderFailed         = auto()
+    InvalidPOSTBody          = auto()
+    QRReaderFailed           = auto()
+    MOSIPAuthFailed          = auto()
+    FormMissingValue         = auto()
