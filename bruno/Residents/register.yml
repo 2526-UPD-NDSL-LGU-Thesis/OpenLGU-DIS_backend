@@ -11,33 +11,31 @@ http:
     data:
       - name: pcn
         type: text
-        value: "2137026980"
+        value: ""
       - name: full_name
         type: text
-        value: Lilyana Azucena dela Cruz
+        value: ""
       - name: date_of_birth
         type: text
-        value: 2000-01-01
+        value: ""
       - name: gender
         type: text
-        value: Female
+        value: ""
       - name: address
         type: text
-        value: 1101 Diliman, Quezon City, Philippines
+        value: ""
       - name: email_id
         type: text
-        value: llconanan@up.edu.ph
+        value: ""
       - name: phone_number
         type: text
-        value: "+639455583012"
+        value: ""
       - name: profile_image
-        type: file
-        value: &a1
-          - C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\citizen_1.jpg
+        type: text
+        value: ""
       - name: proof_of_residence
-        type: file
-        value: &a2
-          - C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\proof.pdf
+        type: text
+        value: ""
   auth: inherit
 
 settings:
@@ -76,11 +74,11 @@ examples:
             type: text
             value: "+639455583012"
           - name: profile_image
-            type: file
-            value: *a1
+            type: text
+            value: ""
           - name: proof_of_residence
-            type: file
-            value: *a2
+            type: text
+            value: ""
     response:
       status: 200
       statusText: OK
