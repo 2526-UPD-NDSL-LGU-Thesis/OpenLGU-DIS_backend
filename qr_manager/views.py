@@ -42,12 +42,13 @@ def decrypt_qr(request : HttpRequest) -> Response :
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    uin = payload.get("uin")
     if type == QRTypes.OpenLGUQR:
-        if not Resident.objects.filter(uin=payload["uin"]).exists():
+        if not Resident.objects.filter(uin=uin).exists():
             return Response(
                 {
                     "error"   : DRFErrors.DjangoUserDoesNotExist,
-                    "details" : f"User {payload["uin"]} does not exist." 
+                    "details" : f"User {uin} does not exist." 
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
@@ -67,19 +68,20 @@ def decrypt_qr(request : HttpRequest) -> Response :
 def decrypt_qr_image(request : HttpRequest) -> Response :
     data = request.data
     
-    try:
-        image_str = data.pop("qr")
-    except KeyError:
+    
+    image_str = data.get("qr")
+    if not image_str:
         return Response(
             {
                 "error" : DRFErrors.InvalidPOSTBody,
-                "details" : "Expected qr, got None instead."
+                "details" : "Expected 'qr', got None instead."
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+        
 
     try:
-        type, payload = read_qr_image(image_str).values()
+        qr_type, payload = read_qr_image(image_str).values()
     except Exception as err:
         return Response(
             {
@@ -89,19 +91,28 @@ def decrypt_qr_image(request : HttpRequest) -> Response :
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    if type == QRTypes.OpenLGUQR:
-        if not Resident.objects.filter(uin=payload[169][75]).exists():
-            return Response(
-                {
-                    "error"   : DRFErrors.DjangoUserDoesNotExist,
-                    "details" : f"User {payload[169][75]} does not exist." 
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    if qr_type != QRTypes.OpenLGUQR:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : f"Expected {QRTypes.OpenLGUQR}, got {qr_type} instead."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
     
+    uin = payload.get("uin")
+    if not Resident.objects.filter(uin=uin).exists():
+        return Response(
+            {
+                "error"   : DRFErrors.ResidentDoesNotExist,
+                "details" : f"User {uin} does not exist." 
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     return Response(
-        { 
-            "qr_type"    : type, 
+        {
+            "qr_type"    : qr_type, 
             "id_details" : payload
         },
         status=status.HTTP_200_OK

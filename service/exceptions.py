@@ -1,5 +1,5 @@
 """
-Exception definitions for QR Manager.
+Exception definitions for Service.
 """
 
 
@@ -16,4 +16,6 @@ class DRFErrors(StrEnum):
     InvalidQRType          = auto()
     QRVerificationFailed   = auto()
     ResidentDoesNotExist   = auto()
-    UnsupportedQRCode      = auto()
+    ServiceDoesNotExist    = auto()
+    MOSIPMissingValues     = auto()
+    MOSIPAuthFailed        = auto()

@@ -10,6 +10,8 @@ from .models import Service, Claim, Assignment
 from .models import Group as AssignmentGroup
 from .permissions import HasServiceClaimRole
 from .serializers import ServiceSerializer, ClaimSerializer, GroupSerializer
+from .exceptions import DRFErrors
+from mosip.models import MOSIPAuthResponse
 from residents.models import Resident
 from qr_manager import read_qr, QRTypes
 
@@ -102,19 +104,34 @@ class ServiceGroupViewSet(viewsets.ModelViewSet):
 @permission_classes([HasServiceClaimRole])
 def claim_service(request : HttpRequest, service_id : str) -> Response :
     data = request.data
-    b45_qr = data.pop("qr")
+
+    b45_qr = data.get("qr")
+    if not b45_qr:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected 'qr', got None instead."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     try:
-        type, payload = read_qr(b45_qr).values()
+        qr_type, payload = read_qr(b45_qr).values()
     except Exception as err:
         return Response(
-            { "error" : f"Failed to read QR: {err}" },
+            {
+                "error"   : DRFErrors.QRVerificationFailed,
+                "details" : str(err)
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    if type != QRTypes.OpenLGUQR:
+    if qr_type != QRTypes.OpenLGUQR:
         return Response(
-            { "error" : f"Invalid QR Type. Expected {QRTypes.OpenLGUQR}, got {type}." },
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : f"Expected {QRTypes.OpenLGUQR}, got {qr_type} instead."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -122,16 +139,22 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
         service = Service.objects.get(id=service_id)
     except Service.DoesNotExist:
         return Response(
-            { "error" : "Service does not exist" },
+            {
+                "error"   : DRFErrors.ServiceDoesNotExist, 
+                "details" : f"Service {service_id} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user_uin = payload[169][75]
+    uin = payload.get("uin")
     try:
-        resident = Resident.objects.get(uin=user_uin)
+        resident = Resident.objects.get(uin=uin)
     except Resident.DoesNotExist:
         return Response(
-            { "error" : "User does not exist" },
+            {
+                "errors"  : DRFErrors.ResidentDoesNotExist,
+                "details" : f"User {uin} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
@@ -159,38 +182,101 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
 @permission_classes([HasServiceClaimRole])
 def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response :
     data = request.data
-    b45_qr = data.pop("qr")
-
-    type, payload = read_qr(b45_qr).values()
+    
+    b45_qr = data.get("qr")
+    if not b45_qr:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected 'qr', got None instead."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     try:
-        type, payload = read_qr(b45_qr).values()
+        qr_type, payload = read_qr(b45_qr).values()
     except Exception as err:
         return Response(
-            { "error" : f"Failed to read QR: {err}" },
+            {
+                "error"   : DRFErrors.QRVerificationFailed,
+                "details" : str(err)
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    if type != QRTypes.PhilSysTemporaryQR:
+    if qr_type == QRTypes.OpenLGUQR:
         return Response(
-            { "error" : f"Invalid QR Type. Expected {QRTypes.PhilSysTemporaryQR}, got {type}." },
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : f"Expected a PhilSys or eGovPH QR code, got {QRTypes.OpenLGUQR} \
+                    instead."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
 
     try:
-        service = Service.objects.get(name=service_id)
+        service = Service.objects.get(id=service_id)
     except Service.DoesNotExist:
         return Response(
-            { "error" : "Service does not exist" },
+            {
+                "error"   : DRFErrors.ServiceDoesNotExist, 
+                "details" : f"Service {service_id} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user_pcn = payload[169]["sb"]["PCN"]
+    uid = payload.get("pcn")
+    name = payload.get("full_name")
+    dob = payload.get("date_of_birth")
+    gender = payload.get("gender")
+    demographics = {
+        "uid" : uid,
+        "name" : name,
+        "dob" :  dob,
+        "gender" : gender,
+    }
+    required_fields = [
+        key for key, value in demographics.items()
+        if value is None
+    ]
+    if required_fields:
+        return Response(
+            {
+                "error"   : DRFErrors.MOSIPMissingValues,
+                "details" : f"QR code is missing the required values for KYC: \
+                    {', '.join(required_fields)}"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    mosip_response = MOSIPAuthResponse.from_demographics(uid=uid, name=name, dob=dob,
+                                                        gender=gender)
+
+    if mosip_response.errors:
+        return Response(
+            {
+                "error"   : DRFErrors.MOSIPAuthFailed,
+                "details" : mosip_response.error_messages
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not mosip_response.response.status:
+        return Response(
+            {
+                "error"   : DRFErrors.MOSIPAuthFailed,
+                "details" : "MOSIP Authentication failed."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
-        resident = Resident.objects.get(pcn=user_pcn)
+        resident = Resident.objects.get(pcn=pcn)
     except Resident.DoesNotExist:
         return Response(
-            { "error" : "User does not exist" },
+            {
+                "errors"  : DRFErrors.ResidentDoesNotExist,
+                "details" : f"User {pcn} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
