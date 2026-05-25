@@ -251,15 +251,15 @@ class MOSIPUser(BaseModel):
         data = self.model_dump()
         
         return {
-            "full_name" : data.get("name", {}).get(settings.DEFAULT_LANGUAGE_IS),
-            "gender" : data.get("gender", {}).get(settings.DEFAULT_LANGUAGE_IS),
+            "full_name" : data.get("name", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+            "gender" : data.get("gender", {}).get(settings.DEFAULT_LANGUAGE_ISO),
             "date_of_birth" : data.get("dob"),
             "address" : "\n".join(
                 filter(None, [
-                    data.get("location1", {}).get(settings.DEFAULT_LANGUAGE_IS),
-                    data.get("location2", {}).get(settings.DEFAULT_LANGUAGE_IS),
-                    data.get("location3", {}).get(settings.DEFAULT_LANGUAGE_IS),
-                    data.get("zone", {}).get(settings.DEFAULT_LANGUAGE_IS),
+                    data.get("location1", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("location2", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("location3", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("zone", {}).get(settings.DEFAULT_LANGUAGE_ISO),
                     data.get("postalCode"),
                 ])
             ),
