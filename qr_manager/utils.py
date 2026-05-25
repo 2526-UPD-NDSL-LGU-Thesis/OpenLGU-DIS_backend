@@ -291,7 +291,6 @@ def generate_qr(**kwargs) -> bytes :
         raise ValueError(f"Missing required headers: {', '.join(missing)}")
 
     face_image = kwargs.get("face_image")
-    face_str = None
     face_bytes = b''
     if not face_image is None:
         face_bytes = process_image(face_image)
