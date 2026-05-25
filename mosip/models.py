@@ -245,61 +245,29 @@ class MOSIPUser(BaseModel):
                     mosip_user[key] = value
         
         return cls(**mosip_user)
-
-    @property
-    def info(self) -> Dict[str, str | int] :
-        """
-        User's demographic information without the face data.
-        """
-
-        return {
-            key: value for key, value in self.__dict__.items()
-            if key != "face"
-        }
     
     @property
-    def to_claim169(self) -> Dict[int, Any] :
-        default_lang = settings.DEFAULT_LANGUAGE_ISO
-        claim169 = {
-            1 : self.uid,
-            2 : settings.VERSION,
-            3 : default_lang,
-            4 : self.name[default_lang],
-            # TODO: Is there a way to know the first/middle/last name from full name?
-            # 5 : first name
-            # 6 : middle name
-            # 7 : last name
-            8 : self.dob,
-            9 : self.gender[default_lang],
-            10 : self.location1[default_lang],
-            11 : self.email,
-            12 : self.phone,
-            # 13 : nationality (unsupported)
-            # 14 : marital status (unsupported)
-            # 15 : guardian (unsupported)
-            # 16 : (depreciated)
-            # 17 : (depreciated)
-            # 18 : best quality fingers (unsupported)
-            # 19 : full name in secondary language (unsupported)
-            # 20 : secondary language (unsupported)
-            # 21 : location code (unsupported)
-            # 22 : legal status (unsupported)
-            # 23 : country of issuance (unsupported)
-            # 24 - 49 : unassigned
-            # 50 - 59 : finger biometrics
-            # 60 : Right Iris
-            # 61 : Left Iris
-            62 : self.face,
-            # 63 - 64 : Palm Print
-            # 65 : Voice
-            # 66 - 74 : for future biometrics
-            # 75 - 99 : for future data
-            # 75 : local UIN
-            # 76 : sectors
+    def flatten(self) -> Dict[str, str | None] :
+        """Flatten User model for Claim169 QR generation."""
+        data = self.model_dump()
+        
+        return {
+            "full_name" : data.get("name", {}).get(settings.DEFAULT_LANGUAGE_IS),
+            "gender" : data.get("gender", {}).get(settings.DEFAULT_LANGUAGE_IS),
+            "date_of_birth" : data.get("dob"),
+            "address" : "\n".join(
+                filter(None, [
+                    data.get("location1", {}).get(settings.DEFAULT_LANGUAGE_IS),
+                    data.get("location2", {}).get(settings.DEFAULT_LANGUAGE_IS),
+                    data.get("location3", {}).get(settings.DEFAULT_LANGUAGE_IS),
+                    data.get("zone", {}).get(settings.DEFAULT_LANGUAGE_IS),
+                    data.get("postalCode"),
+                ])
+            ),
+            "phone_number" : data.get("phone"),
+            "email_id" : data.get("email"),
+            "face_image" : data.get("face")
         }
-
-        return claim169
-
 
 class MOSIPResponseError(BaseModel):
     """Errors encounted during MOSIP authentication process.
