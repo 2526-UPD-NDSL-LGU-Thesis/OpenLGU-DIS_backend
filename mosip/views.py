@@ -83,6 +83,12 @@ def kyc_via_demographics(request : HttpRequest) -> Response :
         **data
     )
 
+    if mosip_response.errors:
+        return Response(
+            { "errors" : mosip_response.error_messages },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     return Response(
         mosip_response.user.flatten(),
         status=status.HTTP_200_OK
