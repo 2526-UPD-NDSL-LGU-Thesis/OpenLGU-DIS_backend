@@ -1,15 +1,39 @@
+"""
+Serializers for Service models.
+"""
+
+# pylint: disable=trailing-whitespace
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
+
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group as BaseGroup
 
-from residents.models import Resident
+from residents.models import Resident, Sector
 from .models import Service, Claim, Group, Assignment
 
 
+class ServiceSectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sector
+        fields = ["name"]
+
+
+class ServiceGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseGroup
+        fields = ["name"]
+
+
 class ServiceSerializer(serializers.ModelSerializer):
+    recipient_sectors = ServiceSectorSerializer(many=True, read_only=True)
+    allowed_groups = ServiceGroupSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Service
         fields = "__all__"
-#TODO: Sector Serializer and Groups Serializer
 
 
 class ClaimUserSerializer(serializers.ModelSerializer):
@@ -24,14 +48,20 @@ class ClaimOfficialSerializer(serializers.ModelSerializer):
         fields = ["username", "first_name", "last_name"]
 
 
+class ClaimServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ["id", "name", "description"]
+
+
 class ClaimSerializer(serializers.ModelSerializer):
     user = ClaimUserSerializer(read_only=True)
     claimed_by = ClaimOfficialSerializer(read_only=True)
+    service = ClaimServiceSerializer(read_only=True)
 
     class Meta:
         model = Claim
         exclude = ["id"]
-#TODO: Service
 
 
 class GroupSerializer(serializers.ModelSerializer):
