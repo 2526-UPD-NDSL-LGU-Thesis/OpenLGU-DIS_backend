@@ -153,12 +153,19 @@ def _to_demographic_data(**kwargs) -> DemographicsModel:
 
 def decode_face(face_b64 : str) -> str :
     """Decode face image bytes from MOSIP response body to Base64 string."""
-    face_bytes = base64.b64decode(face_b64)[73:]
-    face_img = Image.open(BytesIO(face_bytes))
-    try:
-        face_img.load()
-    except Exception as err:
-        raise MOSIPException("Failed to decode image") from err
+    image_bytes = base64.b64decode(face_b64)
+    face_img = None
+    for offset in range(70, 86):
+        try:
+            face_bytes = image_bytes[offset:]
+            face_img = Image.open(BytesIO(face_bytes))
+            face_img.load()
+            face_img.show()
+            break
+        except Exception:
+            pass
+    if face_img is None:
+        raise MOSIPException("Failed to decode image")
 
     return base64.b64encode(face_bytes).decode("utf-8")
 
