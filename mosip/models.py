@@ -193,11 +193,14 @@ class MOSIPUser(BaseModel):
         MOSIPParsingError: Errors encountered during demographic data cleaning
         MOSIPResponseError: Errors encountered during authentication
     """
-    uid        : Optional[str] = Field(default=None)
     name       : Dict[str, str] = Field(default_factory=dict)
     gender     : Dict[str, str] = Field(default_factory=dict)
     dob        : str
     location1  : Dict[str, str] = Field(default_factory=dict)
+    location2  : Dict[str, str] = Field(default_factory=dict)
+    location3  : Dict[str, str] = Field(default_factory=dict)
+    zone       : Dict[str, str] = Field(default_factory=dict)
+    postalCode : str
     phone      : str
     email      : str
     face       : str
@@ -224,11 +227,20 @@ class MOSIPUser(BaseModel):
                         mosip_user["gender"][key_lang] = value
                     case "location1":
                         mosip_user["location1"][key_lang] = value
+                    case "location2":
+                        mosip_user["location2"][key_lang] = value
+                    case "location3":
+                        mosip_user["location3"][key_lang] = value
+                    case "zone":
+                        mosip_user["zone"][key_lang] = value
                     case _:
                         raise Warning(f"Unsupported parameter: {key_var}")
             except ValueError:
-                if key == "face":
-                    mosip_user["face"] = decode_face(decrypted_response["face"])
+                if key == "face" or key == "photo":
+                    image = decrypted_response.get("face")
+                    if not image:
+                        image = decrypted_response.get("photo")
+                    mosip_user["face"] = decode_face(image)
                 else:
                     mosip_user[key] = value
         
