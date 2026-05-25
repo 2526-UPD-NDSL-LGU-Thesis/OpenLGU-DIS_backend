@@ -346,6 +346,12 @@ class MOSIPBaseResponse(BaseModel):
             return self.response.status
         except NameError:
             return False
+    
+    @property
+    def error_messages(self) -> Optional[List[str]] :
+        if not self.errors:
+            return []
+        return [err.error_message for err in self.errors]
 
     @classmethod
     def from_response(cls, raw_response : Response ) -> Self :
