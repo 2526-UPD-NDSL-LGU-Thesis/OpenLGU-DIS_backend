@@ -61,7 +61,7 @@ def _check_claim169_cwt(qr_code : str) -> bool :
         try:
             raw = zlib.decompress(raw)
         except zlib.error:
-            pass
+            return False
     
         obj = cbor2.loads(raw)
 
@@ -292,9 +292,9 @@ def generate_qr(**kwargs) -> bytes :
 
     face_image = kwargs.get("face_image")
     face_str = None
+    face_bytes = b''
     if not face_image is None:
         face_bytes = process_image(face_image)
-        face_str = _to_base64_image(face_bytes)
 
     claim169 = {
         1  : kwargs.get("pcn"),
@@ -343,7 +343,7 @@ def generate_qr(**kwargs) -> bytes :
         59 : kwargs.get("left_little_finger"),
         60 : kwargs.get("right_iris"),
         61 : kwargs.get("left_iris"),
-        62 : face_str,
+        62 : face_bytes,
         63 : kwargs.get("right_palm_print"),
         64 : kwargs.get("left_palm_print"),
         65 : kwargs.get("voice"),
@@ -352,7 +352,7 @@ def generate_qr(**kwargs) -> bytes :
         75 : kwargs.get("uin")
     }
 
-    cleaned_claim169 = { 
+    cleaned_claim169 = {
         k : v for k, v in claim169.items()
         if v is not None
     }
