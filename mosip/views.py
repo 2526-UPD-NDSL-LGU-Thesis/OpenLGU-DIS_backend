@@ -84,7 +84,7 @@ def kyc_via_demographics(request : HttpRequest) -> Response :
     )
 
     return Response(
-        mosip_response.model_dump(),
+        mosip_response.user.flatten(),
         status=status.HTTP_200_OK
     )
 
