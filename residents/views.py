@@ -91,9 +91,19 @@ class ResidentViewSet(mixins.CreateModelMixin,
             **request.FILES.dict()
         }
 
+        name = data.get("full_name")
+        if not name:
+            first_name = data.get("first_name")
+            middle_name = data.get("middle_name")
+            last_name = data.get("last_name")
+            suffix_name = data.get("suffix_name")
+            name = (
+                f"{first_name} {middle_name} {last_name}" if not suffix_name
+                else f"{first_name} {middle_name} {last_name} {suffix_name}"
+            )
+
         # Fetch user details from MOSIP
         uid = data.get("pcn")
-        name = data.get("full_name")
         dob = data.get("date_of_birth")
         gender = data.get("gender")
         demographics = {
@@ -166,6 +176,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return Response(
             {
                 "uin" : data.get("uin"),
+                "face_img" : mosip_response.user.face,
                 "qr" : image_str
             }
         )
