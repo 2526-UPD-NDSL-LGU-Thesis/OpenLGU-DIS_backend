@@ -150,7 +150,8 @@ class ResidentViewSet(mixins.CreateModelMixin,
         
         # Create QR
         try:
-            image = generate_qr(**data)
+            #TODO: remove face image
+            image, face_img = generate_qr(**data)
             image_str = _to_base64_image(image)
         except Exception as err:
             return Response(
@@ -176,7 +177,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return Response(
             {
                 "uin" : data.get("uin"),
-                "face_img" : mosip_response.user.face,
+                "face_img" : _to_base64_image(face_img),
                 "qr" : image_str
             }
         )

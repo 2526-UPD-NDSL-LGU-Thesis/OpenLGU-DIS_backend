@@ -60,7 +60,7 @@ class Resident(models.Model):
 
     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
-    profile_image = models.ImageField(upload_to=image_upload_to)
+    profile_image = models.ImageField(upload_to=image_upload_to, blank=True, null=True)
 
     def __str__(self) -> str :
         return str(self.uin)
