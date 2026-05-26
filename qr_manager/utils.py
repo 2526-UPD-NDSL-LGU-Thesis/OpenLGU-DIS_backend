@@ -289,6 +289,17 @@ def generate_qr(**kwargs) -> bytes :
 
     if missing:
         raise ValueError(f"Missing required headers: {', '.join(missing)}")
+    
+    full_name = kwargs.get("full_name")
+    if not full_name:
+        first_name = kwargs.get("first_name")
+        middle_name = kwargs.get("middle_name")
+        last_name = kwargs.get("last_name")
+        suffix_name = kwargs.get("suffix_name")
+        full_name = (
+            f"{first_name} {middle_name} {last_name} {suffix_name}" if suffix_name
+            else f"{first_name} {middle_name} {last_name}"
+        )
 
     face_image = kwargs.get("face_image")
     face_bytes = b''
@@ -299,7 +310,7 @@ def generate_qr(**kwargs) -> bytes :
         1  : kwargs.get("pcn"),
         2  : kwargs.get("version", settings.VERSION),
         3  : kwargs.get("language", settings.DEFAULT_LANGUAGE_ISO),
-        4  : kwargs.get("full_name"),
+        4  : full_name,
         5  : kwargs.get("first_name"),
         6  : kwargs.get("middle_name"),
         7  : kwargs.get("last_name"),
