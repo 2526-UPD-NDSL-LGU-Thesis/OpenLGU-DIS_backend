@@ -390,5 +390,4 @@ def generate_qr(**kwargs) -> bytes :
     image.save(buffer, format="PNG")
     image_bytes = buffer.getvalue()
 
-    #TODO: remove face image
-    return image_bytes, face_bytes
+    return image_bytes

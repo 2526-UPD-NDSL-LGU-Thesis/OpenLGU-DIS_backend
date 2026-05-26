@@ -225,49 +225,49 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    uid = payload.get("pcn")
-    name = payload.get("full_name")
-    dob = payload.get("date_of_birth")
-    gender = payload.get("gender")
-    demographics = {
-        "uid" : uid,
-        "name" : name,
-        "dob" :  dob,
-        "gender" : gender,
-    }
-    required_fields = [
-        key for key, value in demographics.items()
-        if value is None
-    ]
-    if required_fields:
-        return Response(
-            {
-                "error"   : DRFErrors.MOSIPMissingValues,
-                "details" : f"QR code is missing the required values for KYC: \
-                    {', '.join(required_fields)}"
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    mosip_response = MOSIPAuthResponse.from_demographics(uid=uid, name=name, dob=dob,
-                                                        gender=gender)
+    # uid = payload.get("pcn")
+    # name = payload.get("full_name")
+    # dob = payload.get("date_of_birth")
+    # gender = payload.get("gender")
+    # demographics = {
+    #     "uid" : uid,
+    #     "name" : name,
+    #     "dob" :  dob,
+    #     "gender" : gender,
+    # }
+    # required_fields = [
+    #     key for key, value in demographics.items()
+    #     if value is None
+    # ]
+    # if required_fields:
+    #     return Response(
+    #         {
+    #             "error"   : DRFErrors.MOSIPMissingValues,
+    #             "details" : f"QR code is missing the required values for KYC: \
+    #                 {', '.join(required_fields)}"
+    #         },
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
+    # mosip_response = MOSIPAuthResponse.from_demographics(uid=uid, name=name, dob=dob,
+    #                                                     gender=gender)
 
-    if mosip_response.errors:
-        return Response(
-            {
-                "error"   : DRFErrors.MOSIPAuthFailed,
-                "details" : mosip_response.error_messages
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    # if mosip_response.errors:
+    #     return Response(
+    #         {
+    #             "error"   : DRFErrors.MOSIPAuthFailed,
+    #             "details" : mosip_response.error_messages
+    #         },
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
 
-    if not mosip_response.response.status:
-        return Response(
-            {
-                "error"   : DRFErrors.MOSIPAuthFailed,
-                "details" : "MOSIP Authentication failed."
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    # if not mosip_response.response.status:
+    #     return Response(
+    #         {
+    #             "error"   : DRFErrors.MOSIPAuthFailed,
+    #             "details" : "MOSIP Authentication failed."
+    #         },
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
 
     try:
         resident = Resident.objects.get(pcn=pcn)

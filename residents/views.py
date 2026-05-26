@@ -103,38 +103,38 @@ class ResidentViewSet(mixins.CreateModelMixin,
             )
 
         # Fetch user details from MOSIP
-        uid = data.get("pcn")
-        dob = data.get("date_of_birth")
-        gender = data.get("gender")
-        demographics = {
-            "uid" : uid,
-            "name" : name,
-            "dob" :  dob,
-            "gender" : gender,
-        }
-        required_fields = [
-            key for key, value in demographics.items()
-            if value is None
-        ]
-        if required_fields:
-            return Response(
-                {
-                    "error"   : DRFErrors.FormMissingValue,
-                    "details" : f"Missing values for: {', '.join(required_fields)}"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        mosip_response = MOSIPKYCResponse.from_demographics(uid=uid, name=name, dob=dob,
-                                                            gender=gender)
+        # uid = data.get("pcn")
+        # dob = data.get("date_of_birth")
+        # gender = data.get("gender")
+        # demographics = {
+        #     "uid" : uid,
+        #     "name" : name,
+        #     "dob" :  dob,
+        #     "gender" : gender,
+        # }
+        # required_fields = [
+        #     key for key, value in demographics.items()
+        #     if value is None
+        # ]
+        # if required_fields:
+        #     return Response(
+        #         {
+        #             "error"   : DRFErrors.FormMissingValue,
+        #             "details" : f"Missing values for: {', '.join(required_fields)}"
+        #         },
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        # mosip_response = MOSIPKYCResponse.from_demographics(uid=uid, name=name, dob=dob,
+        #                                                     gender=gender)
 
-        if mosip_response.errors:
-            return Response(
-                {
-                    "error" : DRFErrors.MOSIPAuthFailed,
-                    "details" : mosip_response.error_messages
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # if mosip_response.errors:
+        #     return Response(
+        #         {
+        #             "error" : DRFErrors.MOSIPAuthFailed,
+        #             "details" : mosip_response.error_messages
+        #         },
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
 
         # Generate temporary UIN
         while True:
@@ -150,8 +150,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         
         # Create QR
         try:
-            #TODO: remove face image
-            image, face_img = generate_qr(**data)
+            image = generate_qr(**data)
             image_str = _to_base64_image(image)
         except Exception as err:
             return Response(
@@ -177,7 +176,6 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return Response(
             {
                 "uin" : data.get("uin"),
-                "face_img" : _to_base64_image(face_img),
                 "qr" : image_str
             }
         )
