@@ -13,6 +13,8 @@ from enum import auto
 class DRFErrors(StrEnum):
     InvalidPOSTBody          = auto()
     QRReaderFailed           = auto()
+    QRGenerationFailed       = auto()
     MOSIPAuthFailed          = auto()
     MOSIPConnectionFailed    = auto()
     FormMissingValue         = auto()
+    RegistrationFailed       = auto()

@@ -143,7 +143,10 @@ class ResidentViewSet(mixins.CreateModelMixin,
             image_str = _to_base64_image(image)
         except Exception as err:
             return Response(
-                { "details" : f"Encountered an error generating QR: {err}" },
+                {
+                    "error"   : DRFErrors.QRGenerationFailed,
+                    "details" : f"Encountered an error generating QR: {err}"
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -158,7 +161,10 @@ class ResidentViewSet(mixins.CreateModelMixin,
             data["uin"] = resident.uin
         except Exception as err:
             return Response(
-                { "details" : f"Encountered an error registering Resident: {err}" },
+                {
+                    "error"   : DRFErrors.RegistrationFailed,
+                    "details" : f"Encountered an error registering Resident: {err}"
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -166,7 +172,8 @@ class ResidentViewSet(mixins.CreateModelMixin,
             {
                 "uin" : data.get("uin"),
                 "qr" : image_str
-            }
+            },
+            status=status.HTTP_201_CREATED
         )
     
     @action(detail=False, methods=['GET'], url_path=r"pcn/(?P<pcn>[^/.]+)")
