@@ -160,7 +160,7 @@ def decode_face(face_b64 : str) -> str :
             face_bytes = image_bytes[offset:]
             face_img = Image.open(BytesIO(face_bytes))
             face_img.load()
-            face_img.show()
+            # face_img.show()
             break
         except Exception:
             pass
