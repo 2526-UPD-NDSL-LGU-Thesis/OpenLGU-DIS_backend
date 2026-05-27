@@ -276,7 +276,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        user_uin = payload[169][75]
+        user_uin = payload.get("uin")
         try:
             resident = Resident.objects.get(uin=user_uin)
         except Resident.DoesNotExist:
