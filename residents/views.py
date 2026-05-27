@@ -2,18 +2,14 @@
 Django views for `identity` app.
 '''
 
-from pathlib import Path
 
 from django.contrib.auth.models import User, Group
-from django.core.files import File
 from django.db import transaction
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
-from PIL import Image
-from io import BytesIO
+import requests
 import base64
 
 from residents.models import Resident
@@ -27,7 +23,6 @@ from .exceptions import DRFErrors
 
 
 POR_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\proof.pdf")
-IMG_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\citizen_3_compressed.jpg")
 
 
 def _to_base64_image(image_bytes : bytes) -> str :
@@ -38,7 +33,6 @@ def profile(request, lgu_id=None) -> HttpResponse :
     '''Render profile page.'''
     context = {}
     if lgu_id:
-        context['lgu_id'] = lgu_id
     return render(request, "profile.html", context=context)
 
 def register(request) -> HttpResponse :
