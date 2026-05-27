@@ -2,16 +2,13 @@
 Tests for MOSIP app.
 """
 
-import json
 
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
+from django.test import TestCase
 from mosip_auth_sdk.models import DemographicsModel
-from rest_framework.test import APITestCase, APIClient
-from rest_framework.test import APIRequestFactory
-from rest_framework_simplejwt.tokens import RefreshToken
+import requests
 
-from .models import _to_demographic_data
+from .models import MOSIPKYCResponse, MOSIPAuthResponse, _to_demographic_data
+
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
@@ -19,22 +16,22 @@ from .models import _to_demographic_data
 
 
 # sample_data = {
-#     "name": [{
-#         "language": "eng",
-#         "value": "James Rodrigious"  
+#     "name" : [{
+#         "language" : "eng",
+#         "value" : "Mañuel Luis y Molina Quezon"
 #     }],
-#     "dob": "1992/04/29",
-#     "individual_id": "2047631038",
+#     "dob" : "1878/08/19",
+#     "individual_id": "2092578314",
 #     "individual_id_type": "UIN",
 # }
 
 sample_data = {
     "name" : [{
         "language" : "eng",
-        "value" : "Mañuel Luis y Molina Quezon"
+        "value" : "X Æ A-12 Boucher Musk"
     }],
-    "dob" : "1878/08/19",
-    "individual_id": "2092578314",
+    "dob" : "2020/05/01",
+    "individual_id": "2184175105",
     "individual_id_type": "UIN",
 }
 
@@ -68,200 +65,39 @@ class ToDemographicTestCase(TestCase):
             "DemographicsModel Test Incorrect format DOB"
         )
 
-# class MOSIPUserTestCase(TestCase):
-#     def test_mosip_kyc(self):
-#         self.assertEqual(
-#             MOSIPUser
-#         )
 
-def generate_access_token(user):
-    refresh = RefreshToken.for_user(user)
-    return str(refresh.access_token)
-
-
-class MOSIPAPITestCase(APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        self.client = APIClient()
-
-        self.user = User.objects.create_user(
-            username="testuser",
-            password="password123"
+class MOSIPKYCTestCase(TestCase):
+    def test_kyc_via_demographics(self):
+        request = requests.get(
+            "https://api-internal.pdec.mosip.net",
+            timeout=60
         )
 
-        self.access_token = generate_access_token(self.user)
+        self.assertTrue(request.ok,
+                        "Failed to connect to MOSIP Server.")
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {self.access_token}"
+        response = MOSIPKYCResponse.from_demographics(
+            uid=sample_data.get("individual_id"),
+            name=sample_data.get("name", {})[0].get("value"),
+            dob=sample_data.get("dob")
         )
 
-    def test_client_ping(self):
-        response = self.client.get("/api/mosip/ping/")
-        
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.error_messages, [])
+        self.assertTrue(response.user)
     
-    def test_factory_ping(self):
-        self.access_token = generate_access_token(self.user)
-
-        request = self.factory.get(
-            "/api/mosip/ping/",
-            HTTP_AUTHORIZATION=f"Bearer {self.access_token}"
+    def test_auth_via_demographics(self):
+        request = requests.get(
+            "https://api-internal.pdec.mosip.net",
+            timeout=60
         )
 
-        response = mosip_views.ping(request)
-        
-        assert response.status_code==200
-    
-    def test_client_auth_via_demographics(self):
-        response = self.client.post(
-            "/api/auth/demo/",
-            {
-                "uid" : sample_data["individual_id"],
-                "name" : sample_data["name"][0]["value"]
-            },
-            format="json"
+        self.assertTrue(request.ok
+                        "Failed to connect to MOSIP Server.")
+
+        response = MOSIPAuthResponse.from_demographics(
+            uid=sample_data.get("individual_id"),
+            name=sample_data.get("name", {})[0].get("value"),
+            dob=sample_data.get("dob")
         )
 
-        print(response.__dict__)
-
-        self.assertEqual(response.status_code, 200)
-
-    # def test_auth_via_demographics(self):
-    #     request = self.factory.post(
-    #         "/api/auth/demo/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "name" : sample_data["name"][0]["value"]
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.auth_via_demographics(request)
-
-    #     assert response.status_code==200
-    
-    # def test_auth_start_otp(self):
-    #     self.client.login(username="testuser", password="password123")
-    #     request = self.factory.post(
-    #         "/api/auth/otp/start/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "use_phone" : True
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.auth_start_otp(request)
-
-    #     assert response.status_code==200
-
-    # def test_auth_via_otp(self):
-    #     self.client.login(username="testuser", password="password123")
-    #     request = self.factory.post(
-    #         "/api/auth/otp/start/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "use_phone" : True
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.auth_start_otp(request)
-
-    #     assert response.status_code==200
-
-    #     content = json.loads(response.content)
-
-    #     request = self.factory.post(
-    #         "/api/auth/otp/verify/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "txn_id" : content["txn_id"],
-    #             "otp" : "111111"
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.auth_via_otp(request)
-
-    #     assert response.status_code==200
-
-    # def test_kyc_via_demographics(self):
-    #     self.client.login(username="testuser", password="password123")
-    #     request = self.factory.post(
-    #         "/api/kyc/demo/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "name" : sample_data["name"][0]["value"]
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.kyc_via_demographics(request)
-
-    #     assert response.status_code==200
-    def test_client_kyc_via_demographics(self):
-        response = self.client.post(
-            "/api/kyc/demo/",
-            {
-                "uid" : sample_data["individual_id"],
-                "name" : sample_data["name"][0]["value"]
-            },
-            format="json"
-        )
-
-        self.assertEqual(response.status_code, 200)
-
-    # def test_kyc_start_otp(self):
-    #     self.client.login(username="testuser", password="password123")
-    #     request = self.factory.post(
-    #         "/api/kyc/otp/start/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "use_phone" : True
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.kyc_start_otp(request)
-
-    #     assert response.status_code==200
-
-    # def test_kyc_via_otp(self):
-    #     self.client.login(username="testuser", password="password123")
-    #     request = self.factory.post(
-    #         "/api/kyc/otp/start/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "use_phone" : True
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.kyc_start_otp(request)
-
-    #     assert response.status_code==200
-
-    #     content = json.loads(response.content)
-
-    #     request = self.factory.post(
-    #         "/api/kyc/otp/verify/",
-    #         {
-    #             "uid" : sample_data["individual_id"],
-    #             "txn_id" : content["txn_id"],
-    #             "otp" : "111111"
-    #         },
-    #         format="json"
-    #     )
-    #     request.user = self.user
-
-    #     response = mosip_views.kyc_via_otp(request)
-
-    #     assert response.status_code==200
+        self.assertTrue(response.status)
