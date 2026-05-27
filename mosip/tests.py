@@ -91,7 +91,7 @@ class MOSIPKYCTestCase(TestCase):
             timeout=60
         )
 
-        self.assertTrue(request.ok
+        self.assertTrue(request.ok,
                         "Failed to connect to MOSIP Server.")
 
         response = MOSIPAuthResponse.from_demographics(
