@@ -104,6 +104,8 @@ def _to_demographic_data(**kwargs) -> DemographicsModel:
 
     for raw_key, value in kwargs.items():
         key = raw_key.lower()
+        if isinstance(value, str):
+            value = value.strip()
 
         match key:
             case "age":
