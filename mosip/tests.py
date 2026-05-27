@@ -12,7 +12,6 @@ from rest_framework.test import APIRequestFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import _to_demographic_data
-from . import views as mosip_views
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
