@@ -18,33 +18,15 @@ from mosip.models import MOSIPKYCResponse
 
 from .models import Resident, Sector
 from .generator import generate_uid
-from .serializers import UserGroupSerializer, UserSerializer, ResidentSerializer, SectorSerializer
+from .serializers import (
+    UserGroupSerializer, UserSerializer,
+    ResidentSerializer, SectorSerializer
+)
 from .exceptions import DRFErrors
-
-
-POR_FILE = Path(r"C:\Users\J4M3S\Desktop\MOSIP\OpenLGU-DIS_backend\residents\sample\proof.pdf")
 
 
 def _to_base64_image(image_bytes : bytes) -> str :
     return base64.b64encode(image_bytes).decode()
-
-
-def profile(request, lgu_id=None) -> HttpResponse :
-    '''Render profile page.'''
-    context = {}
-    if lgu_id:
-    return render(request, "profile.html", context=context)
-
-def register(request) -> HttpResponse :
-    '''Render register page.'''
-    return render(request, "register.html")
-
-def claim(request) -> HttpResponse :
-    '''Render claim page.'''
-    return render(request, "claim.html")
-
-def auth(request) -> HttpResponse :
-    return render(request, "auth.html")
 
 
 class UserGroupViewSet(viewsets.ReadOnlyModelViewSet):
@@ -95,6 +77,17 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 f"{first_name} {middle_name} {last_name}" if not suffix_name
                 else f"{first_name} {middle_name} {last_name} {suffix_name}"
             )
+        
+        # Check if server is running
+        request = requests.get("https://api-internal.pdec.mosip.net", timeout=60)
+        if not request.ok:
+            return Response(
+                {
+                    "error"   : DRFErrors.MOSIPConnectionFailed,
+                    "details" : "Failed to connect to MOSIP servers."
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
 
         # Fetch user details from MOSIP
         uid = data.get("pcn")
@@ -124,7 +117,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         if mosip_response.errors:
             return Response(
                 {
-                    "error" : DRFErrors.MOSIPAuthFailed,
+                    "error"   : DRFErrors.MOSIPAuthFailed,
                     "details" : mosip_response.error_messages
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -141,6 +134,8 @@ class ResidentViewSet(mixins.CreateModelMixin,
         face_image = data.get("profile_image")
         if face_image:
             data["face_image"] = base64.b64encode(face_image.read()).decode()
+        else:
+            data["face_image"] = mosip_response.user.face
         
         # Create QR
         try:

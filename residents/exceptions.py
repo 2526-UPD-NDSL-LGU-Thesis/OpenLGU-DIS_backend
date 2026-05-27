@@ -14,4 +14,5 @@ class DRFErrors(StrEnum):
     InvalidPOSTBody          = auto()
     QRReaderFailed           = auto()
     MOSIPAuthFailed          = auto()
+    MOSIPConnectionFailed    = auto()
     FormMissingValue         = auto()
