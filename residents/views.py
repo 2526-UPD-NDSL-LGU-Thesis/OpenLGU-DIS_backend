@@ -4,12 +4,12 @@ Django views for `identity` app.
 
 
 from django.contrib.auth.models import User, Group
+from django.core.files.base import ContentFile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
-import requests
 import base64
 
 from residents.models import Resident
@@ -147,7 +147,9 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 pcn=data.get("pcn"),
                 uin=temporary_uin,
                 proof_of_residence=data.get("proof_of_residence"),
-                profile_image=data.get("face_image"),
+                profile_image=ContentFile(
+                    base64.b64decode(data.get("face_image")), name="face_image.png"
+                ),
             )
             data["uin"] = resident.uin
         except Exception as err:
@@ -162,7 +164,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return Response(
             {
                 "uin" : data.get("uin"),
-                "qr" : image_str
+                "qr"  : image_str
             },
             status=status.HTTP_201_CREATED
         )
