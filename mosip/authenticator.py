@@ -44,7 +44,6 @@ class MOSIPAuthManager:
             config = Dynaconf(settings_files=[settings.CONFIG_MOSIP_SETTINGS], environments=False)
             self._authenticator = MOSIPAuthenticator(config=config)
         except Exception as err:
-            print(f"Failed to initialized MOSIPAuthenticator: {err}")
             self._authenticator = None
         self._initialized = True
 
