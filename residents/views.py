@@ -61,8 +61,8 @@ class ResidentViewSet(mixins.CreateModelMixin,
         self.check_object_permissions(self.request, obj)
         return obj
     
-    @transaction.atomic
     @require_mosip()
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         data = {
             **request.POST.dict(),
