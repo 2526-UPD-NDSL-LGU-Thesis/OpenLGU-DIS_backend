@@ -11,6 +11,9 @@ import cbor2
 import json
 import zlib
 
+from mosip.models import MOSIPAuthResponse
+from mosip.decorators import require_mosip
+
 from .main import pycose_verify_message
 from .classes import QRDetails
 
@@ -23,6 +26,7 @@ def _to_base64_image(image_bytes : bytes) -> str :
     return base64.b64encode(image_bytes).decode()
 
 
+@require_mosip()
 def decode_philsys_temporary_qr(qr_code : str) -> Dict :
     # Generate 'None's
     issued_at = None
@@ -118,6 +122,20 @@ def decode_philsys_temporary_qr(qr_code : str) -> Dict :
             place_of_birth = subject_biographic.get("POB")
             used_sb_keys.add("POB")
     
+    # MOSIP Auth
+    full_name = (
+        f"{first_name} {middle_name} {last_name} {suffix_name}" if suffix_name
+        else f"{first_name} {middle_name} {last_name}"
+    )
+    mosip_response = MOSIPAuthResponse.from_demographics(uid=pcn, name=full_name,
+                                                         dob=date_of_birth, gender=gender)
+    
+    if mosip_response.errors:
+        raise ValueError(f"Encountered errors during MOSIP Auth: {mosip_response.errors}")
+
+    if not mosip_response.status:
+        raise ValueError("MOSIP Auth failed.")
+    
     # Getting unused headers
     unused_payload_keys = set(payload.keys()) - used_payload_keys
     unused_claim169_keys = set(token_claim169.keys()) - used_claim169_keys
@@ -153,6 +171,7 @@ def decode_philsys_temporary_qr(qr_code : str) -> Dict :
     return asdict(id_details)
 
 
+@require_mosip()
 def decode_philsys_physical_qr(qr_code : str) -> Dict :
     # Generate 'None's
     best_fingers = None
@@ -214,6 +233,20 @@ def decode_philsys_physical_qr(qr_code : str) -> Dict :
 
         gender = subject.get("sex")
         used_subject_keys.add("sex")
+    
+    # MOSIP Auth
+    full_name = (
+        f"{first_name} {middle_name} {last_name} {suffix_name}" if suffix_name
+        else f"{first_name} {middle_name} {last_name}"
+    )
+    mosip_response = MOSIPAuthResponse.from_demographics(uid=pcn, name=full_name,
+                                                         dob=date_of_birth, gender=gender)
+    
+    if mosip_response.errors:
+        raise ValueError(f"Encountered errors during MOSIP Auth: {mosip_response.errors}")
+
+    if not mosip_response.status:
+        raise ValueError("MOSIP Auth failed.")
     
     # Getting unused headers
     unused_payload_keys = set(payload.keys()) - used_payload_keys
