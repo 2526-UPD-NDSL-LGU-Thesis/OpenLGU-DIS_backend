@@ -7,6 +7,7 @@ from collections import defaultdict
 from datetime import datetime
 from io import BytesIO
 from typing import Self, Dict, List, Optional, Any
+import time
 
 from django.conf import settings
 from iso639 import Lang
@@ -236,7 +237,7 @@ class MOSIPUser(BaseModel):
                     case "zone":
                         mosip_user["zone"][key_lang] = value
                     case _:
-                        raise Warning(f"Unsupported parameter: {key_var}")
+                        raise ValueError(f"Unsupported parameter: {key_var}")
             except ValueError:
                 if key == "face" or key == "photo":
                     image = decrypted_response.get("face")
@@ -344,10 +345,7 @@ class MOSIPBaseResponse(BaseModel):
 
     @property
     def status(self) -> bool :
-        try:
-            return self.response.status
-        except NameError:
-            return False
+        return bool(self.response and self.response.status)
     
     @property
     def error_messages(self) -> Optional[List[str]] :
@@ -387,7 +385,8 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
         return cls.from_response(raw_response)
 
     @classmethod
-    def from_demographics(cls, uid : str, **data) -> Self :
+    def from_demographics(cls, uid : str, retries : int = 3, backoff : float = 1,
+                          **data) -> Self :
         """Performs KYC verification using demographic data.
 
         Args:
@@ -396,19 +395,31 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
         authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
 
-        raw_response = authenticator.kyc(
-            individual_id=uid,
-            individual_id_type="UIN",
-            demographic_data=demographic_data,
-            consent=True
-        )
+        last_error = None
+        for attempt in range(retries + 1):
+            try:
+                raw_response = authenticator.kyc(
+                    individual_id=uid,
+                    individual_id_type="UIN",
+                    demographic_data=demographic_data,
+                    consent=True
+                )
 
-        kyc_response = cls.from_response(raw_response)
+                kyc_response = cls.from_response(raw_response)
 
-        if kyc_response.status:
-            kyc_response.user = MOSIPUser.from_response(raw_response)
+                if kyc_response.status:
+                    kyc_response.user = MOSIPUser.from_response(raw_response)
+                
+                return kyc_response
+            except Exception as err:
+                last_error = err
+
+                if attempt < retries:
+                    time.sleep(backoff * (2 ** attempt))
         
-        return kyc_response
+        raise RuntimeError(
+            "MOSIP KYC via demographics failed after retries."
+        ) from last_error
 
 
 class MOSIPAuthResponse(MOSIPBaseResponse):
@@ -435,7 +446,8 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         return cls.from_response(raw_response)
 
     @classmethod
-    def from_demographics(cls, uid : str, **data) -> Self :
+    def from_demographics(cls, uid : str, retries : int = 3, backoff : float = 1,
+                          **data) -> Self :
         """Performs user authentication using demographic data.
 
         Args:
@@ -444,14 +456,26 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
 
-        raw_response = authenticator.auth(
-            individual_id=uid,
-            individual_id_type="UIN",
-            demographic_data=demographic_data,
-            consent=True
-        )
+        last_error = None
+        for attempt in range(retries + 1):
+            try:
+                raw_response = authenticator.auth(
+                    individual_id=uid,
+                    individual_id_type="UIN",
+                    demographic_data=demographic_data,
+                    consent=True
+                )
 
-        return cls.from_response(raw_response)
+                return cls.from_response(raw_response)
+            except Exception as err:
+                last_error = err
+
+                if attempt < retries:
+                    time.sleep(backoff * (2 ** attempt))
+        
+        raise RuntimeError(
+            "MOSIP Auth via demographics failed after retries."
+        ) from last_error
 
 
 class MOSIPGenOTPResponse(MOSIPBaseResponse):
