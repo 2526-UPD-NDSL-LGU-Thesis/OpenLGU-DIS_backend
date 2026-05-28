@@ -387,8 +387,7 @@ def generate_qr(**kwargs) -> bytes :
     image = qr.make_image(fill_color="black", back_color="white")
 
     buffer = BytesIO()
-    # image.save(buffer, format="WEBP")
-    image.save(buffer, format="JPEG")
+    image.save(buffer, format="WEBP")
     image_bytes = buffer.getvalue()
 
     return image_bytes
