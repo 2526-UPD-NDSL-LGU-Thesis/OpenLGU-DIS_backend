@@ -15,6 +15,7 @@ import base64
 from residents.models import Resident
 from qr_manager.utils import read_qr, generate_qr
 from mosip.models import MOSIPKYCResponse
+from mosip.decorators import require_mosip
 
 from .models import Resident, Sector
 from .generator import generate_uid
@@ -61,6 +62,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         return obj
     
     @transaction.atomic
+    @require_mosip()
     def create(self, request, *args, **kwargs):
         data = {
             **request.POST.dict(),
@@ -79,15 +81,15 @@ class ResidentViewSet(mixins.CreateModelMixin,
             )
         
         # Check if server is running
-        request = requests.get("https://api-internal.pdec.mosip.net", timeout=60)
-        if not request.ok:
-            return Response(
-                {
-                    "error"   : DRFErrors.MOSIPConnectionFailed,
-                    "details" : "Failed to connect to MOSIP servers."
-                },
-                status=status.HTTP_503_SERVICE_UNAVAILABLE
-            )
+        # request = requests.get("https://api-internal.pdec.mosip.net", timeout=60)
+        # if not request.ok:
+        #     return Response(
+        #         {
+        #             "error"   : DRFErrors.MOSIPConnectionFailed,
+        #             "details" : "Failed to connect to MOSIP servers."
+        #         },
+        #         status=status.HTTP_503_SERVICE_UNAVAILABLE
+        #     )
 
         # Fetch user details from MOSIP
         uid = data.get("pcn")

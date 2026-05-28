@@ -6,14 +6,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
+from residents.models import Resident
+from qr_manager import read_qr, QRTypes
+from mosip.models import MOSIPAuthResponse
+from mosip.decorators import require_mosip
+
 from .models import Service, Claim, Assignment
 from .models import Group as AssignmentGroup
 from .permissions import HasServiceClaimRole
 from .serializers import ServiceSerializer, ClaimSerializer, GroupSerializer
 from .exceptions import DRFErrors
-from mosip.models import MOSIPAuthResponse
-from residents.models import Resident
-from qr_manager import read_qr, QRTypes
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
@@ -180,6 +182,7 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
 
 @api_view(["POST"])
 @permission_classes([HasServiceClaimRole])
+@require_mosip()
 def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response :
     data = request.data
     
