@@ -12,7 +12,7 @@ import json
 import zlib
 
 from mosip.models import MOSIPAuthResponse
-from mosip.decorators import require_mosip
+from mosip.decorators import require_mosip_decoders
 
 from .main import pycose_verify_message
 from .classes import QRDetails
@@ -26,6 +26,7 @@ def _to_base64_image(image_bytes : bytes) -> str :
     return base64.b64encode(image_bytes).decode()
 
 
+@require_mosip_decoders()
 def decode_philsys_temporary_qr(qr_code : str) -> Dict :
     # Generate 'None's
     issued_at = None
@@ -170,6 +171,7 @@ def decode_philsys_temporary_qr(qr_code : str) -> Dict :
     return asdict(id_details)
 
 
+@require_mosip_decoders()
 def decode_philsys_physical_qr(qr_code : str) -> Dict :
     # Generate 'None's
     best_fingers = None

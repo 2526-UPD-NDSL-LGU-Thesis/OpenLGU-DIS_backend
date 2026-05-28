@@ -19,7 +19,6 @@ from .exceptions import DRFErrors
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-@require_mosip()
 def decrypt_qr(request : HttpRequest) -> Response :
     data = request.data
 
