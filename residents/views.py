@@ -135,7 +135,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         # Create a response-safe image
         face_image = data.get("profile_image")
         if face_image:
-            data["face_image"] = base64.b64encode(face_image.read()).decode()
+            data["face_image"] = base64.b64encode(face_image).decode()
         else:
             data["face_image"] = mosip_response.user.face
         
