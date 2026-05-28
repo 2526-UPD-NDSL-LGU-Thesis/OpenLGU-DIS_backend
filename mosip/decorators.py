@@ -16,7 +16,7 @@ def require_mosip(url="https://api-internal.pdec.mosip.net", timeout=60):
     def decorator(view_method):
 
         @wraps(view_method)
-        def wrapper(self, request, *args, **kwargs):
+        def wrapper(*args, **kwargs):
 
             try:
                 response = requests.get(url, timeout=timeout)
@@ -39,7 +39,7 @@ def require_mosip(url="https://api-internal.pdec.mosip.net", timeout=60):
                     status=status.HTTP_503_SERVICE_UNAVAILABLE
                 )
 
-            return view_method(self, request, *args, **kwargs)
+            return view_method(*args, **kwargs)
 
         return wrapper
 
