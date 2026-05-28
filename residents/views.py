@@ -124,7 +124,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
         # Create a response-safe image
         face_image = data.get("profile_image")
         if face_image:
-            data["face_image"] = base64.b64encode(face_image).decode()
+            data["face_image"] = face_image
         else:
             data["face_image"] = mosip_response.user.face
         
@@ -147,7 +147,7 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 pcn=data.get("pcn"),
                 uin=temporary_uin,
                 proof_of_residence=data.get("proof_of_residence"),
-                profile_image=data.get("profile_image"),
+                profile_image=data.get("face_image"),
             )
             data["uin"] = resident.uin
         except Exception as err:
