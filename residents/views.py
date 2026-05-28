@@ -79,17 +79,6 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 f"{first_name} {middle_name} {last_name}" if not suffix_name
                 else f"{first_name} {middle_name} {last_name} {suffix_name}"
             )
-        
-        # Check if server is running
-        # request = requests.get("https://api-internal.pdec.mosip.net", timeout=60)
-        # if not request.ok:
-        #     return Response(
-        #         {
-        #             "error"   : DRFErrors.MOSIPConnectionFailed,
-        #             "details" : "Failed to connect to MOSIP servers."
-        #         },
-        #         status=status.HTTP_503_SERVICE_UNAVAILABLE
-        #     )
 
         # Fetch user details from MOSIP
         uid = data.get("pcn")
