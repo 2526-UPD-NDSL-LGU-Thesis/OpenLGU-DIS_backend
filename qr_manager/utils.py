@@ -132,7 +132,7 @@ def crop_face_image_by_landmarks(landmarker, image_bytes : bytes,
     img_crop = img_pil.crop((x_min, y_min, x_max, y_max))
 
     buffer = BytesIO()
-    img_crop.save(buffer, format="PNG")
+    img_crop.save(buffer, format="WEBP")
 
     return buffer.getvalue()
 
@@ -387,7 +387,7 @@ def generate_qr(**kwargs) -> bytes :
     image = qr.make_image(fill_color="black", back_color="white")
 
     buffer = BytesIO()
-    image.save(buffer, format="PNG")
+    image.save(buffer, format="WEBP")
     image_bytes = buffer.getvalue()
 
     return image_bytes
