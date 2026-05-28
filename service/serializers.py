@@ -23,7 +23,7 @@ class ServiceSectorSerializer(serializers.ModelSerializer):
 
 class ServiceGroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BaseGroup
+        model = Group
         fields = ["name"]
 
 
@@ -40,7 +40,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     allowed_groups_ids = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=BaseGroup.objects.all(),
+        queryset=Group.objects.all(),
         write_only=True,
         source="allowed_groups"
     )
