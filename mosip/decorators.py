@@ -11,7 +11,7 @@ import requests
 from .exceptions import DRFErrors
 
 
-def require_mosip(url="https://api-internal.pdec.mosip.net", timeout=60):
+def require_mosip(url="https://api-internal.pdec.mosip.net", timeout=120):
     """Checks if MOSIP server is running."""
     def decorator(view_method):
 

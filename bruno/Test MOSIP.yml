@@ -1,0 +1,15 @@
+info:
+  name: Test MOSIP
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: https://api-internal.pdec.mosip.net
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
