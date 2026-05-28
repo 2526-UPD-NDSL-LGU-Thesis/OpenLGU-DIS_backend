@@ -2,17 +2,17 @@
 Serializers for Service models.
 """
 
-# pylint: disable=trailing-whitespace
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group as BaseGroup
 
 from residents.models import Resident, Sector
 from .models import Service, Claim, Group, Assignment
+
+
+# pylint: disable=trailing-whitespace
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 
 
 class ServiceSectorSerializer(serializers.ModelSerializer):
