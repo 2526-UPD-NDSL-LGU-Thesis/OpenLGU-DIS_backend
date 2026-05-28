@@ -69,8 +69,6 @@ class ToDemographicTestCase(TestCase):
 
 class MOSIPKYCTestCase(TestCase):
     def test_kyc_via_demographics(self):
-        sleep(10)
-
         request = requests.get(
             "https://api-internal.pdec.mosip.net",
             timeout=60
@@ -78,8 +76,6 @@ class MOSIPKYCTestCase(TestCase):
 
         self.assertTrue(request.ok,
                         "Failed to connect to MOSIP Server.")
-
-        sleep(10)
 
         response = MOSIPKYCResponse.from_demographics(
             uid=sample_data.get("individual_id"),
@@ -91,8 +87,6 @@ class MOSIPKYCTestCase(TestCase):
         self.assertTrue(response.user)
     
     def test_auth_via_demographics(self):
-        sleep(10)
-
         request = requests.get(
             "https://api-internal.pdec.mosip.net",
             timeout=60
@@ -100,8 +94,6 @@ class MOSIPKYCTestCase(TestCase):
 
         self.assertTrue(request.ok,
                         "Failed to connect to MOSIP Server.")
-
-        sleep(10)
 
         response = MOSIPAuthResponse.from_demographics(
             uid=sample_data.get("individual_id"),
