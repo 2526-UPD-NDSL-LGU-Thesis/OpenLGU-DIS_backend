@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from residents.models import Resident
+from mosip.decorators import require_mosip
 
 from .utils import read_qr, read_qr_image
 from .classes import QRTypes
@@ -18,6 +19,7 @@ from .exceptions import DRFErrors
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
+@require_mosip()
 def decrypt_qr(request : HttpRequest) -> Response :
     data = request.data
 
@@ -68,7 +70,6 @@ def decrypt_qr(request : HttpRequest) -> Response :
 @permission_classes([IsAuthenticatedOrReadOnly])
 def decrypt_qr_image(request : HttpRequest) -> Response :
     data = request.data
-    
     
     image_str = data.get("qr")
     if not image_str:
