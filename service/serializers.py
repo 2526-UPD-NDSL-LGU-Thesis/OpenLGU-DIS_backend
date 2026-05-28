@@ -30,6 +30,20 @@ class ServiceGroupSerializer(serializers.ModelSerializer):
 class ServiceSerializer(serializers.ModelSerializer):
     recipient_sectors = ServiceSectorSerializer(many=True, read_only=True)
     allowed_groups = ServiceGroupSerializer(many=True, read_only=True)
+
+    recipient_sectors_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Sector.objects.all(),
+        write_only=True,
+        source="recipient_sectors"
+    )
+
+    allowed_groups_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=BaseGroup.objects.all(),
+        write_only=True,
+        source="allowed_groups"
+    )
     
     class Meta:
         model = Service
