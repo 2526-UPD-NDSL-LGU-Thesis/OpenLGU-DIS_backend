@@ -311,15 +311,15 @@ class MOSIPBaseResponseStatus(BaseModel):
         )
 
 
-class MOSIPOTPResponse(BaseModel):
-    masked_mobile : Optional[str] = Field(
-        default=None,
-        validation_alias="maskedMobile"
-        )
-    masked_Email : Optional[str] = Field(
-        default=None,
-        validation_alias="maskedEmail"
-        )
+# class MOSIPOTPResponse(BaseModel):
+#     masked_mobile : Optional[str] = Field(
+#         default=None,
+#         validation_alias="maskedMobile"
+#         )
+#     masked_Email : Optional[str] = Field(
+#         default=None,
+#         validation_alias="maskedEmail"
+#         )
 
 
 class MOSIPBaseResponse(BaseModel):
@@ -362,27 +362,27 @@ class MOSIPBaseResponse(BaseModel):
 class MOSIPKYCResponse(MOSIPBaseResponse):
     user : Optional[MOSIPUser] = Field(default=None)
     
-    @classmethod
-    def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
-        """Performs KYC verification using OTP.
+    # @classmethod
+    # def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
+    #     """Performs KYC verification using OTP.
 
-        Args:
-            uid (str): Unique identifier
-            txn_id (str): transaction ID of KYC verification
-            otp (str): OTP value
-        """
-        # OTP is 111111
-        authenticator = manager.get_authenticator()
+    #     Args:
+    #         uid (str): Unique identifier
+    #         txn_id (str): transaction ID of KYC verification
+    #         otp (str): OTP value
+    #     """
+    #     # OTP is 111111
+    #     authenticator = manager.get_authenticator()
 
-        raw_response = authenticator.kyc(
-            individual_id=uid,
-            individual_id_type="UIN",
-            txn_id=txn_id,
-            otp_value=otp,
-            consent=True
-        )
+    #     raw_response = authenticator.kyc(
+    #         individual_id=uid,
+    #         individual_id_type="UIN",
+    #         txn_id=txn_id,
+    #         otp_value=otp,
+    #         consent=True
+    #     )
 
-        return cls.from_response(raw_response)
+    #     return cls.from_response(raw_response)
 
     @classmethod
     def from_demographics(cls, uid : str, retries : int = 3, backoff : float = 1,
@@ -423,27 +423,27 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
 
 
 class MOSIPAuthResponse(MOSIPBaseResponse):
-    @classmethod
-    def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
-        """Performs user authentication using OTP.
+    # @classmethod
+    # def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
+    #     """Performs user authentication using OTP.
 
-        Args:
-            uid (str): Unique identifier
-            txn_id (str): transaction ID of KYC verification
-            otp (str): OTP value
-        """
-        # OTP is 111111
-        authenticator = manager.get_authenticator()
+    #     Args:
+    #         uid (str): Unique identifier
+    #         txn_id (str): transaction ID of KYC verification
+    #         otp (str): OTP value
+    #     """
+    #     # OTP is 111111
+    #     authenticator = manager.get_authenticator()
 
-        raw_response = authenticator.auth(
-            individual_id=uid,
-            individual_id_type="UIN",
-            txn_id=txn_id,
-            otp_value=otp,
-            consent=True
-        )
+    #     raw_response = authenticator.auth(
+    #         individual_id=uid,
+    #         individual_id_type="UIN",
+    #         txn_id=txn_id,
+    #         otp_value=otp,
+    #         consent=True
+    #     )
 
-        return cls.from_response(raw_response)
+    #     return cls.from_response(raw_response)
 
     @classmethod
     def from_demographics(cls, uid : str, retries : int = 3, backoff : float = 1,
@@ -478,29 +478,28 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         ) from last_error
 
 
-class MOSIPGenOTPResponse(MOSIPBaseResponse):
-    response : Optional[MOSIPOTPResponse]
+# class MOSIPGenOTPResponse(MOSIPBaseResponse):
+#     response : Optional[MOSIPOTPResponse]
 
-    @classmethod
-    def start_otp(
-        cls, 
-        uid : str,
-        use_email : bool = False,
-        use_phone : bool = False
-    ) -> Self : 
-        authenticator = manager.get_authenticator()
+#     @classmethod
+#     def start_otp(
+#         cls, 
+#         uid : str,
+#         use_email : bool = False,
+#         use_phone : bool = False
+#     ) -> Self : 
+#         authenticator = manager.get_authenticator()
 
-        if not any([use_email, use_phone]):
-            raise MOSIPMissingFieldError("Atleast one OTP method should be specified.")
+#         if not any([use_email, use_phone]):
+#             raise MOSIPMissingFieldError("Atleast one OTP method should be specified.")
 
-        raw_response = authenticator.genotp(
-            individual_id=uid,
-            individual_id_type="UIN",
-            email=use_email,
-            phone=use_phone,
-        )
+#         raw_response = authenticator.genotp(
+#             individual_id=uid,
+#             individual_id_type="UIN",
+#             email=use_email,
+#             phone=use_phone,
+#         )
 
-        return cls.from_response(raw_response)
+#         return cls.from_response(raw_response)
 
 #TODO: Change exceptions to MOSIP model errors
-#TODO: Find a way to enforce kyc gen OTP is used for kyc gen OTP

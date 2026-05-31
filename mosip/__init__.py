@@ -2,6 +2,6 @@
 
 from .models import (
     MOSIPBaseResponse, MOSIPKYCResponse, MOSIPAuthResponse,
-    MOSIPBaseResponseStatus, MOSIPGenOTPResponse, MOSIPResponseError,
+    MOSIPBaseResponseStatus, MOSIPResponseError,
     MOSIPUser,
 )
