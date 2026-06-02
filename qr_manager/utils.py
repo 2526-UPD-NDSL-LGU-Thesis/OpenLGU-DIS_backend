@@ -384,7 +384,8 @@ def generate_qr(**kwargs) -> bytes :
     qr = qrcode.QRCode()
     qr.add_data(b45_message.decode())
     qr.make(fit=True)
-    image = qr.make_image(fill_color="black", back_color="white")
+    # image = qr.make_image(fill_color="black", back_color="white")
+    image = qr.make_image(fill_color="black", back_color="transparent")
 
     buffer = BytesIO()
     image.save(buffer, format="WEBP")
