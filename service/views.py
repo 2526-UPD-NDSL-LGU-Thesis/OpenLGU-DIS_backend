@@ -233,7 +233,8 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
             {
                 "error"   : DRFErrors.InvalidQRType,
                 "details" : "Invalid QR code type. QR code must have a PCN."
-            }
+            },
+            status=status.HTTP_400_BAD_REQUEST
         )
     
     try:
