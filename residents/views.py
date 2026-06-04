@@ -203,16 +203,35 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        user_uin = payload.get("uin")
-        try:
-            resident = Resident.objects.get(uin=user_uin)
-        except Resident.DoesNotExist:
+        uin = payload.get("uin")
+        pcn = payload.get("pcn")
+        if uin:
+            try:
+                resident = Resident.objects.get(uin=uin)
+            except Resident.DoesNotExist:
+                return Response(
+                    {
+                        "details" : "Resident does not exist." 
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        elif pcn:
+            try:
+                resident = Resident.objects.get(pcn=pcn)
+            except Resident.DoesNotExist:
+                return Response(
+                    {
+                        "details" : "Resident does not exist." 
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
             return Response(
                 {
-                    "details" : "Resident does not exist." 
+                    "details" : "Invalid QR code type. QR code must have a PCN."
                 },
                 status=status.HTTP_400_BAD_REQUEST
-        )
+            )
         
         sectors = request.data.get("sector")
 
@@ -269,16 +288,35 @@ class ResidentViewSet(mixins.CreateModelMixin,
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        user_uin = payload.get("uin")
-        try:
-            resident = Resident.objects.get(uin=user_uin)
-        except Resident.DoesNotExist:
+        uin = payload.get("uin")
+        pcn = payload.get("pcn")
+        if uin:
+            try:
+                resident = Resident.objects.get(uin=uin)
+            except Resident.DoesNotExist:
+                return Response(
+                    {
+                        "details" : "Resident does not exist." 
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        elif pcn:
+            try:
+                resident = Resident.objects.get(pcn=pcn)
+            except Resident.DoesNotExist:
+                return Response(
+                    {
+                        "details" : "Resident does not exist." 
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
             return Response(
                 {
-                    "details" : "Resident does not exist." 
+                    "details" : "Invalid QR code type. QR code must have a PCN."
                 },
                 status=status.HTTP_400_BAD_REQUEST
-        )
+            )
         
         sectors = request.data.get("sector")
 
