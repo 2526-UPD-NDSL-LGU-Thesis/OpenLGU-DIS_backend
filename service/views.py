@@ -227,6 +227,15 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    pcn = payload.get("pcn")
+    if not pcn:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : "Invalid QR code type. QR code must have a PCN."
+            }
+        )
+    
     try:
         resident = Resident.objects.get(pcn=pcn)
     except Resident.DoesNotExist:
