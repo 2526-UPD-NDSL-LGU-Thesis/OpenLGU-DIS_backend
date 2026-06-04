@@ -309,7 +309,7 @@ def generate_qr(**kwargs) -> bytes :
     claim169 = {
         1  : kwargs.get("pcn"),
         2  : kwargs.get("version", settings.VERSION),
-        3  : kwargs.get("language", settings.DEFAULT_LANGUAGE_ISO),
+        # 3  : kwargs.get("language", settings.DEFAULT_LANGUAGE_ISO),
         4  : full_name,
         5  : kwargs.get("first_name"),
         6  : kwargs.get("middle_name"),
@@ -334,12 +334,12 @@ def generate_qr(**kwargs) -> bytes :
         # 15 : kwargs.get("guardian"),
         # 16 : image depreciated
         # 17 : image type depreciated
-        18 : kwargs.get("best_fingers"),
+        # 18 : kwargs.get("best_fingers"),
         # 19 : kwargs.get("full_name_secondary"),
         # 20 : kwargs.get("language_secondary"),
         # 21 : kwargs.get("location_code"),
         # 22 : kwargs.get("legal_status"),
-        23 : kwargs.get("issuing_country", settings.DEFAULT_COUNTRY_ISO),
+        # 23 : kwargs.get("issuing_country", settings.DEFAULT_COUNTRY_ISO),
         # 24-49 : For future - For Demographic Data attributes
         50 : kwargs.get("right_thumb"),
         51 : kwargs.get("right_pointer_finger"),
