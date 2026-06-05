@@ -29,12 +29,13 @@ DEBUG = True
 ALLOWED_HOSTS = [ # TODO why is this necessary? https://docs.djangoproject.com/en/6.0/ref/settings/
     '.localhost',
     '127.0.0.1',
+    'https://openlguid-admin.netlify.app',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000', # TODO is this necessary? It's itself?
-    
-    'http://localhost:2999', # 
+    'https://openlguid-admin.netlify.app',
+    'http://localhost:2999',
     'http://localhost:3000',
     'http://127.0.0.1:2999',
     'http://127.0.0.1:3000'
