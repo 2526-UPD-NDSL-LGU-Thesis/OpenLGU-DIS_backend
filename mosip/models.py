@@ -348,7 +348,7 @@ class MOSIPBaseResponse(BaseModel):
         return bool(self.response and self.response.status)
     
     @property
-    def error_messages(self) -> Optional[List[str]] :
+    def error_messages(self) -> List[Optional[str]] :
         if not self.errors:
             return []
         return [err.error_message for err in self.errors]
