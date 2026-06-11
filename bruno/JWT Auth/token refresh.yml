@@ -30,7 +30,48 @@ settings:
   maxRedirects: 5
 
 examples:
-  - name: Blacklisted token
+  - name: "200"
+    request:
+      url: http://localhost:8000/api/token/refresh/
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "refresh" : "{{jwt_refresh_token}}"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 02 May 2026 06:20:11 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "489"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc3NzAzMTExLCJpYXQiOjE3Nzc3MDI4MTEsImp0aSI6IjUzZDVhY2IxOWMxYTQ4M2Y4NzQ5NzVjODA3OGI2M2YwIiwidXNlcl9pZCI6IjIifQ.GDCOJvNtkxUHjvf5-A7-KY33Y41-mCHxj9iTp01_eWo",
+            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3Nzc4OTIxMSwiaWF0IjoxNzc3NzAyODExLCJqdGkiOiI0YTU0ZWE1OWZkMmE0MWNlYjM2ZTY4NTg2Y2VmMTIzNCIsInVzZXJfaWQiOiIyIn0.curp5EkVMyMUYchVpCrQUgyUQjeWiZo0ob2sKOxWDfs"
+          }
+  - name: 401 Blacklisted
     request:
       url: http://localhost:8000/api/token/refresh/
       method: POST
@@ -72,45 +113,4 @@ examples:
           {
             "detail": "Token is blacklisted",
             "code": "token_not_valid"
-          }
-  - name: Success
-    request:
-      url: http://localhost:8000/api/token/refresh/
-      method: POST
-      body:
-        type: json
-        data: |-
-          {
-            "refresh" : "{{jwt_refresh_token}}"
-          }
-    response:
-      status: 200
-      statusText: OK
-      headers:
-        - name: date
-          value: Sat, 02 May 2026 06:20:11 GMT
-        - name: server
-          value: WSGIServer/0.2 CPython/3.12.10
-        - name: content-type
-          value: application/json
-        - name: vary
-          value: Accept, origin
-        - name: allow
-          value: POST, OPTIONS
-        - name: x-frame-options
-          value: DENY
-        - name: content-length
-          value: "489"
-        - name: x-content-type-options
-          value: nosniff
-        - name: referrer-policy
-          value: same-origin
-        - name: cross-origin-opener-policy
-          value: same-origin
-      body:
-        type: json
-        data: |-
-          {
-            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc3NzAzMTExLCJpYXQiOjE3Nzc3MDI4MTEsImp0aSI6IjUzZDVhY2IxOWMxYTQ4M2Y4NzQ5NzVjODA3OGI2M2YwIiwidXNlcl9pZCI6IjIifQ.GDCOJvNtkxUHjvf5-A7-KY33Y41-mCHxj9iTp01_eWo",
-            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3Nzc4OTIxMSwiaWF0IjoxNzc3NzAyODExLCJqdGkiOiI0YTU0ZWE1OWZkMmE0MWNlYjM2ZTY4NTg2Y2VmMTIzNCIsInVzZXJfaWQiOiIyIn0.curp5EkVMyMUYchVpCrQUgyUQjeWiZo0ob2sKOxWDfs"
           }

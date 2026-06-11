@@ -1,0 +1,23 @@
+info:
+  name: Auth via demo
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8000/api/auth/demo/
+  body:
+    type: json
+    data: |-
+      {
+        "name" : "Mañuel Luis y Molina Quezon",
+        "dob" : "1878/08/19",
+        "uid": "2092578314"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

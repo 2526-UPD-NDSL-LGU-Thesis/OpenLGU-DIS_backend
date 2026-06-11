@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.db import transaction
 from django.db import models, IntegrityError, transaction
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.utils import timezone
 from residents.models import Resident
 
@@ -14,6 +14,39 @@ from .generator import generate_id
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Assignment(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+                                related_name='official')
+    
+    groups = models.ManyToManyField(Group)
+    
+    last_update = models.DateTimeField(auto_now=True)
+    
+    assigned_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL,
+                                    related_name='authorized_by')
+    
+    def clean(self) -> None:
+        if not self.user.groups.filter(
+            name__in=["Service Claim Admin", "Service Claim Employee"]
+        ).exists():
+            raise ValidationError({
+                "user" : "User does not have the required role to have an assignment."
+            })
+        
+        return super().clean()
+
+    def __str__(self) -> str:
+        return f"{self.user.username} Assignment"
 
 
 class Service(models.Model):
@@ -44,7 +77,7 @@ class Service(models.Model):
     refresh_interval = models.CharField(max_length=20, choices=IntervalChoices,
                                         null=True, blank=True)
 
-    recipient_sectors = models.ManyToManyField("residents.ResidentSector")
+    recipient_sectors = models.ManyToManyField("residents.Sector")
 
     stocks_type = models.CharField(max_length=20, choices=StockChoices)
 
@@ -95,11 +128,23 @@ class Service(models.Model):
 
     def can_claim(self, resident : Resident, official : User, amount : Optional[int]) -> Tuple[bool, Dict] :
         # Check if User is authorized to make claims on the service.
-        if not self.allowed_groups.filter(id__in=official.groups.all()).exists():
-            return False, {
-                "error"   : "user_unauthorized",
-                "details" : "User doing the claim is not authorized to dispense service."
-            }
+        if official.is_superuser:
+            return True, { "error" : None }
+        else:
+            assignment = Assignment.objects.filter(user=official).first()
+
+            if assignment:
+                if not self.allowed_groups.filter(id__in=assignment.groups.all()).exists():
+                    return False, {
+                        "error"   : "user_unauthorized",
+                        "details" : "User doing the claim is not authorized to dispense service."
+                    }
+            else:
+                return False, {
+                    "error"   : "Missing Assignment",
+                    "details" : "User is not assigned"
+                }
+            
 
         # Check if service is active.
         if not self.active:
@@ -117,7 +162,7 @@ class Service(models.Model):
         
         # Claim Logic
         if self.claim_type == Service.ClaimChoices.ONETIME:
-            total_claims = ServiceClaim.objects.filter(user=resident, service=self).count()
+            total_claims = Claim.objects.filter(user=resident, service=self).count()
             if total_claims + amount > self.max_claims_per_user:
                 return False, {
                     "error"   : "service_maxed_out_claims",
@@ -125,7 +170,7 @@ class Service(models.Model):
                 }
         
         if self.claim_type == Service.ClaimChoices.PERIODIC:
-            total_claims = ServiceClaim.objects.filter(user=resident, service=self)
+            total_claims = Claim.objects.filter(user=resident, service=self)
             today = timezone.now()
             periodic_claims = -1
             
@@ -151,9 +196,9 @@ class Service(models.Model):
 
                 periodic_claims = total_claims.filter(
                     claimed_at__year=today.year,
-                    claimed_at__date__gte=start_month,
-                    claimed_at__date__lte=end_month
-                )
+                    claimed_at__month__gte=start_month,
+                    claimed_at__month__lte=end_month
+                ).count()
             
             if self.refresh_interval == Service.IntervalChoices.YEARLY:
                 periodic_claims = total_claims.filter(
@@ -178,17 +223,17 @@ class Service(models.Model):
 
         return True, { "error" : None }
 
-    def claim(self, resident : Resident, amount : int, claimed_by : User):
+    def claim(self, resident : Resident, claimed_by : User, amount : int):
         with transaction.atomic():
             service = Service.objects.select_for_update().get(pk=self.pk)
 
             status, error = service.can_claim(resident, claimed_by, amount)
 
             if not status:
-                return False, error
+                return False, { "error" : error }
 
             try:
-                transaction = ServiceClaim.objects.create(
+                _transaction = Claim.objects.create(
                     user=resident,
                     service=service,
                     claimed_by=claimed_by
@@ -198,12 +243,12 @@ class Service(models.Model):
                     service.stocks -= amount
                     service.save(update_fields=["stocks"])
                 
-                return True, { "body" : transaction }
+                return True, { "body" : _transaction }
             except Exception as err:
                 return False, { "error" : f"Failed to save service claim: {err}"}
 
 
-class ServiceClaim(models.Model):
+class Claim(models.Model):
     id = models.BigAutoField(primary_key=True)
     transaction_id = models.CharField(unique=True, db_index=True, editable=False)
 
@@ -221,7 +266,7 @@ class ServiceClaim(models.Model):
 
     amount = models.PositiveIntegerField(default=1)
 
-    claimed_at = models.DateTimeField(default=timezone.now)
+    claimed_at = models.DateTimeField(auto_now_add=True)
 
     claimed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
                                    related_name="claims_made")

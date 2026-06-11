@@ -1,0 +1,308 @@
+info:
+  name: verify qr
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8000/api/verify/qr/
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "qr" : "6BF-60$F0/3WJWG.FKJ05FBBNZTB800/DSQE7*5I9E8/DP3D+%5+3E8*5Z6DCF3AP2K2QAKL280NF6HA7XW6W47-96SD0Z96LF6$86KPC3/D%U09Z9CXO%$E5UD/T9+EDK 03EFNZ9XVD..D4.0IDAD$C-3E*210A66:63W5Q471A6PE13K3AEC5$C1Q51UANFFUJC9PE$34:8DXVDT9EZED6$C1/2W6A-23FBBVTA%B9-*8V50.100Y817AG6AL34V50F50N018%J.E5010I10LC7YUND/5D.KBQL*PL8FSO81K00/-ED-UR8U:VVIUSX8E5831J0BEFT64%I4 61R-D*W9O8TI7WLXR/XP7DD3 E:HC6UUA.H7LK$32000AAW32O+SCG:JZ*MDRP9ER %U.ZISAV7PA%US9%M%3LAQ99F0IFO$YS$V2LTIQ417BAIAPP+756B3TGT$BX7WAXI5GECU6I57BRT+ZRE+UKANORLR777AP176/PJWOVQ-4 0OG$LABOGKU-BJQ/NRZ4-7T-853-6V2MWLP:TE+7BIN0QG8KC37.P.TPIPQ815+D1ATH:IK4AMR3E*+9R/E5D0U8U0H3:87X4J+TQAI5KDENOS$/T93D4ZHN.G8%8TGES0D97B9%M7UCL%6P5L4.H5Q261R8WC-USTCWFN62OEG%6 6QI+DJZ8URMZHBB4L5J4:LA +CKG3H2OHLLZ5V+FBA*2GYD*.H000O001O9GL6VW60A6OA7TF627B$S8 1H8AQVNSODS5N1 $6TLI8CDTHJZRC$UII:7:AR0XHJTH/6AFV7XMAL69.-L92N1YFLS7PQT20D+6KACQ7TH/ER9:P-9JK.R4IV"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 OpenLGU James
+    request:
+      url: http://localhost:8000/api/verify/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BFOXN*TS0BIP$F9U4KOH$ZHCEF:-OQOF9W0SEF8OTWMFGT07JFS93LIAYS7H6MV-AJXCQF6YT63ZM7460:6--CA 6 O6GM6L+9+.PW4DPEINK92Y9X-AMZ5UM9M%5J11..P7$P7T9-8ETW57$PYKPU.PQ0JUO9/J9O6L1:SXPMON1*P1.T1+ZEEY9FB3$I5BWI3W1$N2KPH3QE WU0OAGW24R9GUET*RGJAJ.D9$P:AAI%50G96D16X265BZA0*C2VT30F2BP2GD23M94K5UKG9SL QE2O26Y5GR1XTHTK9.84*67E+2G.K0WIR3WVSIL8C2/DE8CI8CZJCWFOFNSUIJNEBYIJ1CQC7570PP*O6SO:5PJMOTW4E03W-Q3FW$AWEN19.BD1KHQ1WVHHQ1O880LU5+69K6J+0-J3PJ36-0/L7X.4F+0V3IW.55:677ICAIR9OZ L:$NZ LPYHSMG:2K MGZ1IPYHJ1HN2LKHGJHHPIH QN6.L1IIZ2K1JHXAW7S1PO3INNBQNFYH.S1Q4I%CPBV1UYC9H0:35O67FM3.9C300*I2CL6FI24L6*J5GJ1*0N7751DOWDPDZKCJT  47EJX1MX45D$QQDE/6HYYQ%SGDA8628I23TU2HFEJHHCN9XJ9*PL1QDJLD6DJJHJS7BJD7+FN8KNHAFKV0-XG9%GIS89Y4U K/+K7VC$W2DZIQ*IZTAQZ62%MF.MOWEL 9QS79UTTLT%:C0LB6CF-QQZVPOZL1.MXZU2:LV5N-HRN TZKS429HV3AIEW*QZVP/1MSVNM S8.L84I418LWVSOV-7JN+7$WV:2THBN918OAWQ5G.DGY$SWRF6K528SZ2J8TEHVV6YD..JB8NABM4KRNF3WVVP:AFKTY.3$5F7PR37VT/UJ6K6ZTESK30O1CO3/JL3RDZFDWM/AOE5E /J%7R-LTQ0RICWL4CCQ7V4FW1FI*EDJV3$67NRDE6K07SXTN4GYBORDUH3BL8WP7Q16N*BPQ*ELU4PV92Y3 XU8UG 8W8 6UTE34M8+1VW3:+A80VCWODJV2OR89O9ARI*IH1SF+E:DT+4BF/93BW0/NOVQ-6SGYTW8TITNZUMD3DUED9.EBGPY9K6SS%0OD3BMJMBCR-.SB T6QJJ27O*B+P7X*GSWV+ENN7ID%F+GNE2DPU6-:HAJ33SME18QARHYQ6ODM/FFRF$2WW+DN:A.6T:54.AW43W83N6SB42W5SFMRMU7H -IZI1BES CVDBOBXL.1EPCVO2KFB7YXT*7VM/M4OBA5U4$VEUQVBESSV%TNR6GO$T10DM-RB7PF+4+TE+U7WQ5U2SSWLA.U/ZTBK8/.70V1:7SFHEBIBTAWBX9SAUSNC3J1RK4ZQEHM4N31UW9YK1F5J7/BIIQ+8OPTEW5M6J2W*T76GB0V*YDQ0N9+DZQVK:413B1COWU6DLSP CHHN%-OL4QFQJ2YE$R8$F7%W63$V.18PSC$O1520$CTA5"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Wed, 06 May 2026 03:07:00 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "622"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "qr_type": "OpenLGUQR",
+            "id_details": {
+              "token_issuer": "ndsl.openlgu.upd.ph",
+              "token_issued_at": 1779205867,
+              "token_confirmation": null,
+              "algorithm": null,
+              "signature": null,
+              "issuer": null,
+              "issued_at": null,
+              "issuing_country": null,
+              "pcn": "6149804723",
+              "uin": "3481217724",
+              "egov_digital_id": null,
+              "version": "1.2.1",
+              "language": "eng",
+              "full_name": "James Ernest Tumalad Geraldo",
+              "first_name": "James Ernest",
+              "middle_name": "Tumalad",
+              "last_name": "Geraldo",
+              "suffix_name": null,
+              "bloodtype": null,
+              "gender": "Male",
+              "date_of_birth": "2001-09-15",
+              "place_of_birth": null,
+              "address": "#102 Promenade St., Greenland Subd., Brgy. Sta Ana, Taytay Rizal, 1920",
+              "email_id": "jtgeraldo@up.edu.ph",
+              "phone_number": "09760406460",
+              "nationality": "Filipino",
+              "marital_status": "Unmarried",
+              "best_fingers": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+              ],
+              "face_image": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAAtAC0BAREA/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oACAEBAAA/ANTQ7W10Hwva/aaq3OvaXdf8vVVay9S1S1tf+Pm6rL/t61uv+XquY1rS7r+17j619A63a2v2X7V9l+015f4ltf7L1T7L/ZdrW9c6X9l8L2t1XG/ZbX7L9q+y/abqsv7La/av+PWumhn8ldteuf8ALr9qrBudLtbrVPtVzR4l/wCQX9lrg/strdUfZbW1qvN96vbLn/Rbr7LWDc2v2W6+1Vy+uXV1dWt1a/av+PmuXtrr/n5oubqup8F+FoNfsJ2m+1boHCfnXrHiK0xcC59q4TUrW61TVLX/AEr7Na2tYPiW6tf+PX+1K4O5tf8ASv8Aj6q19qr334dWI0bwdam7cLPd/v2/Guqv7SG8s5YplyrKa8ytq4XxvM3neT/DXK/8utP03Ufsmp2N48CTRwv5ywMflzX1Npd+19pVreGNUaeMSMo7E1//2Q=="
+            }
+          }
+  - name: 200 OpenLGU Quezon
+    request:
+      url: http://localhost:8000/api/verify/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BFI80WP0Q$VJWG.FKJ05IBBE+5A80..DBWE-3EAECFX5-TCJ3DE.EL9EXD0NF6TF63W5$Q6/96D53+:L6JDF46SF66:6AL6*P6EOCY$56P09Z9H/D: CX34.$EFOEC6C3.C%$ENLF.+DE6C5JD 47Q47E464W5L97C8FSH8TVDNJE-34NEC0ECHEC1Q5J7AXED$EDM9E1/DKOE060U2DGEC*KE  C932H0ALF2X507H0QS00+0J61-23HBB2KHLJREESU22%*8A%8W50000V50V50U50*UR7L8T01DY0BY0U01:*0I61X01WN1AT1$H1$N1$C2Z+1PU31.3PU3-O3%24P$5 244Q5-O3Z35A95746:Q6NQ66/4CX7ZF6$$5.Q6.EWB00N010V51V5360U501ZOG-3100LS0W50W50V50000000000100KB0*M0DY0W016C11FW140112IB06H0LB08H0OS0YM01006 FKB0400$626D29A6PY0/CAQ+0DDEEH6LIID11IJ8JIO6LA6GUEM6JLEJ61UZ2423XD32$4L354F5WW66:6PA7UM84Y8N09.B92OALZA+1BEDBJPC% CC3DVED QEA%ET4F3GF8SGR*G16HKHH%NICZIV1J5DJVOJ.UKG.KZ8L9KLRQM1%MK4N*FNKRNVXO50POBP/MPGTQZ+Q97RSIR8URXUS7.SQ8T0KTPVT5WUO/U/9VHLV+WV8PRO01V50I10H50CYTZ/RMDU3XCL9SB4R.AL6H0WBMPWTRW3G:M/0512RTW0*/J2-CJ00$DR6LB:.9VNK5JNYN3%$SSS719KWSN *F-3467TPRRK0QA742N92HMO OLVK OBIN1$9EQ7WC-I+6D%1DYMINLI%7KTLM+TQJDVY/R0MU+$3BC6GSLJUD%$F2N5C 3..NUC3Z63D 2:H1YTMK27E9G OIG.JFSD+Q7G*EQCQJ$VVVQ5RM4E4VI8YKIFV3IPVT2DMNU*9HB*HC.TPAFRWRR9ISW0:NLCN2%JI$OUU:JW%M5W62GPB9AXI1 D6IVEU90VBSJYQ+64*58/4686AMTO0ASA:UGM24BRUK1-$CO%6HM2SRAL*L%KE3 DQSSS/2IYQKB0$7KGLERG1EHUNEA.1QF806O1ZEE%$5TN9S-D/5F LG/VIF0PR1DHGEW-LQ%7IXI1YL682UAB4YATW3%IL/5UJRFCX3D50WI9KG1R0K $4MV4I8NTJPS*HR$U6077/V/RUQB6G%LW MUQFK5C$4K-%BK981D9TZ6W67W1RYZF-J3PB9G9QP6RSDVJVK D6TPL+CA%4DY+B*8WPT67-O+W3H$7 6SI8QUNJGCAZYTHDPK:0C3RG-K:DT-J96GM.FVP2I%-JX8D5WCVCHLJMG4A1XU3.H4QV/KFU7JVP5.LVXGD:IQCJ3FL1197663QV24XBIWRBPQSM6BVU+B92LJNBVLBQO.0I$UNL6Y/9GSDU NL9LATER8KTDTQ3KN701VKQ8P6-BIDV909/GPM-DAA2EN55UQDXP2Q9QXA3ZIXHS2CUR3VJ3KPA9/O9-HACBQAHF8KLQXBH3FJGDIYFE7EBZCGNGRK8AGDMFW9337JD3:6RW6%47HA77*6/78Z*LV%DW0K-.T/TMUBUX4ALAR4HC68QS08BTE6J1.93Z30I15AFA$EUY0VZ.L7G3VMI5BO%ZJ0D4B2E3L7H:GB9MCC3JBD0Z1EMCE4"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Mon, 11 May 2026 05:52:29 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "1505"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "qr_type": "OpenLGUQR",
+            "id_details": {
+              "token_issuer": "ndsl.openlgu.com.ph",
+              "token_issued_at": 1779712462,
+              "token_confirmation": null,
+              "algorithm": null,
+              "signature": null,
+              "issuer": null,
+              "issued_at": null,
+              "issuing_country": "PH",
+              "pcn": "2092578314",
+              "uin": "3755189926",
+              "egov_digital_id": null,
+              "version": "1.2.1",
+              "language": "eng",
+              "full_name": null,
+              "first_name": "Mañuel Luis",
+              "middle_name": "y Molina",
+              "last_name": "Quezon",
+              "suffix_name": null,
+              "bloodtype": null,
+              "gender": "Unknown",
+              "date_of_birth": "1878-08-19",
+              "place_of_birth": null,
+              "address": "Baler, Tayabas, Philippines",
+              "email_id": null,
+              "phone_number": null,
+              "nationality": null,
+              "marital_status": "Unknown",
+              "best_fingers": null,
+              "face_image": "UklGRkwBAABXRUJQVlA4IEABAADwCACdASotAC0APzmQu1cvKaWjqrqqqeAnCWkAFHYe9JDu0frW4tRwRxkoA1h5KCDPIvQJG24lTPjm5f5t23XLuWkldRViFfKajeWh7BB+AAD+7L41ZACeF7UEyo3YEvQglLP3FVOG4ui0vabKS80CrMCN45sVapOQCLdREMeVPoBYFoOsXaH+fJQ5cZM0yDhS6i/b4vRkt8Wq9Di1x4owsprb+Y8m8738rK6/0fDimGO9mCXm5skpHjaurn/JknQDWGYEHUIyGevNKssE0iEnwgpai5yhiq/Mb2BOYHZoAk7u1Bq4OPOXINLrKsFxG+HL7RlnZYykhglF/nGrZvFYR7S9ZDk2OacXjd8UadXGZJTi6/9ZM5By+DY0ztxt70WCsuNaI6bcIwBS92YYGp++Q6nf9jtZzha3bN+OAgAAAA=="
+            }
+          }
+  - name: 200 PhilSys Temporary QR
+    request:
+      url: http://localhost:8000/api/verify/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "PH1:RRQXO8P609CK B00XKDJCX495F34CJH$6:FKQPCC$CD536ZKBVCNF6PF64W5KF6+967EC:OCSNA3KCCLCHECRUCAECY C1H8R CX96NG6ZJC5/D:X88IAV3411A-+9%VDO2DGY8LB8RS8.JC3/DYTAMY9 S91T8MQEF8CRS8$H81A6NA73W56L6TF6:OC+M8E8EE%60A6IL66:6D46BL6D%6TG6*6A6I84K37C91CB:0A$34SB8*B91Q5QY9VTA60AMY9G+9 S9OPCH$DFBBWUC%B9C+8V50.100Y817AG6A$34V50S40N018%J.E5010I10D925UM7Q5Q K51MUI1.8GO81E008CL:*O.:EV7IYTFZ%NN+R7T9ZLJ1V4H5F223:NM8E9Z6U4L0URG*PNBB1608ZTQP7E/IF*YS5A1T50A-L32L/27K%GEK2M*MV026C0HHAL%F.CS SRJ6RKKOSRD-ZQ97VT11.+SGXH8Q4+6N-ALJI1EZPGKRKAU.:GC1E.CE14N$STWFITMNEIK4.D9A8$KRAQ7M$I-QP+D98$4AR0N26%STNCRCS7AFM82BXINXO1WG8N4HIY4BWQBRMPLCKCRKF7.*J1:CM1M-AH*YVNNLY8V7+COXC4YGEEJ/AD+SV353H9CN/TIU52KJ1M8XXG:+TY1R+QEOCA8HC$2VVX6V49X620A0KXD:B5RTDFYK+ 4GF2MP6NHVD.2I7T3ZE8.8TZN4.77CLG4F8DOOTDH5K+QVEI21T7LVQZK8:0PV-7U9T3XEPIRAAULX3Z28C P9-JUAFMUBD3C/10X58VY1846R7LW$N%1KXQRAJFKZ99*FCHSVN3$PV6Q4T%A3M9X8C AAP2P %HZGNE176-6MXR6FSXTDKZ4310Z1CJSMS%29Y2F0"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Wed, 06 May 2026 03:09:38 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "773"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "qr_type": "PhilSysTemporaryQR",
+            "id_details": {
+              "token_issuer": "PH",
+              "token_issued_at": 1670933302,
+              "token_confirmation": {
+                "3": "key"
+              },
+              "algorithm": null,
+              "signature": null,
+              "issuer": "PSA",
+              "issued_at": "2022-12-13",
+              "issuing_country": null,
+              "pcn": "4621839780732612",
+              "uin": null,
+              "egov_digital_id": null,
+              "version": null,
+              "language": null,
+              "full_name": null,
+              "first_name": "EARL JOHN",
+              "middle_name": "TUMALAD",
+              "last_name": "GERALDO",
+              "suffix_name": "",
+              "bloodtype": null,
+              "gender": "Male",
+              "date_of_birth": "1998-03-26",
+              "place_of_birth": "CITY OF PASIG, METRO MANILA",
+              "address": null,
+              "email_id": null,
+              "phone_number": null,
+              "nationality": null,
+              "marital_status": null,
+              "best_fingers": [
+                "1",
+                "2"
+              ],
+              "face_image": "UklGRlwBAABXRUJQVlA4IFABAADQCACdASotAC0APxF0s1EsJqSirjgLMYAiCWkADqhBxN92pI+8e+K8wNyyTFGaHyUYd5kYF7I9Sa/ufwO1g226ewnjP07S5nASefzjnQmwAP6tXKZ6N+SFUhNktPcP8QIiUih9at/C2qPWtMFwa7DT+vZ7CDPkroxWJD63JagICybL9tkn7ySGdm73cQS2pOp2kSW56qFsbjtBE9k8O/uU+cp8SaImLQTJL+fqd9fGPFews1dluToMQkI4h0QlsNNVstBittfDOhadUGaprkmIZPtYqj/2wWX7ZNGEjpjPaML6SxifYJLtCyzlmdFDJ4R+7JnV4nN4UU5h8fW2NWJIBBEBAcJstimobAmkPSYgEoUz8fhLF0HmsnToRrK8Mz7FqEB3a8ApbAafJvnxEwo8edMyQu/F7T6z5xh0jtjW7xodnT/FzCGdiXiHXF9fgAA="
+            }
+          }
+  - name: "400"
+    request:
+      url: http://localhost:8000/api/qr/
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BF6RC:0KZ:LTOR FCV6EIPKSA7X3V+H5WDUCQ69PV3NEW2T:3V2QPEA3L1RD 83HJ3DQLTJ9%6 +J .T7TJM%PUII:B4FR8/3HW*RKXS-%PR.T$S35S4*PVPKQRMCHK9KQ5QL8-L9MH00PE+QC4ES+-35FOOA7PW6$-JN$R:96T-M:LOR35Z/MQR8RS8EJOQ+MS961Y4SN42HP2EO+CSKLAQGQNO6:/6Y/4UOOHMI$FV .H*+1.Q0+$RZ.R423Y73I439EI4DWJ 0E.G$OEM/6DRKL:6 9N6GQ-IV J27W2$DFA5C5DUVCF-08EESDI0X.0R*5L$50SK0ZOHJ40MI.+0HNGB8GK%4DZ26+8NDKNYNMH0NI29K68M6SF1U*G5DBIHPCJI+75UBWKY0QAI*OFPW5+8K+SEX2BTQBC BL7S2.759UD0O L2I:RZINQOV.V9:0IX%MHF21%3QN69NJBA3$KDLS7ZQPV8T0*S PH-VHX%QR6R-9B1RKEIT/:4*0S3SGM5DOCN4OQ 32N%C-SO92Q*+C*-D9IMUCB0W2CYVABNS:F0YJ%ZUO3FL/073LQJ1O6V-HH-Q3LUT2PMGUPBPF Z576U9RVD2LE5F:JM9+GLIIPLN.HIVWG+OAY8E$DL-TL769QBI5CMW8HN40AKK95"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Wed, 06 May 2026 02:48:34 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: POST, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "105"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "error": "QRVerificationFailed",
+            "details": "Failed to verify QR code: Message is not a valid Sign1Message."
+          }

@@ -218,8 +218,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# *.pem
-*.p12
+# MOSIP keys
 uploads/
 residents/static/img/id-template.psd
-ida_partner.pem
+mosip/certs/*.pem
+mosip/certs/*.p12

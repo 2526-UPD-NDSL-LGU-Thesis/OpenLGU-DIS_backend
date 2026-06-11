@@ -1,17 +1,21 @@
 from django.http import HttpRequest
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view, permission_classes
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
-from .models import Service, ServiceClaim
-from .permissions import CanAccessServiceClaim
-from .serializers import ServiceSerializer, ServiceClaimSerializer
 from residents.models import Resident
-from qr_manager import validate_qr, read_qr
+from qr_manager import read_qr, QRTypes
+from mosip.models import MOSIPAuthResponse
+from mosip.decorators import require_mosip
+
+from .models import Service, Claim, Assignment
+from .models import Group as AssignmentGroup
+from .permissions import HasServiceClaimRole
+from .serializers import ServiceSerializer, ClaimSerializer, GroupSerializer
+from .exceptions import DRFErrors
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
@@ -21,9 +25,17 @@ class ServiceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        return Service.objects.filter(
-            allowed_groups__in=user.groups.all()
-        ).distinct()
+        if user.is_superuser:
+            return Service.objects.all()
+    
+        assignment = Assignment.objects.filter(user=user).first()
+
+        if assignment:
+            return Service.objects.filter(
+                allowed_groups__in=assignment.groups.all()
+            ).distinct()
+        else:
+            return []
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -41,25 +53,25 @@ class ServiceViewSet(viewsets.ModelViewSet):
     def claims(self, request, pk=None):
         service = self.get_object()
         claims = service.claims.all()
-        serializer = ServiceClaimSerializer(claims, many=True)
+        serializer = ClaimSerializer(claims, many=True)
         return Response(serializer.data)
     
 
-@permission_classes([CanAccessServiceClaim, IsAuthenticated])
+@permission_classes([HasServiceClaimRole])
 class ServiceClaimViewSet(viewsets.ModelViewSet):
-    queryset = ServiceClaim.objects.all()
-    serializer_class = ServiceClaimSerializer
+    queryset = Claim.objects.all()
+    serializer_class = ClaimSerializer
 
     def get_queryset(self):
         user = self.request.user
 
         if not user.is_authenticated:
-            return ServiceClaim.objects.none()
+            return Claim.objects.none()
         
         if user.is_superuser:
-            return ServiceClaim.objects.all()
+            return Claim.objects.all()
 
-        return ServiceClaim.objects.filter(
+        return Claim.objects.filter(
             claimed_by=user
         ).distinct()
 
@@ -79,41 +91,78 @@ class ServiceClaimViewSet(viewsets.ModelViewSet):
         serializer.save(user=user, claimed_by=user)
 
 
-@csrf_exempt
+@permission_classes([HasServiceClaimRole])
+class ServiceGroupViewSet(viewsets.ModelViewSet):
+    queryset = AssignmentGroup.objects.all()
+    serializer_class = GroupSerializer
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj
+
 @api_view(["POST"])
-# @permission_classes([IsAuthenticated]) TODO re-place
+@permission_classes([HasServiceClaimRole])
 def claim_service(request : HttpRequest, service_id : str) -> Response :
     data = request.data
-    b45_qr = data.pop("qr")
 
-    _status, payload = validate_qr(b45_qr)
-    
-    if not _status:
+    b45_qr = data.get("qr")
+    if not b45_qr:
         return Response(
-            payload,
+            {
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected 'qr', got None instead."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
 
     try:
-        service = Service.objects.get(name=service_id)
+        qr_type, payload = read_qr(b45_qr).values()
+    except Exception as err:
+        return Response(
+            {
+                "error"   : DRFErrors.QRVerificationFailed,
+                "details" : str(err)
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if qr_type != QRTypes.OpenLGUQR:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : f"Expected {QRTypes.OpenLGUQR}, got {qr_type} instead."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        service = Service.objects.get(id=service_id)
     except Service.DoesNotExist:
         return Response(
-            { "error" : "Service does not exist" },
+            {
+                "error"   : DRFErrors.ServiceDoesNotExist, 
+                "details" : f"Service {service_id} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user_uin = payload[169][75]
+    uin = payload.get("uin")
     try:
-        resident = Resident.objects.get(uin=user_uin)
+        resident = Resident.objects.get(uin=uin)
     except Resident.DoesNotExist:
         return Response(
-            { "error" : "User does not exist" },
+            {
+                "errors"  : DRFErrors.ResidentDoesNotExist,
+                "details" : f"User {uin} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
     authenticated_user = request.user
 
-    result, error = service.claim(
+    result, body = service.claim(
         resident=resident,
         amount=1,
         claimed_by=authenticated_user
@@ -121,50 +170,87 @@ def claim_service(request : HttpRequest, service_id : str) -> Response :
 
     if not result:
         return Response(
-            error,
+            body,
             status=status.HTTP_400_BAD_REQUEST
         )
 
     return Response(
-        { "status" : "Service claimed" },
+        ClaimSerializer(body["body"]).data,
         status=status.HTTP_201_CREATED
     )
 
 
 @api_view(["POST"])
-# @permission_classes([IsAuthenticated]) TODO re-place
+@permission_classes([HasServiceClaimRole])
 def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response :
     data = request.data
-    b45_qr = data.pop("qr")
-
-    payload = read_qr(b45_qr)
-
-    if not payload:
+    
+    b45_qr = data.get("qr")
+    if not b45_qr:
         return Response(
-            { "error" : "Failed to parse QR" },
+            {
+                "error"   : DRFErrors.InvalidPOSTBody,
+                "details" : "Expected 'qr', got None instead."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
 
     try:
-        service = Service.objects.get(name=service_id)
-    except Service.DoesNotExist:
+        qr_type, payload = read_qr(b45_qr).values()
+    except Exception as err:
         return Response(
-            { "error" : "Service does not exist" },
+            {
+                "error"   : DRFErrors.QRVerificationFailed,
+                "details" : str(err)
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user_pcn = payload[169]["sb"]["PCN"]
+    if qr_type == QRTypes.OpenLGUQR:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : f"Expected a PhilSys or eGovPH QR code, got {QRTypes.OpenLGUQR} \
+                    instead."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
-        resident = Resident.objects.get(pcn=user_pcn)
+        service = Service.objects.get(id=service_id)
+    except Service.DoesNotExist:
+        return Response(
+            {
+                "error"   : DRFErrors.ServiceDoesNotExist, 
+                "details" : f"Service {service_id} does not exist."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    pcn = payload.get("pcn")
+    if not pcn:
+        return Response(
+            {
+                "error"   : DRFErrors.InvalidQRType,
+                "details" : "Invalid QR code type. QR code must have a PCN."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        resident = Resident.objects.get(pcn=pcn)
     except Resident.DoesNotExist:
         return Response(
-            { "error" : "User does not exist" },
+            {
+                "errors"  : DRFErrors.ResidentDoesNotExist,
+                "details" : f"User {pcn} does not exist."
+            },
             status=status.HTTP_400_BAD_REQUEST
         )
     
     authenticated_user = request.user
 
-    result, error = service.claim(
+    result, body = service.claim(
         resident=resident,
         amount=1,
         claimed_by=authenticated_user
@@ -172,13 +258,11 @@ def claim_service_with_pcn(request : HttpRequest, service_id : str) -> Response 
 
     if not result:
         return Response(
-            error,
+            body,
             status=status.HTTP_400_BAD_REQUEST
         )
-    
-    #TODO: Return the object created
 
     return Response(
-        { "status" : "Service claimed" },
+        ClaimSerializer(body["body"]).data,
         status=status.HTTP_201_CREATED
     )

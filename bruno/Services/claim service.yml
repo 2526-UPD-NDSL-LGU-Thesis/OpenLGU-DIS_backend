@@ -1,0 +1,80 @@
+info:
+  name: claim service
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:8000/api/claim/SERVICE62055198/
+  body:
+    type: json
+    data: |-
+      {
+        "qr" : "6BF-60$F0/3WJWG.FKJ05FBBNZTB800/DSQE7*5I9E8/DP3D+%5+3E8*5Z6DCF3AP2K2QAKL280NF6HA7XW6W47-96SD0Z96LF6$86KPC3/D%U09Z9CXO%$E5UD/T9+EDK 03EFNZ9XVD..D4.0IDAD$C-3E*210A66:63W5Q471A6PE13K3AEC5$C1Q51UANFFUJC9PE$34:8DXVDT9EZED6$C1/2W6A-23FBBVTA%B9-*8V50.100Y817AG6AL34V50F50N018%J.E5010I10LC7YUND/5D.KBQL*PL8FSO81K00/-ED-UR8U:VVIUSX8E5831J0BEFT64%I4 61R-D*W9O8TI7WLXR/XP7DD3 E:HC6UUA.H7LK$32000AAW32O+SCG:JZ*MDRP9ER %U.ZISAV7PA%US9%M%3LAQ99F0IFO$YS$V2LTIQ417BAIAPP+756B3TGT$BX7WAXI5GECU6I57BRT+ZRE+UKANORLR777AP176/PJWOVQ-4 0OG$LABOGKU-BJQ/NRZ4-7T-853-6V2MWLP:TE+7BIN0QG8KC37.P.TPIPQ815+D1ATH:IK4AMR3E*+9R/E5D0U8U0H3:87X4J+TQAI5KDENOS$/T93D4ZHN.G8%8TGES0D97B9%M7UCL%6P5L4.H5Q261R8WC-USTCWFN62OEG%6 6QI+DJZ8URMZHBB4L5J4:LA +CKG3H2OHLLZ5V+FBA*2GYD*.H000O001O9GL6VW60A6OA7TF627B$S8 1H8AQVNSODS5N1 $6TLI8CDTHJZRC$UII:7:AR0XHJTH/6AFV7XMAL69.-L92N1YFLS7PQT20D+6KACQ7TH/ER9:P-9JK.R4IV"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "201"
+    request:
+      url: http://localhost:8000/api/claim/SERVICE95732180/
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "qr" : "6BFOXN*TS0BIP$F%T4KOH-ZHC-5TJO+JAFBOJGTOZL%LP% C$8DMEDE8C0/D/+PN R6H0R23Q0557TRVMPPF67T5 2BCNJ1TN%2M55XFTLFN:Z247TS*SKTCY73X63PK3 QTSNJ*4LD-4SYKFFRTJ6A9WVQUR80OBGMUJUI3+J46H0LJ42K66BO%IS732$0EL.CYS2R8TSZ2CD3/2CGPKLE4QAMK$TQ%J15A8.4JQ3JJSYAC9*C  C0Q2UIVHWGPH2T58U9IJBEP*O-RO0DP9ZI:.2E8CVJCI.C:/GW90746%J5N837NM4Y0/AODCO/QQ7BQ*0P.SID:9SQPWP9BSDRVJY5D8Y3$8NVTSSL7+4JS18DNP9MQH2NCSOQN85.CGXU*I0I:PN-03OR/ZJ/+VTDA$JMPJ7RLJQL5SWIR0O$WCERFTKU0WHZ2F PRMPKAR5UGNXLNXXD%V53%6NVL-H8WBO3+2$CUSUM92G37Q+CGNWEDE8%1ODOU3VO.V3 2NWNVBDUEX04$FSFWD$I13Q6-6A46RF65:6UH6UHUEG9%Y15%E1:UTIP$IEP4VN96YT3HT2O7G*2S+ZFHYKIIM-9N+ B-2NNKPJ4I99DDKE59D-SHJGR6O915QIX6 OB/PM6AT6715GN9Z39ZMZ6VMDA0QM05CMJMT5KMJJM20TA100"
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 15:22:46 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: OPTIONS, POST
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "254"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          {
+            "user": {
+              "uin": "3755189926",
+              "pcn": "2092578314"
+            },
+            "claimed_by": {
+              "username": "lanze",
+              "first_name": "Lanze",
+              "last_name": "Conanan"
+            },
+            "service": {
+              "id": "SERVICE62055198",
+              "name": "test",
+              "description": ""
+            },
+            "transaction_id": "74621044678953185855",
+            "amount": 1,
+            "claimed_at": "2026-05-25T20:59:03.116704+08:00",
+            "notes": null
+          }

@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from main import pycose_sign_message, pycose_verify_message
+from .main import pycose_sign_message, pycose_verify_message
 
 # Create your tests here.
 

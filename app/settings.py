@@ -29,12 +29,13 @@ DEBUG = True
 ALLOWED_HOSTS = [ # TODO why is this necessary? https://docs.djangoproject.com/en/6.0/ref/settings/
     '.localhost',
     '127.0.0.1',
+    'https://openlguid-admin.netlify.app',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000', # TODO is this necessary? It's itself?
-    
-    'http://localhost:2999', # 
+    'https://openlguid-admin.netlify.app',
+    'http://localhost:2999',
     'http://localhost:3000',
     'http://127.0.0.1:2999',
     'http://127.0.0.1:3000'
@@ -48,11 +49,11 @@ CORS_ALLOW_CREDENTIALS = True # TODO this seems unsafe. Check documentation
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
+        "rest_framework.permissions.DjangoModelPermissions",
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.UserRateThrottle",
@@ -123,6 +124,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'core',
     'residents',
     'service',
     'qr_manager'
@@ -216,74 +218,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL   = '/uploads/'
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'uploads')
 
-# HERE STARTS DYNACONF EXTENSION LOAD (Keep at the very bottom of settings.py)
-# Read more at https://www.dynaconf.com/django/
-# from dynaconf import Validator # pylint: disable=wrong-import-position
-# import dynaconf # pylint: disable=wrong-import-position
-
-# CONFIG = dynaconf.DjangoDynaconf(
-#     settings_files=["config.toml"],
-#     environments=False,
-# )
-
-# _validators = [
-#     # MOSIP Auth Validators
-#     Validator("timestamp_format", must_exist=True, is_type_of="str"),
-#     Validator("ida_auth_version", must_exist=True, is_type_of="str"),
-#     Validator("ida_auth_request_demo_id", must_exist=True, is_type_of="str"),
-#     Validator("ida_auth_request_kyc_id", must_exist=True, is_type_of="str"),
-#     Validator("ida_auth_request_otp_id", must_exist=True, is_type_of="str"),
-#     Validator("ida_auth_env", must_exist=True, is_type_of="str"),
-#     Validator("authorization_header_constant", must_exist=True, is_type_of="str"),
-#     Validator("partner_misp_lk", must_exist=True, is_type_of="str"),
-#     Validator("partner_apikey", must_exist=True, is_type_of="str"),
-#     Validator("partner_id", must_exist=True, is_type_of="str"),
-
-#     # MOSIP Auth Server Validators
-#     Validator("ida_auth_domain_uri", must_exist=True, is_type_of="str"),
-#     Validator("ida_auth_url", must_exist=True, is_type_of="str"),
-
-#     # Crypto Encrypt
-#     Validator("symmetric_key_size", must_exist=True, is_type_of="int"),
-#     Validator("symmetric_nonce_size", must_exist=True, is_type_of="int"),
-#     Validator("symmetric_gcm_tag_size", must_exist=True, is_type_of="int"),
-#     Validator("encrypt_cert_path", must_exist=True, is_type_of="str"),
-#     Validator("decrypt_p12_file_path", must_exist=True, is_type_of="str"),
-#     Validator("decrypt_p12_file_password", must_exist=True, is_type_of="str"),
-
-#     # Crypto Signature
-#     Validator("algorithm", must_exist=True, is_type_of="str"),
-#     Validator("sign_p12_file_path", must_exist=True, is_type_of="str"),
-#     Validator("sign_p12_file_password", must_exist=True, is_type_of="str"),
-
-#     # Logging
-#     Validator("log_file_path", must_exist=True, is_type_of="str"),
-#     Validator("log_format", must_exist=True, is_type_of="str"),
-#     Validator("loglevel", must_exist=True, is_type_of="str"),
-# ]
-
-# # Check if MOSIP config is valid.
-# for validator in _validators:
-#     validator.validate(CONFIG)
-
-# class MOSIPAuthSetup(Exception):
-#     '''Errors related to MOSIP.'''
-
-# # Check if required files exist.
-# if not os.path.isfile(CONFIG.encrypt_cert_path):
-#     raise MOSIPAuthSetup("Invalid encrypt cert path or file does not exist.")
-
-# if not os.path.isfile(CONFIG.decrypt_p12_file_path):
-#     raise MOSIPAuthSetup("Invalid decrypt cert path or file does not exist.")
-
-# if not os.path.isfile(CONFIG.sign_p12_file_path):
-#     raise MOSIPAuthSetup("Invalid signature cert path or file does not exist.")
-
-# HERE ENDS DYNACONF EXTENSION LOAD (No more code below this line)
-
 # Default Configurations
 DEFAULT_LANGUAGE_ISO = 'eng'
-VERSION = 1.0
+DEFAULT_COUNTRY_ISO = "PH"
+UIN_LENGTH = 12
+VERSION = "1.2.1"
 
 # Config Files
-CONFIG_MOSIP_SETTINGS = r'./mosip/mosip_config.toml'
+# CONFIG_MOSIP_SETTINGS = r'./mosip/mosip_config.toml'
+CONFIG_MOSIP_SETTINGS = r'./mosip/piidtl_config.toml'
+LANDMARKER_MODEL = r'./qr_manager/models/face_landmarker.task'

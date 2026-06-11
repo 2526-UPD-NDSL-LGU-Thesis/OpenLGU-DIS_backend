@@ -199,7 +199,7 @@ def is_valid(uid : str, length : int) -> bool :
     return True
 
 
-def generate_uid(id_length : int = 10) -> str :
+def generate_uid(id_length : int = 12) -> str :
     """Generate a UIN based on MOSIP's UIN Generation Filters.
 
     MOSIP UIN Generation Logic:
@@ -222,12 +222,15 @@ def generate_uid(id_length : int = 10) -> str :
     - https://docs.mosip.io/1.2.0/id-lifecycle-management/supporting-components/commons/id-generator
     - https://github.com/mosip/commons/tree/release-1.2.0/kernel/kernel-idgenerator-service
     """
+    if id_length < 10:
+        raise ValueError("ID Length should be greater or equal to 10.")
     while True:
         # ID = (length - 1) Random Numbers + 1 Checksum digit
         candidate = generate_candidate(id_length - 1)
         uid = candidate + verhoeff.calc_check_digit(candidate)
         if is_valid(uid, id_length):
             return uid
+
 
 def generate_id(id_length : int = 8) -> str :
     """Generate a simple ID where the first number should not be a 0."""

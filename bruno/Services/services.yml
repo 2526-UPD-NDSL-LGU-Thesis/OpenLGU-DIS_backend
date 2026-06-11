@@ -1,0 +1,3013 @@
+info:
+  name: services
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:8000/api/services/SERVICE62055198/claims/
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "200"
+    request:
+      url: http://localhost:8000/api/services/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 02 May 2026 15:08:20 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, POST, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "627"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "id": "SERVICE88230258",
+              "recipient_sectors": [
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_3",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE84063440",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_5",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE78294698",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_7",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE87991941",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_11",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "limited",
+              "stocks": 182,
+              "active": true
+            },
+            {
+              "id": "SERVICE42435073",
+              "recipient_sectors": [
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_12",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE47930286",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service Delivery Team"
+                }
+              ],
+              "name": "Service_15",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE82582796",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Community Assitance"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_19",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE11951078",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_21",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 273,
+              "active": true
+            },
+            {
+              "id": "SERVICE61960073",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_25",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE39676096",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                }
+              ],
+              "name": "Service_26",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 1000,
+              "active": true
+            },
+            {
+              "id": "SERVICE36909436",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_27",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 489,
+              "active": true
+            },
+            {
+              "id": "SERVICE87357220",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_28",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 94,
+              "active": true
+            },
+            {
+              "id": "SERVICE72838998",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_31",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE56832944",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_34",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 198,
+              "active": true
+            },
+            {
+              "id": "SERVICE84400746",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                }
+              ],
+              "name": "Service_35",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 491,
+              "active": true
+            },
+            {
+              "id": "SERVICE24606034",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                }
+              ],
+              "name": "Service_40",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE90362561",
+              "recipient_sectors": [
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_46",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE33894964",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_49",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 178,
+              "active": true
+            },
+            {
+              "id": "SERVICE62055198",
+              "recipient_sectors": [
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "test",
+              "description": "",
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "unlimited",
+              "stocks": 1,
+              "active": true
+            },
+            {
+              "id": "SERVICE29682757",
+              "recipient_sectors": [
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "test",
+              "description": "",
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "unlimited",
+              "stocks": 1,
+              "active": true
+            },
+            {
+              "id": "SERVICE75029528",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "LGBTQIA+"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_1",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 88,
+              "active": true
+            },
+            {
+              "id": "SERVICE30131603",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_8",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 297,
+              "active": true
+            },
+            {
+              "id": "SERVICE64197246",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_13",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true
+            },
+            {
+              "id": "SERVICE65203476",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_23",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE50729717",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_33",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE38960863",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_43",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 90,
+              "active": true
+            },
+            {
+              "id": "SERVICE95732180",
+              "recipient_sectors": [
+                {
+                  "name": "Student"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_6",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE14617764",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_10",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE23497916",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "PWD"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_17",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE11192022",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Resident"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_18",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 481,
+              "active": true
+            },
+            {
+              "id": "SERVICE75680696",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_22",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE92326883",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_38",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE39922186",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_39",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 493,
+              "active": true
+            },
+            {
+              "id": "SERVICE54717180",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_41",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE25907181",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_42",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE87748446",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_44",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 998,
+              "active": true
+            },
+            {
+              "id": "SERVICE70245504",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_45",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE57206417",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "PWD"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_47",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE62110026",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_0",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 997,
+              "active": true
+            },
+            {
+              "id": "SERVICE22260553",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "OFW"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Community Assitance"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_2",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 982,
+              "active": true
+            },
+            {
+              "id": "SERVICE71950826",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_14",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true
+            },
+            {
+              "id": "SERVICE63123342",
+              "recipient_sectors": [
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_36",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 99,
+              "active": true
+            },
+            {
+              "id": "SERVICE62248021",
+              "recipient_sectors": [
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_48",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            }
+          ]
+  - name: 200 active
+    request:
+      url: http://localhost:8000/api/services/active/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 13:16:06 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "13774"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "id": "SERVICE62110026",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_0",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 997,
+              "active": true
+            },
+            {
+              "id": "SERVICE75029528",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "LGBTQIA+"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_1",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 88,
+              "active": true
+            },
+            {
+              "id": "SERVICE22260553",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "OFW"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Community Assitance"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_2",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 982,
+              "active": true
+            },
+            {
+              "id": "SERVICE88230258",
+              "recipient_sectors": [
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_3",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE70206532",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_4",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 195,
+              "active": true
+            },
+            {
+              "id": "SERVICE84063440",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_5",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE95732180",
+              "recipient_sectors": [
+                {
+                  "name": "Student"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_6",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE78294698",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_7",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE30131603",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_8",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 297,
+              "active": true
+            },
+            {
+              "id": "SERVICE91604474",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_9",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 993,
+              "active": true
+            },
+            {
+              "id": "SERVICE14617764",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_10",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE87991941",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_11",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "limited",
+              "stocks": 182,
+              "active": true
+            },
+            {
+              "id": "SERVICE42435073",
+              "recipient_sectors": [
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_12",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE64197246",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_13",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true
+            },
+            {
+              "id": "SERVICE71950826",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_14",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 98,
+              "active": true
+            },
+            {
+              "id": "SERVICE47930286",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service Delivery Team"
+                }
+              ],
+              "name": "Service_15",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE31586057",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Resident"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                }
+              ],
+              "name": "Service_16",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "limited",
+              "stocks": 195,
+              "active": true
+            },
+            {
+              "id": "SERVICE23497916",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "PWD"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_17",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE11192022",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Resident"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_18",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 481,
+              "active": true
+            },
+            {
+              "id": "SERVICE82582796",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Community Assitance"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_19",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE35487492",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                }
+              ],
+              "name": "Service_20",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 200,
+              "active": true
+            },
+            {
+              "id": "SERVICE11951078",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_21",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 273,
+              "active": true
+            },
+            {
+              "id": "SERVICE75680696",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_22",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE65203476",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_23",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE69208853",
+              "recipient_sectors": [
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                }
+              ],
+              "name": "Service_24",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 994,
+              "active": true
+            },
+            {
+              "id": "SERVICE61960073",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_25",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE39676096",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                }
+              ],
+              "name": "Service_26",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 1000,
+              "active": true
+            },
+            {
+              "id": "SERVICE36909436",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_27",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 489,
+              "active": true
+            },
+            {
+              "id": "SERVICE87357220",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_28",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "limited",
+              "stocks": 94,
+              "active": true
+            },
+            {
+              "id": "SERVICE61021194",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Resident"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                }
+              ],
+              "name": "Service_29",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 95,
+              "active": true
+            },
+            {
+              "id": "SERVICE60287961",
+              "recipient_sectors": [
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Student"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                }
+              ],
+              "name": "Service_30",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "limited",
+              "stocks": 90,
+              "active": true
+            },
+            {
+              "id": "SERVICE72838998",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_31",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE25596053",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "LGBTQIA+"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                }
+              ],
+              "name": "Service_32",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 200,
+              "active": true
+            },
+            {
+              "id": "SERVICE50729717",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_33",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE56832944",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_34",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 198,
+              "active": true
+            },
+            {
+              "id": "SERVICE84400746",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                }
+              ],
+              "name": "Service_35",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 491,
+              "active": true
+            },
+            {
+              "id": "SERVICE63123342",
+              "recipient_sectors": [
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "PWD"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_36",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 99,
+              "active": true
+            },
+            {
+              "id": "SERVICE20637938",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Resident"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_37",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE92326883",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_38",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "yearly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE39922186",
+              "recipient_sectors": [
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_39",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "limited",
+              "stocks": 493,
+              "active": true
+            },
+            {
+              "id": "SERVICE24606034",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Senior Citizen"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                }
+              ],
+              "name": "Service_40",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "monthly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE54717180",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_41",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE25907181",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_42",
+              "description": null,
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "daily",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE38960863",
+              "recipient_sectors": [
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "Service_43",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 90,
+              "active": true
+            },
+            {
+              "id": "SERVICE87748446",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_44",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "limited",
+              "stocks": 998,
+              "active": true
+            },
+            {
+              "id": "SERVICE70245504",
+              "recipient_sectors": [
+                {
+                  "name": "4Ps"
+                },
+                {
+                  "name": "LGBTQIA+"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Service Delivery Team"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_45",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE90362561",
+              "recipient_sectors": [
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Public Service"
+                }
+              ],
+              "name": "Service_46",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "periodic",
+              "refresh_interval": "quarterly",
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE57206417",
+              "recipient_sectors": [
+                {
+                  "name": "Jeepney Driver"
+                },
+                {
+                  "name": "PWD"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Public Service"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_47",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE62248021",
+              "recipient_sectors": [
+                {
+                  "name": "Single Parent"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Community Assitance"
+                }
+              ],
+              "name": "Service_48",
+              "description": null,
+              "max_claims_per_user": 5,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "unlimited",
+              "stocks": null,
+              "active": true
+            },
+            {
+              "id": "SERVICE33894964",
+              "recipient_sectors": [
+                {
+                  "name": "Farmer"
+                },
+                {
+                  "name": "OFW"
+                },
+                {
+                  "name": "Merchant"
+                },
+                {
+                  "name": "Senior Citizen"
+                },
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                },
+                {
+                  "name": "Citizen Support"
+                }
+              ],
+              "name": "Service_49",
+              "description": null,
+              "max_claims_per_user": 3,
+              "claim_type": "onetime",
+              "refresh_interval": null,
+              "stocks_type": "limited",
+              "stocks": 178,
+              "active": true
+            },
+            {
+              "id": "SERVICE62055198",
+              "recipient_sectors": [
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "test",
+              "description": "",
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "unlimited",
+              "stocks": 1,
+              "active": true
+            },
+            {
+              "id": "SERVICE29682757",
+              "recipient_sectors": [
+                {
+                  "name": "Resident"
+                }
+              ],
+              "allowed_groups": [
+                {
+                  "name": "Merchants"
+                },
+                {
+                  "name": "Social Welfare"
+                },
+                {
+                  "name": "Service and Outreach Unit"
+                }
+              ],
+              "name": "test",
+              "description": "",
+              "max_claims_per_user": 1,
+              "claim_type": "periodic",
+              "refresh_interval": "weekly",
+              "stocks_type": "unlimited",
+              "stocks": 1,
+              "active": true
+            }
+          ]
+  - name: 200 service claims
+    request:
+      url: http://localhost:8000/api/services/SERVICE62110026/claims/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sat, 16 May 2026 13:16:45 GMT
+        - name: server
+          value: WSGIServer/0.2 CPython/3.12.10
+        - name: content-type
+          value: application/json
+        - name: vary
+          value: Accept, origin
+        - name: allow
+          value: GET, HEAD, OPTIONS
+        - name: x-frame-options
+          value: DENY
+        - name: content-length
+          value: "504"
+        - name: x-content-type-options
+          value: nosniff
+        - name: referrer-policy
+          value: same-origin
+        - name: cross-origin-opener-policy
+          value: same-origin
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "user": {
+                "uin": "3755189926",
+                "pcn": "2092578314"
+              },
+              "claimed_by": {
+                "username": "lanze",
+                "first_name": "Lanze",
+                "last_name": "Conanan"
+              },
+              "service": {
+                "id": "SERVICE62055198",
+                "name": "test",
+                "description": ""
+              },
+              "transaction_id": "74621044678953185855",
+              "amount": 1,
+              "claimed_at": "2026-05-25T20:59:03.116704+08:00",
+              "notes": null
+            }
+          ]

@@ -7,6 +7,7 @@ from collections import defaultdict
 from datetime import datetime
 from io import BytesIO
 from typing import Self, Dict, List, Optional, Any
+import time
 
 from django.conf import settings
 from iso639 import Lang
@@ -27,7 +28,8 @@ from .authenticator import MOSIPAuthManager
 # pylint: disable=trailing-whitespace
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
-    
+
+
 manager = MOSIPAuthManager()
 
 
@@ -103,6 +105,8 @@ def _to_demographic_data(**kwargs) -> DemographicsModel:
 
     for raw_key, value in kwargs.items():
         key = raw_key.lower()
+        if isinstance(value, str):
+            value = value.strip()
 
         match key:
             case "age":
@@ -152,12 +156,19 @@ def _to_demographic_data(**kwargs) -> DemographicsModel:
 
 def decode_face(face_b64 : str) -> str :
     """Decode face image bytes from MOSIP response body to Base64 string."""
-    face_bytes = base64.b64decode(face_b64)[73:]
-    face_img = Image.open(BytesIO(face_bytes))
-    try:
-        face_img.load()
-    except Exception as err:
-        raise MOSIPException("Failed to decode image") from err
+    image_bytes = base64.b64decode(face_b64)
+    face_img = None
+    for offset in range(70, 86):
+        try:
+            face_bytes = image_bytes[offset:]
+            face_img = Image.open(BytesIO(face_bytes))
+            face_img.load()
+            # face_img.show()
+            break
+        except Exception:
+            pass
+    if face_img is None:
+        raise MOSIPException("Failed to decode image")
 
     return base64.b64encode(face_bytes).decode("utf-8")
 
@@ -185,11 +196,14 @@ class MOSIPUser(BaseModel):
         MOSIPParsingError: Errors encountered during demographic data cleaning
         MOSIPResponseError: Errors encountered during authentication
     """
-    uid        : Optional[str] = Field(default=None)
     name       : Dict[str, str] = Field(default_factory=dict)
     gender     : Dict[str, str] = Field(default_factory=dict)
     dob        : str
     location1  : Dict[str, str] = Field(default_factory=dict)
+    location2  : Dict[str, str] = Field(default_factory=dict)
+    location3  : Dict[str, str] = Field(default_factory=dict)
+    zone       : Dict[str, str] = Field(default_factory=dict)
+    postalCode : str
     phone      : str
     email      : str
     face       : str
@@ -216,70 +230,46 @@ class MOSIPUser(BaseModel):
                         mosip_user["gender"][key_lang] = value
                     case "location1":
                         mosip_user["location1"][key_lang] = value
+                    case "location2":
+                        mosip_user["location2"][key_lang] = value
+                    case "location3":
+                        mosip_user["location3"][key_lang] = value
+                    case "zone":
+                        mosip_user["zone"][key_lang] = value
                     case _:
-                        raise Warning(f"Unsupported parameter: {key_var}")
+                        raise ValueError(f"Unsupported parameter: {key_var}")
             except ValueError:
-                if key == "face":
-                    mosip_user["face"] = decode_face(decrypted_response["face"])
+                if key == "face" or key == "photo":
+                    image = decrypted_response.get("face")
+                    if not image:
+                        image = decrypted_response.get("photo")
+                    mosip_user["face"] = decode_face(image)
                 else:
                     mosip_user[key] = value
         
         return cls(**mosip_user)
-
-    @property
-    def info(self) -> Dict[str, str | int] :
-        """
-        User's demographic information without the face data.
-        """
-
-        return {
-            key: value for key, value in self.__dict__.items()
-            if key != "face"
-        }
     
-    @property
-    def to_claim169(self) -> Dict[int, Any] :
-        default_lang = settings.DEFAULT_LANGUAGE_ISO
-        claim169 = {
-            1 : self.uid,
-            2 : settings.VERSION,
-            3 : default_lang,
-            4 : self.name[default_lang],
-            # TODO: Is there a way to know the first/middle/last name from full name?
-            # 5 : first name
-            # 6 : middle name
-            # 7 : last name
-            8 : self.dob,
-            9 : self.gender[default_lang],
-            10 : self.location1[default_lang],
-            11 : self.email,
-            12 : self.phone,
-            # 13 : nationality (unsupported)
-            # 14 : marital status (unsupported)
-            # 15 : guardian (unsupported)
-            # 16 : (depreciated)
-            # 17 : (depreciated)
-            # 18 : best quality fingers (unsupported)
-            # 19 : full name in secondary language (unsupported)
-            # 20 : secondary language (unsupported)
-            # 21 : location code (unsupported)
-            # 22 : legal status (unsupported)
-            # 23 : country of issuance (unsupported)
-            # 24 - 49 : unassigned
-            # 50 - 59 : finger biometrics
-            # 60 : Right Iris
-            # 61 : Left Iris
-            62 : self.face,
-            # 63 - 64 : Palm Print
-            # 65 : Voice
-            # 66 - 74 : for future biometrics
-            # 75 - 99 : for future data
-            # 75 : local UIN
-            # 76 : sectors
+    def flatten(self) -> Dict[str, str | None] :
+        """Flatten User model for Claim169 QR generation."""
+        data = self.model_dump()
+        
+        return {
+            "full_name" : data.get("name", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+            "gender" : data.get("gender", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+            "date_of_birth" : data.get("dob"),
+            "address" : ", ".join(
+                filter(None, [
+                    data.get("location1", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("location2", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("location3", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("zone", {}).get(settings.DEFAULT_LANGUAGE_ISO),
+                    data.get("postalCode"),
+                ])
+            ),
+            "phone_number" : data.get("phone"),
+            "email_id" : data.get("email"),
+            "face_image" : data.get("face")
         }
-
-        return claim169
-
 
 class MOSIPResponseError(BaseModel):
     """Errors encounted during MOSIP authentication process.
@@ -321,15 +311,15 @@ class MOSIPBaseResponseStatus(BaseModel):
         )
 
 
-class MOSIPOTPResponse(BaseModel):
-    masked_mobile : Optional[str] = Field(
-        default=None,
-        validation_alias="maskedMobile"
-        )
-    masked_Email : Optional[str] = Field(
-        default=None,
-        validation_alias="maskedEmail"
-        )
+# class MOSIPOTPResponse(BaseModel):
+#     masked_mobile : Optional[str] = Field(
+#         default=None,
+#         validation_alias="maskedMobile"
+#         )
+#     masked_Email : Optional[str] = Field(
+#         default=None,
+#         validation_alias="maskedEmail"
+#         )
 
 
 class MOSIPBaseResponse(BaseModel):
@@ -355,10 +345,13 @@ class MOSIPBaseResponse(BaseModel):
 
     @property
     def status(self) -> bool :
-        try:
-            return self.response.status
-        except NameError:
-            return False
+        return bool(self.response and self.response.status)
+    
+    @property
+    def error_messages(self) -> List[Optional[str]] :
+        if not self.errors:
+            return []
+        return [err.error_message for err in self.errors]
 
     @classmethod
     def from_response(cls, raw_response : Response ) -> Self :
@@ -369,30 +362,31 @@ class MOSIPBaseResponse(BaseModel):
 class MOSIPKYCResponse(MOSIPBaseResponse):
     user : Optional[MOSIPUser] = Field(default=None)
     
+    # @classmethod
+    # def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
+    #     """Performs KYC verification using OTP.
+
+    #     Args:
+    #         uid (str): Unique identifier
+    #         txn_id (str): transaction ID of KYC verification
+    #         otp (str): OTP value
+    #     """
+    #     # OTP is 111111
+    #     authenticator = manager.get_authenticator()
+
+    #     raw_response = authenticator.kyc(
+    #         individual_id=uid,
+    #         individual_id_type="UIN",
+    #         txn_id=txn_id,
+    #         otp_value=otp,
+    #         consent=True
+    #     )
+
+    #     return cls.from_response(raw_response)
+
     @classmethod
-    def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
-        """Performs KYC verification using OTP.
-
-        Args:
-            uid (str): Unique identifier
-            txn_id (str): transaction ID of KYC verification
-            otp (str): OTP value
-        """
-        # OTP is 111111
-        authenticator = manager.get_authenticator()
-
-        raw_response = authenticator.kyc(
-            individual_id=uid,
-            individual_id_type="UIN",
-            txn_id=txn_id,
-            otp_value=otp,
-            consent=True
-        )
-
-        return cls.from_response(raw_response)
-
-    @classmethod
-    def from_demographics(cls, uid : str, **data) -> Self :
+    def from_demographics(cls, uid : str, retries : int = 3, backoff : float = 1,
+                          **data) -> Self :
         """Performs KYC verification using demographic data.
 
         Args:
@@ -401,46 +395,59 @@ class MOSIPKYCResponse(MOSIPBaseResponse):
         authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
 
-        raw_response = authenticator.kyc(
-            individual_id=uid,
-            individual_id_type="UIN",
-            demographic_data=demographic_data,
-            consent=True
-        )
+        last_error = None
+        for attempt in range(retries + 1):
+            try:
+                raw_response = authenticator.kyc(
+                    individual_id=uid,
+                    individual_id_type="UIN",
+                    demographic_data=demographic_data,
+                    consent=True
+                )
 
-        kyc_response = cls.from_response(raw_response)
+                kyc_response = cls.from_response(raw_response)
 
-        if kyc_response.status:
-            kyc_response.user = MOSIPUser.from_response(raw_response)
+                if kyc_response.status:
+                    kyc_response.user = MOSIPUser.from_response(raw_response)
+                
+                return kyc_response
+            except Exception as err:
+                last_error = err
+
+                if attempt < retries:
+                    time.sleep(backoff * (2 ** attempt))
         
-        return kyc_response
+        raise RuntimeError(
+            "MOSIP KYC via demographics failed after retries."
+        ) from last_error
 
 
 class MOSIPAuthResponse(MOSIPBaseResponse):
+    # @classmethod
+    # def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
+    #     """Performs user authentication using OTP.
+
+    #     Args:
+    #         uid (str): Unique identifier
+    #         txn_id (str): transaction ID of KYC verification
+    #         otp (str): OTP value
+    #     """
+    #     # OTP is 111111
+    #     authenticator = manager.get_authenticator()
+
+    #     raw_response = authenticator.auth(
+    #         individual_id=uid,
+    #         individual_id_type="UIN",
+    #         txn_id=txn_id,
+    #         otp_value=otp,
+    #         consent=True
+    #     )
+
+    #     return cls.from_response(raw_response)
+
     @classmethod
-    def from_otp(cls, uid : str, txn_id : str, otp : str) -> Self :
-        """Performs user authentication using OTP.
-
-        Args:
-            uid (str): Unique identifier
-            txn_id (str): transaction ID of KYC verification
-            otp (str): OTP value
-        """
-        # OTP is 111111
-        authenticator = manager.get_authenticator()
-
-        raw_response = authenticator.auth(
-            individual_id=uid,
-            individual_id_type="UIN",
-            txn_id=txn_id,
-            otp_value=otp,
-            consent=True
-        )
-
-        return cls.from_response(raw_response)
-
-    @classmethod
-    def from_demographics(cls, uid : str, **data) -> Self :
+    def from_demographics(cls, uid : str, retries : int = 3, backoff : float = 1,
+                          **data) -> Self :
         """Performs user authentication using demographic data.
 
         Args:
@@ -449,39 +456,50 @@ class MOSIPAuthResponse(MOSIPBaseResponse):
         authenticator = manager.get_authenticator()
         demographic_data = _to_demographic_data(**data)
 
-        raw_response = authenticator.auth(
-            individual_id=uid,
-            individual_id_type="UIN",
-            demographic_data=demographic_data,
-            consent=True
-        )
+        last_error = None
+        for attempt in range(retries + 1):
+            try:
+                raw_response = authenticator.auth(
+                    individual_id=uid,
+                    individual_id_type="UIN",
+                    demographic_data=demographic_data,
+                    consent=True
+                )
 
-        return cls.from_response(raw_response)
+                return cls.from_response(raw_response)
+            except Exception as err:
+                last_error = err
+
+                if attempt < retries:
+                    time.sleep(backoff * (2 ** attempt))
+        
+        raise RuntimeError(
+            "MOSIP Auth via demographics failed after retries."
+        ) from last_error
 
 
-class MOSIPGenOTPResponse(MOSIPBaseResponse):
-    response : Optional[MOSIPOTPResponse]
+# class MOSIPGenOTPResponse(MOSIPBaseResponse):
+#     response : Optional[MOSIPOTPResponse]
 
-    @classmethod
-    def start_otp(
-        cls, 
-        uid : str,
-        use_email : bool = False,
-        use_phone : bool = False
-    ) -> Self : 
-        authenticator = manager.get_authenticator()
+#     @classmethod
+#     def start_otp(
+#         cls, 
+#         uid : str,
+#         use_email : bool = False,
+#         use_phone : bool = False
+#     ) -> Self : 
+#         authenticator = manager.get_authenticator()
 
-        if not any([use_email, use_phone]):
-            raise MOSIPMissingFieldError("Atleast one OTP method should be specified.")
+#         if not any([use_email, use_phone]):
+#             raise MOSIPMissingFieldError("Atleast one OTP method should be specified.")
 
-        raw_response = authenticator.genotp(
-            individual_id=uid,
-            individual_id_type="UIN",
-            email=use_email,
-            phone=use_phone,
-        )
+#         raw_response = authenticator.genotp(
+#             individual_id=uid,
+#             individual_id_type="UIN",
+#             email=use_email,
+#             phone=use_phone,
+#         )
 
-        return cls.from_response(raw_response)
+#         return cls.from_response(raw_response)
 
 #TODO: Change exceptions to MOSIP model errors
-#TODO: Find a way to enforce kyc gen OTP is used for kyc gen OTP
